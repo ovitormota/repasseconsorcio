@@ -1,0 +1,65 @@
+{
+  "name": "Consortium",
+  "fields": [
+    {
+      "fieldName": "consortiumValue",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "created",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "minimumBidValue",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "numberOfInstallments",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "installmentValue",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "segmentType",
+      "fieldType": "SegmentType",
+      "fieldValues": "AUTOMOBILE,OTHER,REAL_ESTATE"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "ConsortiumStatusType",
+      "fieldValues": "CLOSED,OPEN,REGISTERED,WON"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "bid",
+      "otherEntityRelationshipName": "consortium",
+      "relationshipName": "bid"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "consortium",
+      "relationshipName": "user"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "consortiumAdministrator",
+      "otherEntityRelationshipName": "consortium",
+      "relationshipName": "consortiumAdministrator"
+    }
+  ],
+  "entityTableName": "consortium",
+  "dto": "no",
+  "pagination": "infinite-scroll",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["repasseconsorcio"],
+  "changelogDate": "20240209013417"
+}

@@ -1,0 +1,33 @@
+{
+  "name": "ConsortiumAdministrator",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "image",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "consortium",
+      "otherEntityRelationshipName": "consortiumAdministrator",
+      "relationshipName": "consortium"
+    }
+  ],
+  "entityTableName": "consortium_administrator",
+  "dto": "no",
+  "pagination": "infinite-scroll",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["repasseconsorcio"],
+  "changelogDate": "20240209013217"
+}

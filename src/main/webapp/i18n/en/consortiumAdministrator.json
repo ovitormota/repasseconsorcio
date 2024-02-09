@@ -1,0 +1,26 @@
+{
+  "repasseconsorcioApp": {
+    "consortiumAdministrator": {
+      "home": {
+        "title": "Consortium Administrators",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Consortium Administrator",
+        "createOrEditLabel": "Create or edit a Consortium Administrator",
+        "notFound": "No Consortium Administrators found"
+      },
+      "created": "A new Consortium Administrator is created with identifier {{ param }}",
+      "updated": "A Consortium Administrator is updated with identifier {{ param }}",
+      "deleted": "A Consortium Administrator is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Consortium Administrator {{ id }}?"
+      },
+      "detail": {
+        "title": "Consortium Administrator"
+      },
+      "id": "ID",
+      "name": "Name",
+      "image": "Image",
+      "consortium": "Consortium"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "repasseconsorcioApp": {
+    "bid": {
+      "home": {
+        "title": "Bids",
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Criar novo Bid",
+        "createOrEditLabel": "Criar ou editar Bid",
+        "notFound": "Nenhum Bid encontrado"
+      },
+      "created": "Um novo Bid foi criado com o identificador {{ param }}",
+      "updated": "Um Bid foi atualizado com o identificador {{ param }}",
+      "deleted": "Um Bid foi excluído com o identificador {{ param }}",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir Bid {{ id }}?"
+      },
+      "detail": {
+        "title": "Bid"
+      },
+      "id": "ID",
+      "value": "Value",
+      "created": "Created",
+      "user": "User",
+      "consortium": "Consortium"
+    }
+  }
+}

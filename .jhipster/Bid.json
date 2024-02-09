@@ -1,0 +1,37 @@
+{
+  "name": "Bid",
+  "fields": [
+    {
+      "fieldName": "value",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "created",
+      "fieldType": "Instant"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "bid",
+      "relationshipName": "user"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "consortium",
+      "otherEntityRelationshipName": "bid",
+      "relationshipName": "consortium"
+    }
+  ],
+  "entityTableName": "bid",
+  "dto": "no",
+  "pagination": "infinite-scroll",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["repasseconsorcio"],
+  "changelogDate": "20240209013317"
+}

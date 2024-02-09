@@ -1,0 +1,33 @@
+{
+  "repasseconsorcioApp": {
+    "consortium": {
+      "home": {
+        "title": "Consortiums",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Consortium",
+        "createOrEditLabel": "Create or edit a Consortium",
+        "notFound": "No Consortiums found"
+      },
+      "created": "A new Consortium is created with identifier {{ param }}",
+      "updated": "A Consortium is updated with identifier {{ param }}",
+      "deleted": "A Consortium is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Consortium {{ id }}?"
+      },
+      "detail": {
+        "title": "Consortium"
+      },
+      "id": "ID",
+      "consortiumValue": "Consortium Value",
+      "created": "Created",
+      "minimumBidValue": "Minimum Bid Value",
+      "numberOfInstallments": "Number Of Installments",
+      "installmentValue": "Installment Value",
+      "segmentType": "Segment Type",
+      "status": "Status",
+      "bid": "Bid",
+      "user": "User",
+      "consortiumAdministrator": "Consortium Administrator"
+    }
+  }
+}

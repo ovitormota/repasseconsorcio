@@ -1,0 +1,11 @@
+{
+  "repasseconsorcioApp": {
+    "ConsortiumStatusType": {
+      "null": "",
+      "CLOSED": "CLOSED",
+      "OPEN": "OPEN",
+      "REGISTERED": "REGISTERED",
+      "WON": "WON"
+    }
+  }
+}

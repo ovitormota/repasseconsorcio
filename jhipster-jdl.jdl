@@ -1,0 +1,77 @@
+application {
+config {
+baseName repasseconsorcio
+packageName br.com.repasseconsorcio
+applicationType monolith
+jhiPrefix app
+dtoSuffix DTO
+databaseType sql
+devDatabaseType postgresql
+prodDatabaseType postgresql
+enableHibernateCache true
+authenticationType jwt
+serverPort 8080
+serviceDiscoveryType no
+buildTool maven
+enableSwaggerCodegen true
+clientFramework react
+clientPackageManager npm
+cacheProvider ehcache
+testFrameworks [cypress]
+nativeLanguage en
+skipClient false
+languages [pt-br]
+}
+entities *
+}
+
+
+enum ConsortiumStatusType {
+CLOSED
+OPEN
+REGISTERED
+WON
+}
+
+enum SegmentType {
+AUTOMOBILE
+OTHER
+REAL_ESTATE
+}
+
+entity ConsortiumAdministrator {
+    name String required
+    image Blob
+}
+
+entity Bid {
+value BigDecimal
+created Instant
+}
+
+entity User {
+	image Blob
+}
+
+entity Consortium {
+consortiumValue BigDecimal
+created Instant
+minimumBidValue BigDecimal
+numberOfInstallments Integer
+installmentValue BigDecimal
+segmentType SegmentType
+status ConsortiumStatusType
+}
+
+relationship OneToMany {
+Consortium to Bid
+}
+
+relationship ManyToOne {
+Bid to User,
+Consortium to User
+Consortium to ConsortiumAdministrator
+}
+
+service * with serviceClass
+paginate * with infinite-scroll
