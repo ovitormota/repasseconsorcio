@@ -18,23 +18,25 @@ import bid from 'app/entities/bid/bid.reducer';
 // prettier-ignore
 import consortium from 'app/entities/consortium/consortium.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
+import proposalsForApproval from 'app/entities/proposals-for-approval/proposals-for-approval.reducer';
 
 const rootReducer = {
-  authentication,
-  locale,
-  applicationProfile,
-  administration,
-  userManagement,
-  register,
-  activate,
-  passwordReset,
-  password,
-  settings,
-  consortiumAdministrator,
-  bid,
-  consortium,
-  /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
-  loadingBar,
+    authentication,
+    locale,
+    applicationProfile,
+    administration,
+    userManagement,
+    register,
+    activate,
+    passwordReset,
+    password,
+    settings,
+    consortiumAdministrator,
+    bid,
+    consortium,
+    proposalsForApproval,
+    /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
+    loadingBar,
 };
 
 export default rootReducer;

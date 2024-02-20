@@ -54,9 +54,6 @@ public class ConsortiumAdministratorService {
                 if (consortiumAdministrator.getImage() != null) {
                     existingConsortiumAdministrator.setImage(consortiumAdministrator.getImage());
                 }
-                if (consortiumAdministrator.getImageContentType() != null) {
-                    existingConsortiumAdministrator.setImageContentType(consortiumAdministrator.getImageContentType());
-                }
 
                 return existingConsortiumAdministrator;
             })

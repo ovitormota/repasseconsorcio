@@ -43,6 +43,9 @@ public class Consortium implements Serializable {
     @Column(name = "installment_value", precision = 21, scale = 2)
     private BigDecimal installmentValue;
 
+    @Column(name = "contemplation_status")
+    private Boolean contemplationStatus;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "segment_type")
     private SegmentType segmentType;
@@ -167,6 +170,14 @@ public class Consortium implements Serializable {
 
     public void setStatus(ConsortiumStatusType status) {
         this.status = status;
+    }
+
+    public Boolean getContemplationStatus() {
+        return contemplationStatus;
+    }
+
+    public void setContemplationStatus(Boolean contemplationStatus) {
+        this.contemplationStatus = contemplationStatus;
     }
 
     public Set<Bid> getBids() {

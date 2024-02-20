@@ -6,6 +6,8 @@ import br.com.repasseconsorcio.domain.User;
 import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.Column;
+import javax.persistence.Lob;
 import javax.validation.constraints.*;
 
 /**
@@ -46,6 +48,8 @@ public class AdminUserDTO {
 
     private Instant lastModifiedDate;
 
+    private String image;
+
     private Set<String> authorities;
 
     public AdminUserDTO() {
@@ -66,6 +70,7 @@ public class AdminUserDTO {
         this.lastModifiedBy = user.getLastModifiedBy();
         this.lastModifiedDate = user.getLastModifiedDate();
         this.authorities = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
+        this.image = user.getImage();
     }
 
     public Long getId() {
@@ -172,22 +177,30 @@ public class AdminUserDTO {
         this.authorities = authorities;
     }
 
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "AdminUserDTO{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated=" + activated +
-            ", langKey='" + langKey + '\'' +
-            ", createdBy=" + createdBy +
-            ", createdDate=" + createdDate +
-            ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate +
-            ", authorities=" + authorities +
-            "}";
+    public String getImage() {
+        return image;
     }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+    // // prettier-ignore
+    // @Override
+    // public String toString() {
+    //     return "AdminUserDTO{" +
+    //         "login='" + login + '\'' +
+    //         ", firstName='" + firstName + '\'' +
+    //         ", lastName='" + lastName + '\'' +
+    //         ", email='" + email + '\'' +
+    //         ", imageUrl='" + imageUrl + '\'' +
+    //         ", activated=" + activated +
+    //         ", langKey='" + langKey + '\'' +
+    //         ", createdBy=" + createdBy +
+    //         ", createdDate=" + createdDate +
+    //         ", lastModifiedBy='" + lastModifiedBy + '\'' +
+    //         ", lastModifiedDate=" + lastModifiedDate +
+    //         ", authorities=" + authorities +
+    //         ", image='" + image + '\'' +
+    //         "}";
+    // }
 }

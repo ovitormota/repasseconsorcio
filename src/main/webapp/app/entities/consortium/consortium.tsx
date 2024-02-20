@@ -1,238 +1,368 @@
-import React, { useState, useEffect } from 'react';
-import InfiniteScroll from 'react-infinite-scroller';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import { Button, Col, Row, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState } from 'react-jhipster';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import { getEntities, reset } from './consortium.reducer';
-import { IConsortium } from 'app/shared/model/consortium.model';
-import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
-import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
-import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { FilterListRounded, SortRounded, SwapVertRounded } from '@mui/icons-material';
+import {
+    AppBar,
+    Avatar,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Chip,
+    IconButton,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    MenuItem,
+    Select,
+    ThemeProvider,
+    Tooltip,
+} from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
+import { AuctionTimer } from 'app/shared/components/AuctionTimer';
+import { Loading } from 'app/shared/components/Loading';
+import { NoDataIndicator } from 'app/shared/components/NoDataIndicator';
+import { IConsortium } from 'app/shared/model/consortium.model';
+import { SegmentType } from 'app/shared/model/enumerations/segment-type.model';
+import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
+import { ASC, DESC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
+import { useBreakpoints } from 'app/shared/util/useBreakpoints';
+import React, { Fragment, useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { getSortState, translate } from 'react-jhipster';
+import { RouteComponentProps } from 'react-router-dom';
+import { defaultTheme } from '../../../content/themes/index';
+import { BidUpdateModal } from '../bid/BidUpdateModal';
+import { getEntities } from './consortium.reducer';
 
 export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
-  const dispatch = useAppDispatch();
+    const dispatch = useAppDispatch();
+    const { isSMScreen, isMDScreen } = useBreakpoints();
+    const history = props.history;
 
-  const [paginationState, setPaginationState] = useState(
-    overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search)
-  );
-  const [sorting, setSorting] = useState(false);
-
-  const consortiumList = useAppSelector(state => state.consortium.entities);
-  const loading = useAppSelector(state => state.consortium.loading);
-  const totalItems = useAppSelector(state => state.consortium.totalItems);
-  const links = useAppSelector(state => state.consortium.links);
-  const entity = useAppSelector(state => state.consortium.entity);
-  const updateSuccess = useAppSelector(state => state.consortium.updateSuccess);
-
-  const getAllEntities = () => {
-    dispatch(
-      getEntities({
-        page: paginationState.activePage - 1,
-        size: paginationState.itemsPerPage,
-        sort: `${paginationState.sort},${paginationState.order}`,
-      })
+    const [paginationState, setPaginationState] = useState(
+        overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'consortiumValue'), props.location.search)
     );
-  };
+    const [openBidUpdateModal, setOpenBidUpdateModal] = useState(false);
+    const [entityConsortium, setEntityConsortium] = useState<IConsortium>(null);
+    const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL);
+    const [currentSort, setCurrentSort] = useState('consortiumValue');
+    const [order, setOrder] = useState(ASC);
 
-  const resetAll = () => {
-    dispatch(reset());
-    setPaginationState({
-      ...paginationState,
-      activePage: 1,
-    });
-    dispatch(getEntities({}));
-  };
+    const isAuthenticated = useAppSelector(state => state.authentication.isAuthenticated);
+    const consortiumList = useAppSelector(state => state.consortium.entities);
+    const loading = useAppSelector(state => state.consortium.loading);
+    const links = useAppSelector(state => state.consortium.links);
 
-  useEffect(() => {
-    resetAll();
-  }, []);
+    const getAllEntities = () => {
+        dispatch(
+            getEntities({
+                page: paginationState.activePage - 1,
+                size: paginationState.itemsPerPage,
+                sort: `${currentSort},${order}`,
+                filterSegmentType,
+            })
+        );
+    };
 
-  useEffect(() => {
-    if (updateSuccess) {
-      resetAll();
-    }
-  }, [updateSuccess]);
+    useEffect(() => {
+        getAllEntities();
+    }, [paginationState.activePage, filterSegmentType, currentSort, order]);
 
-  useEffect(() => {
-    getAllEntities();
-  }, [paginationState.activePage]);
+    const handleLoadMore = () => {
+        setPaginationState({
+            ...paginationState,
+            activePage: paginationState.activePage + 1,
+        });
+    };
 
-  const handleLoadMore = () => {
-    if ((window as any).pageYOffset > 0) {
-      setPaginationState({
-        ...paginationState,
-        activePage: paginationState.activePage + 1,
-      });
-    }
-  };
+    const formatCurrency = value => {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        }).format(value);
+    };
 
-  useEffect(() => {
-    if (sorting) {
-      getAllEntities();
-      setSorting(false);
-    }
-  }, [sorting]);
-
-  const sort = p => () => {
-    dispatch(reset());
-    setPaginationState({
-      ...paginationState,
-      activePage: 1,
-      order: paginationState.order === ASC ? DESC : ASC,
-      sort: p,
-    });
-    setSorting(true);
-  };
-
-  const handleSyncList = () => {
-    resetAll();
-  };
-
-  const { match } = props;
-
-  return (
-    <div>
-      <h2 id="consortium-heading" data-cy="ConsortiumHeading">
-        <Translate contentKey="repasseconsorcioApp.consortium.home.title">Consortiums</Translate>
-        <div className="d-flex justify-content-end">
-          <Button className="mr-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="repasseconsorcioApp.consortium.home.refreshListLabel">Refresh List</Translate>
-          </Button>
-          <Link to={`${match.url}/new`} className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="repasseconsorcioApp.consortium.home.createLabel">Create new Consortium</Translate>
-          </Link>
+    const renderStatusRibbon = () => (
+        <div className="ribbon">
+            <a href="">{translate('repasseconsorcioApp.consortium.contemplationStatus.approved')}</a>
         </div>
-      </h2>
-      <div className="table-responsive">
-        <InfiniteScroll
-          pageStart={paginationState.activePage}
-          loadMore={handleLoadMore}
-          hasMore={paginationState.activePage - 1 < links.next}
-          loader={<div className="loader">Loading ...</div>}
-          threshold={0}
-          initialLoad={false}
-        >
-          {consortiumList && consortiumList.length > 0 ? (
-            <Table responsive>
-              <thead>
-                <tr>
-                  <th className="hand" onClick={sort('id')}>
-                    <Translate contentKey="repasseconsorcioApp.consortium.id">ID</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('consortiumValue')}>
-                    <Translate contentKey="repasseconsorcioApp.consortium.consortiumValue">Consortium Value</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('created')}>
-                    <Translate contentKey="repasseconsorcioApp.consortium.created">Created</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('minimumBidValue')}>
-                    <Translate contentKey="repasseconsorcioApp.consortium.minimumBidValue">Minimum Bid Value</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('numberOfInstallments')}>
-                    <Translate contentKey="repasseconsorcioApp.consortium.numberOfInstallments">Number Of Installments</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('installmentValue')}>
-                    <Translate contentKey="repasseconsorcioApp.consortium.installmentValue">Installment Value</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('segmentType')}>
-                    <Translate contentKey="repasseconsorcioApp.consortium.segmentType">Segment Type</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('status')}>
-                    <Translate contentKey="repasseconsorcioApp.consortium.status">Status</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th>
-                    <Translate contentKey="repasseconsorcioApp.consortium.user">User</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th>
-                    <Translate contentKey="repasseconsorcioApp.consortium.consortiumAdministrator">Consortium Administrator</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                {consortiumList.map((consortium, i) => (
-                  <tr key={`entity-${i}`} data-cy="entityTable">
-                    <td>
-                      <Button tag={Link} to={`${match.url}/${consortium.id}`} color="link" size="sm">
-                        {consortium.id}
-                      </Button>
-                    </td>
-                    <td>{consortium.consortiumValue}</td>
-                    <td>{consortium.created ? <TextFormat type="date" value={consortium.created} format={APP_DATE_FORMAT} /> : null}</td>
-                    <td>{consortium.minimumBidValue}</td>
-                    <td>{consortium.numberOfInstallments}</td>
-                    <td>{consortium.installmentValue}</td>
-                    <td>
-                      <Translate contentKey={`repasseconsorcioApp.SegmentType.${consortium.segmentType}`} />
-                    </td>
-                    <td>
-                      <Translate contentKey={`repasseconsorcioApp.ConsortiumStatusType.${consortium.status}`} />
-                    </td>
-                    <td>{consortium.user ? consortium.user.id : ''}</td>
-                    <td>
-                      {consortium.consortiumAdministrator ? (
-                        <Link to={`consortium-administrator/${consortium.consortiumAdministrator.id}`}>
-                          {consortium.consortiumAdministrator.id}
-                        </Link>
-                      ) : (
-                        ''
-                      )}
-                    </td>
-                    <td className="text-right">
-                      <div className="btn-group flex-btn-group-container">
-                        <Button tag={Link} to={`${match.url}/${consortium.id}`} color="info" size="sm" data-cy="entityDetailsButton">
-                          <FontAwesomeIcon icon="eye" />{' '}
-                          <span className="d-none d-md-inline">
-                            <Translate contentKey="entity.action.view">View</Translate>
-                          </span>
-                        </Button>
-                        <Button tag={Link} to={`${match.url}/${consortium.id}/edit`} color="primary" size="sm" data-cy="entityEditButton">
-                          <FontAwesomeIcon icon="pencil-alt" />{' '}
-                          <span className="d-none d-md-inline">
-                            <Translate contentKey="entity.action.edit">Edit</Translate>
-                          </span>
-                        </Button>
-                        <Button
-                          tag={Link}
-                          to={`${match.url}/${consortium.id}/delete`}
-                          color="danger"
-                          size="sm"
-                          data-cy="entityDeleteButton"
-                        >
-                          <FontAwesomeIcon icon="trash" />{' '}
-                          <span className="d-none d-md-inline">
-                            <Translate contentKey="entity.action.delete">Delete</Translate>
-                          </span>
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
+    );
+
+    const getSegmentType = () => {
+        return [SegmentType.ALL, SegmentType.AUTOMOBILE, SegmentType.REAL_ESTATE, SegmentType.OTHER];
+    };
+
+    const SortingBox = () => {
+        const sortTypes = ['consortiumAdministrator.name', 'numberOfInstallments', 'minimumBidValue', 'installmentValue', 'consortiumValue'];
+
+        const handleSortChange = event => {
+            const selectedSortType = event.target.value;
+            setCurrentSort(selectedSortType);
+        };
+
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Select
+                    value={currentSort}
+                    onChange={handleSortChange}
+                    IconComponent={SortRounded}
+                    color="secondary"
+                    sx={{
+                        height: '35px',
+                        padding: '0 10px 0 0',
+                        fontSize: { xs: '14px', sm: '15px' },
+                    }}
+                >
+                    {sortTypes.map((type, index) => (
+                        <MenuItem key={index} value={type}>
+                            {translate(`repasseconsorcioApp.consortium.${type}`)}
+                        </MenuItem>
+                    ))}
+                </Select>
+                <IconButton color="secondary" onClick={() => setOrder(order === ASC ? DESC : ASC)} sx={{ ml: { xs: 0, sm: 1 } }}>
+                    <SwapVertRounded />
+                </IconButton>
+            </Box>
+        );
+    };
+
+    const SegmentFilter = () => {
+        const handleSegmentChange = segment => {
+            setFilterSegmentType(prevValue => (segment === prevValue ? SegmentType.ALL : segment));
+        };
+
+        return !isSMScreen ? (
+            <Select
+                value={filterSegmentType}
+                IconComponent={FilterListRounded}
+                onChange={event => handleSegmentChange(event.target.value)}
+                sx={{ m: { xs: '3px', sm: 1 }, padding: '0 10px 0 0', height: '35px', fontSize: { xs: '14px', sm: '15px' } }}
+            >
+                {getSegmentType().map((segment: SegmentType, index: number) => (
+                    <MenuItem key={index} value={segment}>
+                        {translate(`repasseconsorcioApp.SegmentType.${segment}`)}
+                    </MenuItem>
                 ))}
-              </tbody>
-            </Table>
-          ) : (
-            !loading && (
-              <div className="alert alert-warning">
-                <Translate contentKey="repasseconsorcioApp.consortium.home.notFound">No Consortiums found</Translate>
-              </div>
-            )
-          )}
-        </InfiniteScroll>
-      </div>
-    </div>
-  );
+            </Select>
+        ) : (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                {getSegmentType().map((segment, index) => (
+                    <Box key={index} onClick={() => handleSegmentChange(segment)} sx={{ m: '4px', p: 0 }}>
+                        <Chip
+                            label={translate(`repasseconsorcioApp.SegmentType.${segment}`)}
+                            variant={segment === filterSegmentType ? 'filled' : 'outlined'}
+                            color="secondary"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: defaultTheme.palette.secondary.main,
+                                    color: defaultTheme.palette.secondary.contrastText,
+                                    cursor: 'pointer',
+                                },
+                            }}
+                        />
+                    </Box>
+                ))}
+            </Box>
+        );
+    };
+
+    const handleBid = (consortium: IConsortium) => {
+        if (!isAuthenticated) {
+            history.push('/login');
+        } else {
+            setEntityConsortium(consortium), setOpenBidUpdateModal(true);
+        }
+    };
+
+    const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
+        const {
+            consortiumAdministrator: { name, image },
+            segmentType,
+            consortiumValue,
+            numberOfInstallments,
+            installmentValue,
+            created,
+            contemplationStatus,
+            minimumBidValue,
+            status,
+            bids,
+        } = consortium;
+
+        return (
+            <Card
+                variant="elevation"
+                sx={{
+                    mx: { xs: 1.1, sm: 1.1 },
+                    my: { xs: 1.1, sm: 1.1 },
+                    width: '330px',
+                    maxWidth: '90vw',
+                    background: defaultTheme.palette.primary.light,
+                    ':hover': {
+                        backgroundColor: defaultTheme.palette.primary.main,
+                        cursor: 'pointer',
+                    },
+                }}
+                elevation={3}
+            >
+                <CardContent>
+                    <List>
+                        {contemplationStatus && renderStatusRibbon()}
+
+                        <ListItem>
+                            <ListItemIcon sx={{ mr: 1 }}>
+                                <Avatar alt={name} src={name} sx={{ width: 50, height: 50 }} />
+                            </ListItemIcon>
+                            <ListItemText
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'right',
+                                    alignItems: 'flex-start',
+                                    flexDirection: 'column-reverse',
+                                    background: 'none !important',
+                                }}
+                                primary={`${translate('repasseconsorcioApp.consortium.segmentType')}: ${translate(
+                                    `repasseconsorcioApp.SegmentType.${segmentType}`
+                                )}`}
+                                secondary={name}
+                            />
+                        </ListItem>
+
+                        <ListItem>
+                            <ListItemText primary={`${translate('repasseconsorcioApp.consortium.numberOfInstallments')} `} secondary={numberOfInstallments} />
+                            <ListItemText
+                                primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `}
+                                secondary={formatCurrency(installmentValue)}
+                            />
+                        </ListItem>
+
+                        <ListItem>
+                            <ListItemText
+                                primary={`${translate('repasseconsorcioApp.consortium.consortiumValue')} `}
+                                secondary={formatCurrency(consortiumValue)}
+                                secondaryTypographyProps={{
+                                    fontSize: '18px !important',
+                                    fontWeight: '500',
+                                }}
+                            />
+                            <ListItemText
+                                primary={`${translate('repasseconsorcioApp.consortium.minimumBidValue')} `}
+                                secondary={formatCurrency(minimumBidValue)}
+                            />
+                        </ListItem>
+
+                        <ListItem>
+                            <AuctionTimer created={created} />
+                        </ListItem>
+
+                        <ListItem>
+                            <Button
+                                sx={{
+                                    mb: -1,
+                                    background: defaultTheme.palette.secondary.main,
+                                    color: defaultTheme.palette.secondary.contrastText,
+                                    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                                    '&:hover': {
+                                        backgroundColor: defaultTheme.palette.warning.main,
+                                    },
+                                }}
+                                onClick={() => handleBid(consortium)}
+                                fullWidth
+                                variant="contained"
+                            >
+                                Seu lance
+                            </Button>
+                        </ListItem>
+                        <Chip
+                            label={translate('repasseconsorcioApp.consortium.bids')}
+                            variant="outlined"
+                            color="warning"
+                            size="small"
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 0,
+                                cursor: 'pointer',
+                                '&:hover': {
+                                    backgroundColor: defaultTheme.palette.warning.main,
+                                    color: defaultTheme.palette.secondary.contrastText,
+                                },
+                            }}
+                        />
+                    </List>
+                </CardContent>
+            </Card>
+        );
+    };
+
+    return (
+        <ThemeProvider theme={defaultTheme}>
+            <AppBar
+                position="fixed"
+                sx={{
+                    top: 0,
+                    bottom: 'auto',
+                    background: defaultTheme.palette.primary.main,
+                    boxShadow: 'none',
+                    height: '60px',
+                }}
+            >
+                {!loading && (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '100%',
+                            gap: { xs: 1, sm: 10 },
+                        }}
+                    >
+                        {isAuthenticated && isMDScreen && (
+                            <Tooltip title="Início" style={{ cursor: 'pointer', position: 'absolute', left: 20, top: 10 }} onClick={() => history.replace('/')}>
+                                <Box sx={{ width: '110px', height: '40px', maxWidth: '110px' }}>
+                                    <img src="content/images/logo-repasse-consorcio-text.png" alt="Logo" width="100%" height="100%" />
+                                </Box>
+                            </Tooltip>
+                        )}
+                        <SegmentFilter />
+                        {!!consortiumList?.length && <SortingBox />}
+                    </Box>
+                )}
+            </AppBar>
+            {loading ? (
+                <Loading />
+            ) : (
+                <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', marginTop: '60px' }} id="scrollableDiv">
+                    <InfiniteScroll
+                        dataLength={consortiumList.length}
+                        next={handleLoadMore}
+                        hasMore={paginationState.activePage - 1 < links.next}
+                        scrollableTarget="scrollableDiv"
+                        pullDownToRefresh
+                        refreshFunction={getAllEntities}
+                        pullDownToRefreshThreshold={50}
+                        pullDownToRefreshContent={<h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>}
+                        releaseToRefreshContent={<h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>}
+                        loader={
+                            <div className="loader" key={0}>
+                                Loading ...
+                            </div>
+                        }
+                    >
+                        <List sx={{ mb: '110px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+                            {!!consortiumList?.length &&
+                                consortiumList?.map(consortium => (
+                                    <Fragment key={consortium?.id}>
+                                        <ConsortiumCard consortium={consortium} />
+                                    </Fragment>
+                                ))}
+                        </List>
+                    </InfiniteScroll>
+                    {!consortiumList?.length && <NoDataIndicator />}
+                </Box>
+            )}
+            {openBidUpdateModal && <BidUpdateModal setOpenBidUpdateModal={setOpenBidUpdateModal} entityConsortium={entityConsortium} />}
+        </ThemeProvider>
+    );
 };
 
 export default Consortium;

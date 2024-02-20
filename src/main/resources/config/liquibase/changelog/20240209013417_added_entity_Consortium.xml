@@ -15,31 +15,31 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="consortium_value" type="decimal(21,2)">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <column name="created" type="${datetimeType}">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <column name="minimum_bid_value" type="decimal(21,2)">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <column name="number_of_installments" type="integer">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <column name="installment_value" type="decimal(21,2)">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <column name="segment_type" type="varchar(255)">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <column name="status" type="varchar(255)">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <column name="user_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <column name="consortium_administrator_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>

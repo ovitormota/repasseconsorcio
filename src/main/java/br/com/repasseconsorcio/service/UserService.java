@@ -41,12 +41,7 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
-    public UserService(
-        UserRepository userRepository,
-        PasswordEncoder passwordEncoder,
-        AuthorityRepository authorityRepository,
-        CacheManager cacheManager
-    ) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
@@ -121,7 +116,8 @@ public class UserService {
             newUser.setEmail(userDTO.getEmail().toLowerCase());
         }
         newUser.setImageUrl(userDTO.getImageUrl());
-        newUser.setLangKey(userDTO.getLangKey());
+        newUser.setImage(userDTO.getImage());
+        newUser.setLangKey(Constants.DEFAULT_LANGUAGE);
         // new user is not active
         newUser.setActivated(false);
         // new user gets registration key
@@ -157,7 +153,7 @@ public class UserService {
         if (userDTO.getLangKey() == null) {
             user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
         } else {
-            user.setLangKey(userDTO.getLangKey());
+            user.setLangKey(Constants.DEFAULT_LANGUAGE);
         }
         String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
         user.setPassword(encryptedPassword);
@@ -200,8 +196,9 @@ public class UserService {
                     user.setEmail(userDTO.getEmail().toLowerCase());
                 }
                 user.setImageUrl(userDTO.getImageUrl());
+                user.setImage(userDTO.getImage());
                 user.setActivated(userDTO.isActivated());
-                user.setLangKey(userDTO.getLangKey());
+                user.setLangKey(Constants.DEFAULT_LANGUAGE);
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();
                 userDTO

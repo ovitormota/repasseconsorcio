@@ -57,10 +57,7 @@ class AccountResourceIT {
     @Test
     @WithUnauthenticatedMockUser
     void testNonAuthenticatedUser() throws Exception {
-        restAccountMockMvc
-            .perform(get("/api/authenticate").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().string(""));
+        restAccountMockMvc.perform(get("/api/authenticate").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(content().string(""));
     }
 
     @Test
@@ -89,7 +86,7 @@ class AccountResourceIT {
         user.setLastName("doe");
         user.setEmail("john.doe@jhipster.com");
         user.setImageUrl("http://placehold.it/50x50");
-        user.setLangKey("en");
+        user.setLangKey("pt-br");
         user.setAuthorities(authorities);
         userService.createUser(user);
 
@@ -102,15 +99,13 @@ class AccountResourceIT {
             .andExpect(jsonPath("$.lastName").value("doe"))
             .andExpect(jsonPath("$.email").value("john.doe@jhipster.com"))
             .andExpect(jsonPath("$.imageUrl").value("http://placehold.it/50x50"))
-            .andExpect(jsonPath("$.langKey").value("en"))
+            .andExpect(jsonPath("$.langKey").value("pt-br"))
             .andExpect(jsonPath("$.authorities").value(AuthoritiesConstants.ADMIN));
     }
 
     @Test
     void testGetUnknownAccount() throws Exception {
-        restAccountMockMvc
-            .perform(get("/api/account").accept(MediaType.APPLICATION_PROBLEM_JSON))
-            .andExpect(status().isInternalServerError());
+        restAccountMockMvc.perform(get("/api/account").accept(MediaType.APPLICATION_PROBLEM_JSON)).andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -330,11 +325,7 @@ class AccountResourceIT {
 
         // Register third (not activated) user
         restAccountMockMvc
-            .perform(
-                post("/api/register")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(userWithUpperCaseEmail))
-            )
+            .perform(post("/api/register").contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(userWithUpperCaseEmail)))
             .andExpect(status().isCreated());
 
         Optional<User> testUser4 = userRepository.findOneByLogin("test-register-duplicate-email-3");
@@ -370,9 +361,7 @@ class AccountResourceIT {
 
         Optional<User> userDup = userRepository.findOneWithAuthoritiesByLogin("badguy");
         assertThat(userDup).isPresent();
-        assertThat(userDup.get().getAuthorities())
-            .hasSize(1)
-            .containsExactly(authorityRepository.findById(AuthoritiesConstants.USER).get());
+        assertThat(userDup.get().getAuthorities()).hasSize(1).containsExactly(authorityRepository.findById(AuthoritiesConstants.USER).get());
     }
 
     @Test
@@ -429,7 +418,7 @@ class AccountResourceIT {
         assertThat(updatedUser.getFirstName()).isEqualTo(userDTO.getFirstName());
         assertThat(updatedUser.getLastName()).isEqualTo(userDTO.getLastName());
         assertThat(updatedUser.getEmail()).isEqualTo(userDTO.getEmail());
-        assertThat(updatedUser.getLangKey()).isEqualTo(userDTO.getLangKey());
+        assertThat(updatedUser.getLangKey()).isEqualTo(Constants.DEFAULT_LANGUAGE);
         assertThat(updatedUser.getPassword()).isEqualTo(user.getPassword());
         assertThat(updatedUser.getImageUrl()).isEqualTo(userDTO.getImageUrl());
         assertThat(updatedUser.isActivated()).isTrue();
@@ -661,9 +650,7 @@ class AccountResourceIT {
         user.setEmail("password-reset@example.com");
         userRepository.saveAndFlush(user);
 
-        restAccountMockMvc
-            .perform(post("/api/account/reset-password/init").content("password-reset@example.com"))
-            .andExpect(status().isOk());
+        restAccountMockMvc.perform(post("/api/account/reset-password/init").content("password-reset@example.com")).andExpect(status().isOk());
     }
 
     @Test
@@ -676,16 +663,12 @@ class AccountResourceIT {
         user.setEmail("password-reset-upper-case@example.com");
         userRepository.saveAndFlush(user);
 
-        restAccountMockMvc
-            .perform(post("/api/account/reset-password/init").content("password-reset-upper-case@EXAMPLE.COM"))
-            .andExpect(status().isOk());
+        restAccountMockMvc.perform(post("/api/account/reset-password/init").content("password-reset-upper-case@EXAMPLE.COM")).andExpect(status().isOk());
     }
 
     @Test
     void testRequestPasswordResetWrongEmail() throws Exception {
-        restAccountMockMvc
-            .perform(post("/api/account/reset-password/init").content("password-reset-wrong-email@example.com"))
-            .andExpect(status().isOk());
+        restAccountMockMvc.perform(post("/api/account/reset-password/init").content("password-reset-wrong-email@example.com")).andExpect(status().isOk());
     }
 
     @Test
@@ -705,9 +688,7 @@ class AccountResourceIT {
 
         restAccountMockMvc
             .perform(
-                post("/api/account/reset-password/finish")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(keyAndPassword))
+                post("/api/account/reset-password/finish").contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(keyAndPassword))
             )
             .andExpect(status().isOk());
 
@@ -732,9 +713,7 @@ class AccountResourceIT {
 
         restAccountMockMvc
             .perform(
-                post("/api/account/reset-password/finish")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(keyAndPassword))
+                post("/api/account/reset-password/finish").contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(keyAndPassword))
             )
             .andExpect(status().isBadRequest());
 
@@ -751,9 +730,7 @@ class AccountResourceIT {
 
         restAccountMockMvc
             .perform(
-                post("/api/account/reset-password/finish")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(keyAndPassword))
+                post("/api/account/reset-password/finish").contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(keyAndPassword))
             )
             .andExpect(status().isInternalServerError());
     }

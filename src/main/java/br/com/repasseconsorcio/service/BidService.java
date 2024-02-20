@@ -1,7 +1,10 @@
 package br.com.repasseconsorcio.service;
 
 import br.com.repasseconsorcio.domain.Bid;
+import br.com.repasseconsorcio.domain.User;
 import br.com.repasseconsorcio.repository.BidRepository;
+import br.com.repasseconsorcio.service.util.UserCustomUtility;
+import java.time.Instant;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,12 @@ public class BidService {
      */
     public Bid save(Bid bid) {
         log.debug("Request to save Bid : {}", bid);
+        User loggedUser = UserCustomUtility.getUserCustom();
+        Instant now = Instant.now();
+
+        bid.setUser(loggedUser);
+        bid.setCreated(now);
+
         return bidRepository.save(bid);
     }
 

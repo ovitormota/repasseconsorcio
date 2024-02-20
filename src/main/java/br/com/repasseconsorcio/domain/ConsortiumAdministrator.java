@@ -29,12 +29,8 @@ public class ConsortiumAdministrator implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Lob
     @Column(name = "image")
-    private byte[] image;
-
-    @Column(name = "image_content_type")
-    private String imageContentType;
+    private String image;
 
     @OneToMany(mappedBy = "consortiumAdministrator")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -69,30 +65,17 @@ public class ConsortiumAdministrator implements Serializable {
         this.name = name;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return this.image;
     }
 
-    public ConsortiumAdministrator image(byte[] image) {
+    public ConsortiumAdministrator image(String image) {
         this.setImage(image);
         return this;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
-    }
-
-    public String getImageContentType() {
-        return this.imageContentType;
-    }
-
-    public ConsortiumAdministrator imageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
-        return this;
-    }
-
-    public void setImageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
     }
 
     public Set<Consortium> getConsortiums() {
@@ -151,8 +134,7 @@ public class ConsortiumAdministrator implements Serializable {
         return "ConsortiumAdministrator{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
-            ", image='" + getImage() + "'" +
-            ", imageContentType='" + getImageContentType() + "'" +
+            // ", image='" + getImage() + "'" +
             "}";
     }
 }

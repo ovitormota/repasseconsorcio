@@ -44,7 +44,7 @@ class DomainUserDetailsServiceIT {
         userOne.setEmail(USER_ONE_EMAIL);
         userOne.setFirstName("userOne");
         userOne.setLastName("doe");
-        userOne.setLangKey("en");
+        userOne.setLangKey("pt-br");
         userRepository.save(userOne);
 
         User userTwo = new User();
@@ -54,7 +54,7 @@ class DomainUserDetailsServiceIT {
         userTwo.setEmail(USER_TWO_EMAIL);
         userTwo.setFirstName("userTwo");
         userTwo.setLastName("doe");
-        userTwo.setLangKey("en");
+        userTwo.setLangKey("pt-br");
         userRepository.save(userTwo);
 
         User userThree = new User();
@@ -64,7 +64,7 @@ class DomainUserDetailsServiceIT {
         userThree.setEmail(USER_THREE_EMAIL);
         userThree.setFirstName("userThree");
         userThree.setLastName("doe");
-        userThree.setLangKey("en");
+        userThree.setLangKey("pt-br");
         userRepository.save(userThree);
     }
 
@@ -105,7 +105,6 @@ class DomainUserDetailsServiceIT {
 
     @Test
     void assertThatUserNotActivatedExceptionIsThrownForNotActivatedUsers() {
-        assertThatExceptionOfType(UserNotActivatedException.class)
-            .isThrownBy(() -> domainUserDetailsService.loadUserByUsername(USER_THREE_LOGIN));
+        assertThatExceptionOfType(UserNotActivatedException.class).isThrownBy(() -> domainUserDetailsService.loadUserByUsername(USER_THREE_LOGIN));
     }
 }

@@ -41,7 +41,7 @@ import tech.jhipster.config.JHipsterProperties;
 class MailServiceIT {
 
     private static final String[] languages = {
-        "en",
+        // "pt-br",
         "pt-br",
         // jhipster-needle-i18n-language-constant - JHipster will add/remove languages in this array
     };
@@ -137,7 +137,7 @@ class MailServiceIT {
         User user = new User();
         user.setLogin("john");
         user.setEmail("john.doe@example.com");
-        user.setLangKey("en");
+        user.setLangKey("pt-br");
         mailService.sendEmailFromTemplate(user, "mail/testEmail", "email.test.title");
         verify(javaMailSender).send(messageCaptor.capture());
         MimeMessage message = messageCaptor.getValue();
@@ -222,8 +222,7 @@ class MailServiceIT {
 
             String emailTitle = (String) properties.get("email.test.title");
             assertThat(message.getSubject()).isEqualTo(emailTitle);
-            assertThat(message.getContent().toString())
-                .isEqualToNormalizingNewlines("<html>" + emailTitle + ", http://127.0.0.1:8080, john</html>\n");
+            assertThat(message.getContent().toString()).isEqualToNormalizingNewlines("<html>" + emailTitle + ", http://127.0.0.1:8080, john</html>\n");
         }
     }
 

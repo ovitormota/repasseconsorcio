@@ -7,4 +7,5 @@ public enum SegmentType {
     AUTOMOBILE,
     OTHER,
     REAL_ESTATE,
+    ALL,
 }

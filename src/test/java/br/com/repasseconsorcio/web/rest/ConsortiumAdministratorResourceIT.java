@@ -33,9 +33,8 @@ class ConsortiumAdministratorResourceIT {
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
-    private static final byte[] DEFAULT_IMAGE = TestUtil.createByteArray(1, "0");
-    private static final byte[] UPDATED_IMAGE = TestUtil.createByteArray(1, "1");
-    private static final String DEFAULT_IMAGE_CONTENT_TYPE = "image/jpg";
+    private static final String DEFAULT_IMAGE = "AAAAAAAAAA";
+    private static final String UPDATED_IMAGE = "BBBBBBBBBB";
     private static final String UPDATED_IMAGE_CONTENT_TYPE = "image/png";
 
     private static final String ENTITY_API_URL = "/api/consortium-administrators";
@@ -62,10 +61,7 @@ class ConsortiumAdministratorResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static ConsortiumAdministrator createEntity(EntityManager em) {
-        ConsortiumAdministrator consortiumAdministrator = new ConsortiumAdministrator()
-            .name(DEFAULT_NAME)
-            .image(DEFAULT_IMAGE)
-            .imageContentType(DEFAULT_IMAGE_CONTENT_TYPE);
+        ConsortiumAdministrator consortiumAdministrator = new ConsortiumAdministrator().name(DEFAULT_NAME).image(DEFAULT_IMAGE);
         return consortiumAdministrator;
     }
 
@@ -76,10 +72,7 @@ class ConsortiumAdministratorResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static ConsortiumAdministrator createUpdatedEntity(EntityManager em) {
-        ConsortiumAdministrator consortiumAdministrator = new ConsortiumAdministrator()
-            .name(UPDATED_NAME)
-            .image(UPDATED_IMAGE)
-            .imageContentType(UPDATED_IMAGE_CONTENT_TYPE);
+        ConsortiumAdministrator consortiumAdministrator = new ConsortiumAdministrator().name(UPDATED_NAME).image(UPDATED_IMAGE);
         return consortiumAdministrator;
     }
 
@@ -94,11 +87,7 @@ class ConsortiumAdministratorResourceIT {
         int databaseSizeBeforeCreate = consortiumAdministratorRepository.findAll().size();
         // Create the ConsortiumAdministrator
         restConsortiumAdministratorMockMvc
-            .perform(
-                post(ENTITY_API_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(consortiumAdministrator))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(consortiumAdministrator)))
             .andExpect(status().isCreated());
 
         // Validate the ConsortiumAdministrator in the database
@@ -107,7 +96,6 @@ class ConsortiumAdministratorResourceIT {
         ConsortiumAdministrator testConsortiumAdministrator = consortiumAdministratorList.get(consortiumAdministratorList.size() - 1);
         assertThat(testConsortiumAdministrator.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testConsortiumAdministrator.getImage()).isEqualTo(DEFAULT_IMAGE);
-        assertThat(testConsortiumAdministrator.getImageContentType()).isEqualTo(DEFAULT_IMAGE_CONTENT_TYPE);
     }
 
     @Test
@@ -120,11 +108,7 @@ class ConsortiumAdministratorResourceIT {
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restConsortiumAdministratorMockMvc
-            .perform(
-                post(ENTITY_API_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(consortiumAdministrator))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(consortiumAdministrator)))
             .andExpect(status().isBadRequest());
 
         // Validate the ConsortiumAdministrator in the database
@@ -142,11 +126,7 @@ class ConsortiumAdministratorResourceIT {
         // Create the ConsortiumAdministrator, which fails.
 
         restConsortiumAdministratorMockMvc
-            .perform(
-                post(ENTITY_API_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(consortiumAdministrator))
-            )
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(consortiumAdministrator)))
             .andExpect(status().isBadRequest());
 
         List<ConsortiumAdministrator> consortiumAdministratorList = consortiumAdministratorRepository.findAll();
@@ -166,8 +146,7 @@ class ConsortiumAdministratorResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(consortiumAdministrator.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].image").value(hasItem(DEFAULT_IMAGE)));
     }
 
     @Test
@@ -183,8 +162,7 @@ class ConsortiumAdministratorResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(consortiumAdministrator.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
-            .andExpect(jsonPath("$.imageContentType").value(DEFAULT_IMAGE_CONTENT_TYPE))
-            .andExpect(jsonPath("$.image").value(Base64Utils.encodeToString(DEFAULT_IMAGE)));
+            .andExpect(jsonPath("$.image").value(DEFAULT_IMAGE));
     }
 
     @Test
@@ -203,12 +181,10 @@ class ConsortiumAdministratorResourceIT {
         int databaseSizeBeforeUpdate = consortiumAdministratorRepository.findAll().size();
 
         // Update the consortiumAdministrator
-        ConsortiumAdministrator updatedConsortiumAdministrator = consortiumAdministratorRepository
-            .findById(consortiumAdministrator.getId())
-            .get();
+        ConsortiumAdministrator updatedConsortiumAdministrator = consortiumAdministratorRepository.findById(consortiumAdministrator.getId()).get();
         // Disconnect from session so that the updates on updatedConsortiumAdministrator are not directly saved in db
         em.detach(updatedConsortiumAdministrator);
-        updatedConsortiumAdministrator.name(UPDATED_NAME).image(UPDATED_IMAGE).imageContentType(UPDATED_IMAGE_CONTENT_TYPE);
+        updatedConsortiumAdministrator.name(UPDATED_NAME).image(UPDATED_IMAGE);
 
         restConsortiumAdministratorMockMvc
             .perform(
@@ -224,7 +200,6 @@ class ConsortiumAdministratorResourceIT {
         ConsortiumAdministrator testConsortiumAdministrator = consortiumAdministratorList.get(consortiumAdministratorList.size() - 1);
         assertThat(testConsortiumAdministrator.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testConsortiumAdministrator.getImage()).isEqualTo(UPDATED_IMAGE);
-        assertThat(testConsortiumAdministrator.getImageContentType()).isEqualTo(UPDATED_IMAGE_CONTENT_TYPE);
     }
 
     @Test
@@ -275,11 +250,7 @@ class ConsortiumAdministratorResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restConsortiumAdministratorMockMvc
-            .perform(
-                put(ENTITY_API_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(consortiumAdministrator))
-            )
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(consortiumAdministrator)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the ConsortiumAdministrator in the database
@@ -313,7 +284,6 @@ class ConsortiumAdministratorResourceIT {
         ConsortiumAdministrator testConsortiumAdministrator = consortiumAdministratorList.get(consortiumAdministratorList.size() - 1);
         assertThat(testConsortiumAdministrator.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testConsortiumAdministrator.getImage()).isEqualTo(DEFAULT_IMAGE);
-        assertThat(testConsortiumAdministrator.getImageContentType()).isEqualTo(DEFAULT_IMAGE_CONTENT_TYPE);
     }
 
     @Test
@@ -328,7 +298,7 @@ class ConsortiumAdministratorResourceIT {
         ConsortiumAdministrator partialUpdatedConsortiumAdministrator = new ConsortiumAdministrator();
         partialUpdatedConsortiumAdministrator.setId(consortiumAdministrator.getId());
 
-        partialUpdatedConsortiumAdministrator.name(UPDATED_NAME).image(UPDATED_IMAGE).imageContentType(UPDATED_IMAGE_CONTENT_TYPE);
+        partialUpdatedConsortiumAdministrator.name(UPDATED_NAME).image(UPDATED_IMAGE);
 
         restConsortiumAdministratorMockMvc
             .perform(
@@ -344,7 +314,6 @@ class ConsortiumAdministratorResourceIT {
         ConsortiumAdministrator testConsortiumAdministrator = consortiumAdministratorList.get(consortiumAdministratorList.size() - 1);
         assertThat(testConsortiumAdministrator.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testConsortiumAdministrator.getImage()).isEqualTo(UPDATED_IMAGE);
-        assertThat(testConsortiumAdministrator.getImageContentType()).isEqualTo(UPDATED_IMAGE_CONTENT_TYPE);
     }
 
     @Test
@@ -395,11 +364,7 @@ class ConsortiumAdministratorResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restConsortiumAdministratorMockMvc
-            .perform(
-                patch(ENTITY_API_URL)
-                    .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(consortiumAdministrator))
-            )
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(consortiumAdministrator)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the ConsortiumAdministrator in the database

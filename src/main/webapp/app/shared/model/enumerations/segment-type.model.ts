@@ -1,7 +1,9 @@
 export enum SegmentType {
-  AUTOMOBILE = 'AUTOMOBILE',
+    AUTOMOBILE = 'AUTOMOBILE',
 
-  OTHER = 'OTHER',
+    OTHER = 'OTHER',
 
-  REAL_ESTATE = 'REAL_ESTATE',
+    REAL_ESTATE = 'REAL_ESTATE',
+
+    ALL = 'ALL',
 }

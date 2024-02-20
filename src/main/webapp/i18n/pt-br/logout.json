@@ -1,0 +1,12 @@
+{
+    "repasseconsorcioApp": {
+        "logout": {
+            "title": "Deseja realmente sair?",
+            "message": "Para realizar o login novamente, será necessário informar o usuário e a senha.",
+            "buttons": {
+                "cancel": "Cancelar",
+                "confirm": "Sair"
+            }
+        }
+    }
+}

@@ -39,7 +39,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
     private String login;
 
     @JsonIgnore
-    @NotNull
     @Size(min = 60, max = 60)
     @Column(name = "password_hash", length = 60, nullable = false)
     private String password;
@@ -57,7 +56,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(length = 254, unique = true)
     private String email;
 
-    @NotNull
     @Column(nullable = false)
     private boolean activated = false;
 
@@ -81,6 +79,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @Column(name = "reset_date")
     private Instant resetDate = null;
+
+    @Column(name = "image")
+    private String image;
 
     @JsonIgnore
     @ManyToMany
@@ -158,6 +159,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.activated = activated;
     }
 
+    public boolean getActivated() {
+        return activated;
+    }
+
     public String getActivationKey() {
         return activationKey;
     }
@@ -188,6 +193,19 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setLangKey(String langKey) {
         this.langKey = langKey;
+    }
+
+    public String getImage() {
+        return this.image;
+    }
+
+    public User image(String image) {
+        this.setImage(image);
+        return this;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Set<Authority> getAuthorities() {

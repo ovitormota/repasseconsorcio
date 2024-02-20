@@ -15,16 +15,16 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="value" type="decimal(21,2)">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <column name="created" type="${datetimeType}">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <column name="user_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <column name="consortium_id" type="bigint">
-                <constraints nullable="true" />
+                <constraints nullable="false" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>

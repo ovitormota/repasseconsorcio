@@ -17,10 +17,7 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="image" type="longblob">
-                <constraints nullable="true" />
-            </column>
-            <column name="image_content_type" type="varchar(255)">
+            <column name="image" type="varchar">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
@@ -45,8 +42,7 @@
                   usePreparedStatements="true">
             <column name="id" type="numeric"/>
             <column name="name" type="string"/>
-            <column name="image" type="blob"/>
-            <column name="image_content_type" type="string"/>
+            <column name="image" type="varchar"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

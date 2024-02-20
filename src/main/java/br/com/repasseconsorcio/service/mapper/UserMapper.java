@@ -1,5 +1,6 @@
 package br.com.repasseconsorcio.service.mapper;
 
+import br.com.repasseconsorcio.config.Constants;
 import br.com.repasseconsorcio.domain.Authority;
 import br.com.repasseconsorcio.domain.User;
 import br.com.repasseconsorcio.service.dto.AdminUserDTO;
@@ -52,7 +53,7 @@ public class UserMapper {
             user.setEmail(userDTO.getEmail());
             user.setImageUrl(userDTO.getImageUrl());
             user.setActivated(userDTO.isActivated());
-            user.setLangKey(userDTO.getLangKey());
+            user.setLangKey(Constants.DEFAULT_LANGUAGE);
             Set<Authority> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
             user.setAuthorities(authorities);
             return user;

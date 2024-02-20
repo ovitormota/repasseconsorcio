@@ -1,33 +1,41 @@
 {
-  "repasseconsorcioApp": {
-    "consortium": {
-      "home": {
-        "title": "Consortiums",
-        "refreshListLabel": "Atualizar lista",
-        "createLabel": "Criar novo Consortium",
-        "createOrEditLabel": "Criar ou editar Consortium",
-        "notFound": "Nenhum Consortium encontrado"
-      },
-      "created": "Um novo Consortium foi criado com o identificador {{ param }}",
-      "updated": "Um Consortium foi atualizado com o identificador {{ param }}",
-      "deleted": "Um Consortium foi excluído com o identificador {{ param }}",
-      "delete": {
-        "question": "Tem certeza de que deseja excluir Consortium {{ id }}?"
-      },
-      "detail": {
-        "title": "Consortium"
-      },
-      "id": "ID",
-      "consortiumValue": "Consortium Value",
-      "created": "Created",
-      "minimumBidValue": "Minimum Bid Value",
-      "numberOfInstallments": "Number Of Installments",
-      "installmentValue": "Installment Value",
-      "segmentType": "Segment Type",
-      "status": "Status",
-      "bid": "Bid",
-      "user": "User",
-      "consortiumAdministrator": "Consortium Administrator"
+    "repasseconsorcioApp": {
+        "consortium": {
+            "home": {
+                "title": "Consórcios",
+                "refreshListLabel": "Atualizar lista",
+                "createLabel": "Cadastre uma nova proposta",
+                "createOrEditLabel": "Criar ou editar Consórcio",
+                "notFound": "Nenhum Consórcio encontrado"
+            },
+            "created": "Sua proposta foi criada com sucesso e está aguardando aprovação.",
+            "updated": "Um Consórcio foi atualizado com o identificador {{ param }}",
+            "deleted": "Um Consórcio foi excluído com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir o Consórcio {{ id }}?"
+            },
+            "detail": {
+                "title": "Detalhes do Consórcio"
+            },
+            "id": "ID",
+            "consortiumAdministrator": {
+                "name": "Administradora"
+            },
+            "consortiumValue": "Valor do crédito",
+            "minimumBidValue": "Valor mínimo do lance",
+            "numberOfInstallments": "Parcelas restantes",
+            "installmentValue": "Valor da parcela",
+            "segmentType": "Segmento",
+            "status": "Status",
+            "bids": "Lances",
+            "user": "Usuário",
+            "contemplationStatus": {
+                "title": "Status de Contemplação",
+                "approved": "Contemplado",
+                "disapproved": "Não Contemplado"
+            },
+
+            "approve": "Aprovar"
+        }
     }
-  }
 }

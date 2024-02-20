@@ -1,7 +1,14 @@
 package br.com.repasseconsorcio.service;
 
 import br.com.repasseconsorcio.domain.Consortium;
+import br.com.repasseconsorcio.domain.User;
+import br.com.repasseconsorcio.domain.enumeration.ConsortiumStatusType;
+import br.com.repasseconsorcio.domain.enumeration.SegmentType;
 import br.com.repasseconsorcio.repository.ConsortiumRepository;
+import br.com.repasseconsorcio.service.util.UserCustomUtility;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +40,13 @@ public class ConsortiumService {
      */
     public Consortium save(Consortium consortium) {
         log.debug("Request to save Consortium : {}", consortium);
+        User loggedUser = UserCustomUtility.getUserCustom();
+        Instant now = Instant.now();
+
+        consortium.setUser(loggedUser);
+        consortium.setCreated(now);
+        consortium.setStatus(ConsortiumStatusType.REGISTERED);
+
         return consortiumRepository.save(consortium);
     }
 
@@ -82,9 +96,18 @@ public class ConsortiumService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<Consortium> findAll(Pageable pageable) {
+    public Page<Consortium> findAllByStatusNotIn(Pageable pageable, SegmentType filterSegmentType) {
         log.debug("Request to get all Consortiums");
-        return consortiumRepository.findAll(pageable);
+
+        List<ConsortiumStatusType> listStatusNotIn = new ArrayList<>();
+
+        listStatusNotIn.add(ConsortiumStatusType.REGISTERED);
+
+        if (filterSegmentType.equals(SegmentType.ALL)) {
+            return consortiumRepository.findAllByStatusNotIn(listStatusNotIn, pageable);
+        }
+
+        return consortiumRepository.findAllByStatusNotInAndSegmentType(listStatusNotIn, filterSegmentType, pageable);
     }
 
     /**
@@ -107,5 +130,19 @@ public class ConsortiumService {
     public void delete(Long id) {
         log.debug("Request to delete Consortium : {}", id);
         consortiumRepository.deleteById(id);
+    }
+
+    public Page<Consortium> findAllByProposalApprovals(Pageable pageable, SegmentType filterSegmentType) {
+        log.debug("Request to get all Consortiums by Proposal Approvals");
+
+        List<ConsortiumStatusType> statusTypes = new ArrayList<>();
+
+        statusTypes.add(ConsortiumStatusType.REGISTERED);
+
+        if (filterSegmentType.equals(SegmentType.ALL)) {
+            return consortiumRepository.findAllByStatusIn(statusTypes, pageable);
+        }
+
+        return consortiumRepository.findAllByStatusInAndSegmentType(statusTypes, filterSegmentType, pageable);
     }
 }
