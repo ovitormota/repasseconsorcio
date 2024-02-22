@@ -6,6 +6,7 @@ import br.com.repasseconsorcio.repository.BidRepository;
 import br.com.repasseconsorcio.service.util.UserCustomUtility;
 import java.time.Instant;
 import java.util.Optional;
+import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,13 @@ public class BidService {
      */
     public Bid save(Bid bid) {
         log.debug("Request to save Bid : {}", bid);
+
+        Optional<Bid> latestBid = bidRepository.findLatestBid(bid.getConsortium().getId());
+
+        if (latestBid.isPresent() && latestBid.get().getValue().compareTo(bid.getValue()) >= 0) {
+            throw new ServiceException("Existe um lance mais recente com valor igual ou superior ao informado.");
+        }
+
         User loggedUser = UserCustomUtility.getUserCustom();
         Instant now = Instant.now();
 
@@ -101,5 +109,16 @@ public class BidService {
     public void delete(Long id) {
         log.debug("Request to delete Bid : {}", id);
         bidRepository.deleteById(id);
+    }
+
+    /**
+     * Get the latest bid.
+     *
+     * @return the entity.
+     */
+    @Transactional(readOnly = true)
+    public Optional<Bid> findLatestBid(Long consortiumId) {
+        log.debug("Request to get latest Bid");
+        return bidRepository.findLatestBid(consortiumId);
     }
 }

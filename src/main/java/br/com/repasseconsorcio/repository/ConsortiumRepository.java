@@ -18,7 +18,7 @@ public interface ConsortiumRepository extends JpaRepository<Consortium, Long> {
     @Query("select consortium from Consortium consortium where consortium.user.login = ?#{principal.username}")
     List<Consortium> findByUserIsCurrentUser();
 
-    @Query("SELECT consortium FROM Consortium consortium left join consortium.bids WHERE consortium.status NOT IN ?1")
+    @Query("SELECT DISTINCT consortium FROM Consortium consortium left join consortium.bids WHERE consortium.status NOT IN ?1")
     Page<Consortium> findAllByStatusNotIn(List<ConsortiumStatusType> status, Pageable pageable);
 
     @Query("SELECT consortium FROM Consortium consortium WHERE consortium.status NOT IN ?1 AND consortium.segmentType = ?2")

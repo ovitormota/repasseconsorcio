@@ -5,11 +5,12 @@ import { defaultTheme } from '../../../content/themes';
 
 interface LoadingProps {
     message?: string;
+    height?: string;
 }
 
-export const Loading: React.FC<LoadingProps> = ({ message = 'Aguarde, carregando...' }) => {
+export const Loading: React.FC<LoadingProps> = ({ message = 'Aguarde, carregando...', height = '100vh' }) => {
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height }}>
             <Box sx={{ width: '60%' }}>
                 <LinearProgress color="secondary" />
             </Box>

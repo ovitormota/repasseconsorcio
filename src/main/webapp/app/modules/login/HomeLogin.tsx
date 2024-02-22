@@ -9,9 +9,8 @@ import { useDispatch } from 'react-redux';
 import { defaultTheme } from '../../../content/themes/index';
 import { AccountRegister } from '../account/register/AccountRegister';
 import { RequestPassword } from './RequestPassword';
-import { RouteComponentProps } from 'react-router';
 
-export const HomeLogin = ({ history }: RouteComponentProps<{ id: string }>) => {
+export const HomeLogin = ({ setOpenLoginModal }) => {
     const dispatch = useDispatch();
 
     const [username, setUsername] = useState('');
@@ -28,8 +27,7 @@ export const HomeLogin = ({ history }: RouteComponentProps<{ id: string }>) => {
 
     useEffect(() => {
         if (loginSuccess) {
-            // setOpenLoginModal(false);
-            history.goBack();
+            setOpenLoginModal(false);
         }
     }, [loginSuccess]);
 
@@ -51,11 +49,11 @@ export const HomeLogin = ({ history }: RouteComponentProps<{ id: string }>) => {
                     sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '40vw' } },
                 }}
                 fullWidth
-                onClose={() => isMDScreen && history.goBack()}
+                onClose={() => isMDScreen && setOpenLoginModal(false)}
             >
                 <DialogTitle color="secondary" fontWeight={'700'} fontSize={'20px'} align="center">
                     <Translate contentKey="login.title.login">Sign in</Translate>
-                    <IconButton onClick={() => history.goBack()} sx={{ position: 'absolute', right: '10px', top: '10px' }}>
+                    <IconButton onClick={() => setOpenLoginModal(false)} sx={{ position: 'absolute', right: '10px', top: '10px' }}>
                         <CloseOutlined sx={{ color: defaultTheme.palette.text.secondary }} fontSize="small" />
                     </IconButton>
                 </DialogTitle>

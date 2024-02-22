@@ -54,9 +54,8 @@ public class Consortium implements Serializable {
     @Column(name = "status")
     private ConsortiumStatusType status;
 
-    @OneToMany(mappedBy = "consortium")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "user", "consortium" }, allowSetters = true)
+    @OneToMany(mappedBy = "consortium", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties(value = { "consortium" }, allowSetters = true)
     private Set<Bid> bids = new HashSet<>();
 
     @ManyToOne

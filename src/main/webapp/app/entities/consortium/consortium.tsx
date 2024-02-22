@@ -33,6 +33,9 @@ import { RouteComponentProps } from 'react-router-dom';
 import { defaultTheme } from '../../../content/themes/index';
 import { BidUpdateModal } from '../bid/BidUpdateModal';
 import { getEntities } from './consortium.reducer';
+import { HomeLogin } from 'app/modules/login/HomeLogin';
+import { BidHistoryModal } from '../bid/BidHistoryModal';
+import { IBid } from 'app/shared/model/bid.model';
 
 export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
     const dispatch = useAppDispatch();
@@ -42,7 +45,10 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
     const [paginationState, setPaginationState] = useState(
         overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'consortiumValue'), props.location.search)
     );
+    const [openLoginModal, setOpenLoginModal] = useState<boolean>(false);
     const [openBidUpdateModal, setOpenBidUpdateModal] = useState(false);
+    const [openBidHistoryModal, setOpenBidHistoryModal] = useState(false);
+    const [bidsHistory, setBidsHistory] = useState<IBid[]>([]);
     const [entityConsortium, setEntityConsortium] = useState<IConsortium>(null);
     const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL);
     const [currentSort, setCurrentSort] = useState('consortiumValue');
@@ -168,10 +174,15 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
 
     const handleBid = (consortium: IConsortium) => {
         if (!isAuthenticated) {
-            history.push('/login');
+            setOpenLoginModal(true);
         } else {
             setEntityConsortium(consortium), setOpenBidUpdateModal(true);
         }
+    };
+
+    const handleBidHistory = (bids: IBid[]) => {
+        setOpenBidHistoryModal(true);
+        setBidsHistory(bids);
     };
 
     const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
@@ -203,6 +214,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                     },
                 }}
                 elevation={3}
+                onClick={() => isAuthenticated && bids?.length && handleBidHistory(bids)}
             >
                 <CardContent>
                     <List>
@@ -265,29 +277,36 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                                         backgroundColor: defaultTheme.palette.warning.main,
                                     },
                                 }}
-                                onClick={() => handleBid(consortium)}
+                                onClick={event => {
+                                    event.stopPropagation();
+                                    handleBid(consortium);
+                                }}
                                 fullWidth
                                 variant="contained"
                             >
                                 Seu lance
                             </Button>
                         </ListItem>
-                        <Chip
-                            label={translate('repasseconsorcioApp.consortium.bids')}
-                            variant="outlined"
-                            color="warning"
-                            size="small"
-                            sx={{
-                                position: 'absolute',
-                                top: 0,
-                                right: 0,
-                                cursor: 'pointer',
-                                '&:hover': {
-                                    backgroundColor: defaultTheme.palette.warning.main,
-                                    color: defaultTheme.palette.secondary.contrastText,
-                                },
-                            }}
-                        />
+                        {bids?.length > 0 && (
+                            <Box onClick={() => handleBidHistory(bids)}>
+                                <Chip
+                                    label={bids?.length + ' ' + translate('repasseconsorcioApp.consortium.bids')}
+                                    variant="outlined"
+                                    color="warning"
+                                    size="small"
+                                    sx={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        right: 0,
+                                        cursor: 'pointer',
+                                        '&:hover': {
+                                            background: defaultTheme.palette.warning.main,
+                                            color: defaultTheme.palette.secondary.contrastText,
+                                        },
+                                    }}
+                                />
+                            </Box>
+                        )}
                     </List>
                 </CardContent>
             </Card>
@@ -301,7 +320,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                 sx={{
                     top: 0,
                     bottom: 'auto',
-                    background: defaultTheme.palette.primary.main,
+                    background: 'transparent',
                     boxShadow: 'none',
                     height: '60px',
                 }}
@@ -360,6 +379,8 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                     {!consortiumList?.length && <NoDataIndicator />}
                 </Box>
             )}
+            {openBidHistoryModal && <BidHistoryModal setOpenBidHistoryModal={setOpenBidHistoryModal} bidsHistory={bidsHistory} />}
+            {openLoginModal && <HomeLogin setOpenLoginModal={setOpenLoginModal} />}
             {openBidUpdateModal && <BidUpdateModal setOpenBidUpdateModal={setOpenBidUpdateModal} entityConsortium={entityConsortium} />}
         </ThemeProvider>
     );

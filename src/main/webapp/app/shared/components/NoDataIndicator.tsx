@@ -15,7 +15,7 @@ export const NoDataIndicator = ({ message = 'Nenhum dado encontrado' }) => {
                 textAlign: 'center',
             }}
         >
-            <SentimentDissatisfiedIcon sx={{ fontSize: 120, color: defaultTheme.palette.warning.main, mx: 'auto' }} />
+            <SentimentDissatisfiedIcon sx={{ fontSize: 100, color: defaultTheme.palette.warning.main, mx: 'auto' }} />
             <Typography variant="h6" sx={{ mt: 2 }}>
                 {message}
             </Typography>

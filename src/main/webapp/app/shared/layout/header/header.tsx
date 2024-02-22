@@ -29,6 +29,7 @@ export const Header = () => {
     const [openLogoutModal, setOpenLogoutModal] = React.useState(false);
     const [openAccountRegisterUpdateModal, setOpenAccountRegisterUpdateModal] = React.useState(false);
     const [openConsorciumAdministratorModal, setOpenConsorciumAdministratorModal] = React.useState(false);
+    const [openLoginModal, setOpenLoginModal] = React.useState<boolean>(false);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -49,7 +50,7 @@ export const Header = () => {
         if (isAuthenticated) {
             setOpenConsortiumUpdateModal(true);
         } else {
-            history.push('/login');
+            setOpenLoginModal(true);
         }
     };
 
@@ -280,6 +281,7 @@ export const Header = () => {
                     )}
                 </Toolbar>
             </AppBar>
+            {openLoginModal && <HomeLogin setOpenLoginModal={setOpenLoginModal} />}
             {openLogoutModal && <Logout setOpenLogoutModal={setOpenLogoutModal} />}
             {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} />}
             {openConsortiumUpdateModal && <ConsortiumUpdateModal setOpenConsortiumUpdateModal={setOpenConsortiumUpdateModal} />}

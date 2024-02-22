@@ -2,7 +2,9 @@ package br.com.repasseconsorcio.repository;
 
 import br.com.repasseconsorcio.domain.Bid;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,4 +15,9 @@ import org.springframework.stereotype.Repository;
 public interface BidRepository extends JpaRepository<Bid, Long> {
     @Query("select bid from Bid bid where bid.user.login = ?#{principal.username}")
     List<Bid> findByUserIsCurrentUser();
+
+    @Query(
+        "SELECT bid from Bid bid WHERE bid.value = (SELECT max(b.value) FROM Bid b WHERE b.consortium.id = :consortiumId) AND bid.consortium.id = :consortiumId"
+    )
+    Optional<Bid> findLatestBid(@Param("consortiumId") Long consortiumId);
 }

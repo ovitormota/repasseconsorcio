@@ -1,209 +1,3 @@
-// import { Avatar, Box, Button, Card, CardContent, Chip, List, ListItem, ListItemIcon, ListItemText, ThemeProvider } from '@mui/material';
-// import { useAppDispatch, useAppSelector } from 'app/config/store';
-// import { defaultTheme } from '../../../content/themes';
-// import { getEntities, partialUpdateEntity } from 'app/entities/proposals-for-approval/proposals-for-approval.reducer';
-// import { IConsortium } from 'app/shared/model/consortium.model';
-// import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model';
-// import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
-// import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
-// import React, { Fragment, useEffect, useState } from 'react';
-// import InfiniteScroll from 'react-infinite-scroll-component';
-// import { getSortState, translate } from 'react-jhipster';
-// import { RouteComponentProps } from 'react-router-dom';
-
-// export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>) => {
-//     const dispatch = useAppDispatch();
-
-//     const [paginationState, setPaginationState] = useState(
-//         overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search)
-//     );
-//     const [openModalHandleBid, setOpenModalHandleBid] = useState(false);
-
-//     const consortiumList = useAppSelector(state => state.proposalsForApproval.entities);
-//     const links = useAppSelector(state => state.proposalsForApproval.links);
-
-//     const getAllEntities = () => {
-//         dispatch(
-//             getEntities({
-//                 page: paginationState.activePage - 1,
-//                 size: paginationState.itemsPerPage,
-//                 sort: `${paginationState.sort},${paginationState.order}`,
-//             })
-//         );
-//     };
-
-//     useEffect(() => {
-//         getAllEntities();
-//     }, [paginationState.activePage]);
-
-//     const handleLoadMore = () => {
-//         setPaginationState({
-//             ...paginationState,
-//             activePage: paginationState.activePage + 1,
-//         });
-//     };
-
-//     const formatCurrency = value => {
-//         return new Intl.NumberFormat('pt-BR', {
-//             style: 'currency',
-//             currency: 'BRL',
-//         }).format(value);
-//     };
-
-//     const setApproved = (consortium: IConsortium) => {
-//         const updatedConsortium = {
-//             ...consortium,
-//             status: ConsortiumStatusType.OPEN,
-//         };
-
-//         dispatch(partialUpdateEntity(updatedConsortium));
-//     };
-
-//     const getStatusColor = status => {
-//         switch (status) {
-//             case 'CLOSED':
-//                 return 'error';
-//             case 'OPEN':
-//                 return 'success';
-//             case 'REGISTERED':
-//                 return 'warning';
-//             case 'WON':
-//                 return 'primary';
-//             default:
-//                 return 'default';
-//         }
-//     };
-
-//     const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
-// const {
-//     consortiumAdministrator: { name, image },
-//     segmentType,
-//     consortiumValue,
-//     numberOfInstallments,
-//     minimumBidValue,
-//     status,
-// } = consortium;
-
-//         return (
-//             <Card
-//                 variant="elevation"
-//                 sx={{
-//                     m: 1,
-//                     width: '400px',
-//                     minWidth: { xs: '90vw', sm: '400px' },
-//                     ':hover': {
-//                         backgroundColor: '#f5f5f5',
-//                         cursor: 'pointer',
-//                     },
-//                 }}
-//             >
-//                 <CardContent>
-//                     <List>
-//                         <ListItem>
-//                             <ListItemIcon sx={{ mr: 2 }}>
-//                                 <Avatar alt={name} src={name} sx={{ width: 80, height: 60 }} />
-//                             </ListItemIcon>
-//                             <ListItemText
-//                                 sx={{ display: 'flex', justifyContent: 'right', alignItems: 'flex-start', flexDirection: 'column-reverse' }}
-//                                 primary={`${translate('repasseconsorcioApp.consortium.segmentType')}: ${translate(
-//                                     `repasseconsorcioApp.SegmentType.${segmentType}`
-//                                 )}`}
-//                                 secondary={name}
-//                             />
-//                         </ListItem>
-
-//                         <ListItem>
-//                             <ListItemText
-//                                 primary={`${translate('repasseconsorcioApp.consortium.consortiumValue')}: `}
-//                                 secondary={formatCurrency(consortiumValue)}
-//                             />
-//                         </ListItem>
-
-//                         <ListItem>
-//                             <ListItemText primary={`${translate('repasseconsorcioApp.consortium.numberOfInstallments')}: `} secondary={numberOfInstallments} />
-//                         </ListItem>
-
-//                         <ListItem>
-//                             <ListItemText
-//                                 primary={`${translate('repasseconsorcioApp.consortium.minimumBidValue')}: `}
-//                                 secondary={formatCurrency(minimumBidValue)}
-//                             />
-//                         </ListItem>
-
-//                         <ListItem>
-//                             <Button
-//                                 sx={{
-//                                     mb: -1,
-//                                     background: '#F4A119',
-//                                     boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-//                                     '&:hover': {
-//                                         backgroundColor: defaultTheme.palette.secondary.main,
-//                                         color: defaultTheme.palette.secondary.contrastText,
-//                                     },
-//                                 }}
-//                                 fullWidth
-//                                 onClick={() => setApproved(consortium)}
-//                             >
-//                                 {translate('repasseconsorcioApp.consortium.approve')}
-//                             </Button>
-//                         </ListItem>
-// <Chip
-//     label={translate(`repasseconsorcioApp.ConsortiumStatusType.${status}`)}
-//     variant="outlined"
-//     color={getStatusColor(status)}
-//     sx={{
-//         position: 'absolute',
-//         top: 0,
-//         right: 0,
-//         '&:hover': {
-//             backgroundColor: defaultTheme.palette.secondary.main,
-//             color: defaultTheme.palette.secondary.contrastText,
-//             cursor: 'pointer',
-//         },
-//     }}
-// />
-//                     </List>
-//                 </CardContent>
-//             </Card>
-//         );
-//     };
-
-//     return (
-//         <ThemeProvider theme={defaultTheme}>
-//             <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)' }} id="scrollableDiv">
-//                 <InfiniteScroll
-//                     dataLength={consortiumList.length}
-//                     next={handleLoadMore}
-//                     hasMore={paginationState.activePage - 1 < links.next}
-//                     scrollableTarget="scrollableDiv"
-//                     pullDownToRefresh
-//                     refreshFunction={getAllEntities}
-//                     pullDownToRefreshThreshold={50}
-//                     pullDownToRefreshContent={<h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>}
-//                     releaseToRefreshContent={<h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>}
-//                     loader={
-//                         <div className="loader" key={0}>
-//                             Loading ...
-//                         </div>
-//                     }
-//                 >
-//                     <List sx={{ pb: 5, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-//                         {consortiumList?.length ? (
-//                             consortiumList?.map((consortium: IConsortium) => (
-//                                 <Fragment key={consortium?.id}>
-//                                     <ConsortiumCard consortium={consortium} />
-//                                 </Fragment>
-//                             ))
-//                         ) : (
-//                             <div className="alert alert-warning">No consortiums found</div>
-//                         )}
-//                     </List>
-//                 </InfiniteScroll>
-//             </Box>
-//         </ThemeProvider>
-//     );
-// };
-
 import { FilterListRounded, SortRounded, SwapVertRounded } from '@mui/icons-material';
 import {
     AppBar,
@@ -213,7 +7,6 @@ import {
     Card,
     CardContent,
     Chip,
-    Divider,
     IconButton,
     List,
     ListItem,
@@ -227,19 +20,18 @@ import {
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { AuctionTimer } from 'app/shared/components/AuctionTimer';
 import { Loading } from 'app/shared/components/Loading';
-import { NoDataIndicator } from 'app/shared/components/NoDataIndicator';
 import { IConsortium } from 'app/shared/model/consortium.model';
+import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model';
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { ASC, DESC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
+import { useBreakpoints } from 'app/shared/util/useBreakpoints';
 import React, { Fragment, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { getSortState, translate } from 'react-jhipster';
 import { RouteComponentProps } from 'react-router-dom';
 import { defaultTheme } from '../../../content/themes/index';
-import { useBreakpoints } from 'app/shared/util/useBreakpoints';
 import { getEntities, partialUpdateEntity } from './proposals-for-approval.reducer';
-import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model';
 
 export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>) => {
     const dispatch = useAppDispatch();

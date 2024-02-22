@@ -2,13 +2,13 @@
     "repasseconsorcioApp": {
         "bid": {
             "home": {
-                "title": "Bids",
+                "title": "Lances registrados",
                 "refreshListLabel": "Atualizar lista",
                 "createLabel": "Dê um novo lance",
                 "createOrEditLabel": "Criar ou editar Bid",
                 "notFound": "Nenhum Bid encontrado"
             },
-            "created": "Um novo Bid foi criado com o identificador {{ param }}",
+            "created": "Seu lance foi registrado com sucesso!",
             "updated": "Um Bid foi atualizado com o identificador {{ param }}",
             "deleted": "Um Bid foi excluído com o identificador {{ param }}",
             "delete": {
@@ -19,7 +19,6 @@
             },
             "id": "ID",
             "value": "Digite o valor do lance",
-            "created": "Created",
             "user": "User",
             "consortium": "Consortium"
         }

@@ -50,7 +50,9 @@ public class BidResource {
      * {@code POST  /bids} : Create a new bid.
      *
      * @param bid the bid to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new bid, or with status {@code 400 (Bad Request)} if the bid has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
+     *         body the new bid, or with status {@code 400 (Bad Request)} if the bid
+     *         has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/bids")
@@ -59,6 +61,7 @@ public class BidResource {
         if (bid.getId() != null) {
             throw new BadRequestAlertException("A new bid cannot already have an ID", ENTITY_NAME, "idexists");
         }
+
         Bid result = bidService.save(bid);
         return ResponseEntity
             .created(new URI("/api/bids/" + result.getId()))
@@ -69,16 +72,17 @@ public class BidResource {
     /**
      * {@code PUT  /bids/:id} : Updates an existing bid.
      *
-     * @param id the id of the bid to save.
+     * @param id  the id of the bid to save.
      * @param bid the bid to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated bid,
-     * or with status {@code 400 (Bad Request)} if the bid is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the bid couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated bid,
+     *         or with status {@code 400 (Bad Request)} if the bid is not valid,
+     *         or with status {@code 500 (Internal Server Error)} if the bid
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/bids/{id}")
-    public ResponseEntity<Bid> updateBid(@PathVariable(value = "id", required = false) final Long id, @RequestBody Bid bid)
-        throws URISyntaxException {
+    public ResponseEntity<Bid> updateBid(@PathVariable(value = "id", required = false) final Long id, @RequestBody Bid bid) throws URISyntaxException {
         log.debug("REST request to update Bid : {}, {}", id, bid);
         if (bid.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -92,26 +96,25 @@ public class BidResource {
         }
 
         Bid result = bidService.save(bid);
-        return ResponseEntity
-            .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bid.getId().toString()))
-            .body(result);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bid.getId().toString())).body(result);
     }
 
     /**
-     * {@code PATCH  /bids/:id} : Partial updates given fields of an existing bid, field will ignore if it is null
+     * {@code PATCH  /bids/:id} : Partial updates given fields of an existing bid,
+     * field will ignore if it is null
      *
-     * @param id the id of the bid to save.
+     * @param id  the id of the bid to save.
      * @param bid the bid to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated bid,
-     * or with status {@code 400 (Bad Request)} if the bid is not valid,
-     * or with status {@code 404 (Not Found)} if the bid is not found,
-     * or with status {@code 500 (Internal Server Error)} if the bid couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated bid,
+     *         or with status {@code 400 (Bad Request)} if the bid is not valid,
+     *         or with status {@code 404 (Not Found)} if the bid is not found,
+     *         or with status {@code 500 (Internal Server Error)} if the bid
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/bids/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Bid> partialUpdateBid(@PathVariable(value = "id", required = false) final Long id, @RequestBody Bid bid)
-        throws URISyntaxException {
+    public ResponseEntity<Bid> partialUpdateBid(@PathVariable(value = "id", required = false) final Long id, @RequestBody Bid bid) throws URISyntaxException {
         log.debug("REST request to partial update Bid partially : {}, {}", id, bid);
         if (bid.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -126,17 +129,15 @@ public class BidResource {
 
         Optional<Bid> result = bidService.partialUpdate(bid);
 
-        return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bid.getId().toString())
-        );
+        return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, bid.getId().toString()));
     }
 
     /**
      * {@code GET  /bids} : get all the bids.
      *
      * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of bids in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of bids in body.
      */
     @GetMapping("/bids")
     public ResponseEntity<List<Bid>> getAllBids(Pageable pageable) {
@@ -150,13 +151,28 @@ public class BidResource {
      * {@code GET  /bids/:id} : get the "id" bid.
      *
      * @param id the id of the bid to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the bid, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the bid, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/bids/{id}")
     public ResponseEntity<Bid> getBid(@PathVariable Long id) {
         log.debug("REST request to get Bid : {}", id);
         Optional<Bid> bid = bidService.findOne(id);
         return ResponseUtil.wrapOrNotFound(bid);
+    }
+
+    /**
+     * {@code GET  /bids/latest} : get the latest bid.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the bid, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/bids/latest/{consortiumId}")
+    public ResponseEntity<Bid> getLatestBid(@PathVariable Long consortiumId) {
+        log.debug("REST request to get latest Bid");
+        Optional<Bid> bid = bidService.findLatestBid(consortiumId);
+
+        return ResponseEntity.ok().body(bid.orElse(null));
     }
 
     /**
@@ -169,9 +185,6 @@ public class BidResource {
     public ResponseEntity<Void> deleteBid(@PathVariable Long id) {
         log.debug("REST request to delete Bid : {}", id);
         bidService.delete(id);
-        return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-            .build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 }

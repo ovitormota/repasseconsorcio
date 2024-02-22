@@ -4,11 +4,12 @@ import { Translate, translate } from 'react-jhipster';
 import { CloseOutlined } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField, ThemeProvider } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
+import { IConsortium } from 'app/shared/model/consortium.model';
 import { NumericFormat } from 'react-number-format';
 import { defaultTheme } from '../../../content/themes/index';
-import { createEntity } from './bid.reducer';
-import { IConsortium } from 'app/shared/model/consortium.model';
-import { toast } from 'react-toastify';
+import { createEntity, getEntity, getLatestEntity, reset } from './bid.reducer';
+import { Loading } from 'app/shared/components/Loading';
+import { isEmptyObject } from 'app/shared/util/data-utils';
 
 interface IBidUpdateModalProps {
     setOpenBidUpdateModal: (open: boolean) => void;
@@ -20,13 +21,27 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
 
     const loading = useAppSelector(state => state.bid.loading);
     const updateSuccess = useAppSelector(state => state.bid.updateSuccess);
+    const errorMessage = useAppSelector(state => state.bid.errorMessage);
     const bidEntity = useAppSelector(state => state.bid.entity);
 
     const [bidValue, setBidValue] = React.useState<number>(null);
 
     useEffect(() => {
+        if (entityConsortium?.id) {
+            dispatch(getLatestEntity(entityConsortium.id));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (errorMessage) {
+            dispatch(getLatestEntity(entityConsortium.id));
+        }
+    }, [errorMessage]);
+
+    useEffect(() => {
         if (updateSuccess) {
             setOpenBidUpdateModal(false);
+            dispatch(reset());
         }
     }, [updateSuccess]);
 
@@ -34,7 +49,6 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
         event.preventDefault();
 
         const entity = {
-            ...bidEntity,
             value: bidValue,
             consortium: entityConsortium,
         };
@@ -60,7 +74,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
                 </DialogTitle>
                 <DialogContent>
                     {loading ? (
-                        <p>Loading...</p>
+                        <Loading height="10vh" />
                     ) : (
                         <form onSubmit={saveEntity}>
                             <NumericFormat
@@ -73,7 +87,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
                                 id="bid-value"
                                 fullWidth
                                 color="secondary"
-                                helperText={'Valor mínimo: R$ ' + entityConsortium.minimumBidValue}
+                                helperText={'Valor mínimo: R$ ' + (isEmptyObject(bidEntity) ? bidEntity?.value + 1 : entityConsortium.minimumBidValue + 1)}
                                 onValueChange={values => setBidValue(+values.floatValue)}
                                 sx={{ mt: 1 }}
                                 InputProps={{
@@ -89,7 +103,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
                                     type="submit"
                                     variant="contained"
                                     color="secondary"
-                                    disabled={!bidValue || bidValue < entityConsortium.minimumBidValue}
+                                    disabled={!bidValue || bidValue <= (isEmptyObject(bidEntity) ? bidEntity?.value + 1 : entityConsortium.minimumBidValue + 1)}
                                     sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}
                                 >
                                     <Translate contentKey="entity.action.save">Save</Translate>
