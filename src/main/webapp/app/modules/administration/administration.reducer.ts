@@ -17,6 +17,9 @@ const initialState = {
     configProps: {} as any,
     env: {} as any,
   },
+  tracker: {
+    activities: [],
+  },
   totalItems: 0,
 };
 
@@ -32,13 +35,9 @@ export const getSystemMetrics = createAsyncThunk('administration/fetch_metrics',
   serializeError: serializeAxiosError,
 });
 
-export const getSystemThreadDump = createAsyncThunk(
-  'administration/fetch_thread_dump',
-  async () => axios.get<any>('management/threaddump'),
-  {
-    serializeError: serializeAxiosError,
-  }
-);
+export const getSystemThreadDump = createAsyncThunk('administration/fetch_thread_dump', async () => axios.get<any>('management/threaddump'), {
+  serializeError: serializeAxiosError,
+});
 
 export const getLoggers = createAsyncThunk('administration/fetch_logs', async () => axios.get<any>('management/loggers'), {
   serializeError: serializeAxiosError,
@@ -57,13 +56,9 @@ export const changeLogLevel: (name, configuredLevel) => AppThunk = (name, config
   dispatch(getLoggers());
 };
 
-export const getConfigurations = createAsyncThunk(
-  'administration/fetch_configurations',
-  async () => axios.get<any>('management/configprops'),
-  {
-    serializeError: serializeAxiosError,
-  }
-);
+export const getConfigurations = createAsyncThunk('administration/fetch_configurations', async () => axios.get<any>('management/configprops'), {
+  serializeError: serializeAxiosError,
+});
 
 export const getEnv = createAsyncThunk('administration/fetch_env', async () => axios.get<any>('management/env'), {
   serializeError: serializeAxiosError,
@@ -72,7 +67,15 @@ export const getEnv = createAsyncThunk('administration/fetch_env', async () => a
 export const AdministrationSlice = createSlice({
   name: 'administration',
   initialState: initialState as AdministrationState,
-  reducers: {},
+  reducers: {
+    websocketActivityMessage(state, action) {
+      // filter out activities from the same session
+      const uniqueActivities = state.tracker.activities.filter(activity => activity.sessionId !== action.payload.sessionId);
+      // remove any activities with the page of logout
+      const activities = [...uniqueActivities, action.payload].filter(activity => activity.page !== 'logout');
+      state.tracker = { activities };
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(getSystemHealth.fulfilled, (state, action) => {
@@ -111,15 +114,14 @@ export const AdministrationSlice = createSlice({
         state.errorMessage = null;
         state.loading = true;
       })
-      .addMatcher(
-        isRejected(getSystemHealth, getSystemMetrics, getSystemThreadDump, getLoggers, getConfigurations, getEnv),
-        (state, action) => {
-          state.errorMessage = action.error.message;
-          state.loading = false;
-        }
-      );
+      .addMatcher(isRejected(getSystemHealth, getSystemMetrics, getSystemThreadDump, getLoggers, getConfigurations, getEnv), (state, action) => {
+        state.errorMessage = action.error.message;
+        state.loading = false;
+      });
   },
 });
+
+export const { websocketActivityMessage } = AdministrationSlice.actions;
 
 // Reducer
 export default AdministrationSlice.reducer;
