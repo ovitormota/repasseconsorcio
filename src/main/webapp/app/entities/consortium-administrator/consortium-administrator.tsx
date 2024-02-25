@@ -126,8 +126,7 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
                                         <Translate contentKey="repasseconsorcioApp.consortiumAdministrator.id">ID</Translate> <FontAwesomeIcon icon="sort" />
                                     </th>
                                     <th className="hand" onClick={sort('name')}>
-                                        <Translate contentKey="repasseconsorcioApp.consortiumAdministrator.name">Name</Translate>{' '}
-                                        <FontAwesomeIcon icon="sort" />
+                                        <Translate contentKey="repasseconsorcioApp.consortiumAdministrator">Name</Translate> <FontAwesomeIcon icon="sort" />
                                     </th>
                                     <th className="hand" onClick={sort('image')}>
                                         <Translate contentKey="repasseconsorcioApp.consortiumAdministrator.image">Image</Translate>{' '}

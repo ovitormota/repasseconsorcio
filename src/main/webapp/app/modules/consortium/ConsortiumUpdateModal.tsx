@@ -106,7 +106,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                                     valueName="name"
                                     value={consortiumAdministrator}
                                     onChange={setConsortiumAdministrator}
-                                    placeholder={translate('repasseconsorcioApp.consortium.consortiumAdministrator.name') + ' *'}
+                                    placeholder={translate('repasseconsorcioApp.consortium.consortiumAdministrator') + ' *'}
                                     isRequired={true}
                                 />
                             </Box>

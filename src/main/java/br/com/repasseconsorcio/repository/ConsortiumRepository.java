@@ -29,4 +29,7 @@ public interface ConsortiumRepository extends JpaRepository<Consortium, Long> {
 
     @Query("select consortium from Consortium consortium where consortium.status in ?1 and consortium.segmentType = ?2")
     Page<Consortium> findAllByStatusInAndSegmentType(List<ConsortiumStatusType> status, SegmentType segmentType, Pageable pageable);
+
+    @Query("select consortium from Consortium consortium where consortium.status = ?1 and consortium.created <= now()")
+    List<Consortium> findAllByStatus(ConsortiumStatusType status);
 }

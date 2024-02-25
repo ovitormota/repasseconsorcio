@@ -71,7 +71,7 @@ export const ConsortiumAdministratorUpdateModal = ({ setOpenConsorciumAdministra
                                 required
                                 id="consortium-administrator-name"
                                 name="numberOfInstallments"
-                                label={translate('repasseconsorcioApp.consortiumAdministrator.name')}
+                                label={translate('repasseconsorcioApp.consortiumAdministrator')}
                                 type="text"
                                 fullWidth
                                 color="secondary"

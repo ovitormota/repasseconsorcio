@@ -18,9 +18,7 @@
                 "title": "Detalhes do Consórcio"
             },
             "id": "ID",
-            "consortiumAdministrator": {
-                "name": "Administradora"
-            },
+            "consortiumAdministrator": "Administradora",
             "consortiumValue": "Valor do crédito",
             "minimumBidValue": "Valor mínimo do lance",
             "numberOfInstallments": "Parcelas restantes",

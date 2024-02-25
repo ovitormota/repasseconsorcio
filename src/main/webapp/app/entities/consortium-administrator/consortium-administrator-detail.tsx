@@ -31,7 +31,7 @@ export const ConsortiumAdministratorDetail = (props: RouteComponentProps<{ id: s
                     <dd>{consortiumAdministratorEntity.id}</dd>
                     <dt>
                         <span id="name">
-                            <Translate contentKey="repasseconsorcioApp.consortiumAdministrator.name">Name</Translate>
+                            <Translate contentKey="repasseconsorcioApp.consortiumAdministrator">Name</Translate>
                         </span>
                     </dt>
                     <dd>{consortiumAdministratorEntity.name}</dd>

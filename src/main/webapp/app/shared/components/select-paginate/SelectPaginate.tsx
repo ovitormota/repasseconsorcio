@@ -119,7 +119,7 @@ const SelectPaginate: React.FC<Props> = ({ value, apiUrl, placeholder = '', onCh
                             color: defaultTheme.palette.common.black,
                         }}
                     >
-                        {translate('repasseconsorcioApp.consortium.consortiumAdministrator.name') + ' *'}
+                        {translate('repasseconsorcioApp.consortium.consortiumAdministrator') + ' *'}
                     </InputLabel>
                 )}
                 <AsyncPaginate

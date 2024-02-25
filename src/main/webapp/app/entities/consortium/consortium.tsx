@@ -99,7 +99,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
     };
 
     const SortingBox = () => {
-        const sortTypes = ['consortiumAdministrator.name', 'numberOfInstallments', 'minimumBidValue', 'installmentValue', 'consortiumValue'];
+        const sortTypes = ['consortiumAdministrator', 'numberOfInstallments', 'minimumBidValue', 'installmentValue', 'consortiumValue'];
 
         const handleSortChange = event => {
             const selectedSortType = event.target.value;
