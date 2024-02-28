@@ -1,26 +1,29 @@
 {
-    "repasseconsorcioApp": {
-        "consortiumAdministrator": {
-            "home": {
-                "title": "Criar Administradora",
-                "refreshListLabel": "Atualizar lista",
-                "createLabel": "Criar novo Consortium Administrator",
-                "createOrEditLabel": "Criar ou editar Consortium Administrator",
-                "notFound": "Nenhum Consortium Administrator encontrado"
-            },
-            "created": "Uma nova Administradora foi criada com sucesso!",
-            "updated": "Um Consortium Administrator foi atualizado com o identificador {{ param }}",
-            "deleted": "Um Consortium Administrator foi excluído com o identificador {{ param }}",
-            "delete": {
-                "question": "Tem certeza de que deseja excluir Consortium Administrator {{ id }}?"
-            },
-            "detail": {
-                "title": "Consortium Administrator"
-            },
-            "id": "ID",
-            "name": "Name",
-            "image": "Image",
-            "consortium": "Consortium"
-        }
+  "repasseconsorcioApp": {
+    "consortiumAdministrator": {
+      "home": {
+        "title": {
+          "create": "Criar nova Administradora",
+          "edit": "Editar Administradora"
+        },
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Criar novo Consortium Administrator",
+        "createOrEditLabel": "Criar ou editar Consortium Administrator",
+        "notFound": "Nenhum Consortium Administrator encontrado"
+      },
+      "created": "Criada com sucesso!",
+      "updated": "Atualizada com sucesso!",
+      "deleted": "Excluída com sucesso!",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir Consortium Administrator {{ id }}?"
+      },
+      "detail": {
+        "title": "Administradoras"
+      },
+      "id": "ID",
+      "name": "Name",
+      "image": "Image",
+      "consortium": "Consortium"
     }
+  }
 }

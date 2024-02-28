@@ -58,6 +58,7 @@ public class ConsortiumService {
      */
     public Optional<Consortium> partialUpdate(Consortium consortium) {
         log.debug("Request to partially update Consortium : {}", consortium);
+        Instant now = Instant.now();
 
         return consortiumRepository
             .findById(consortium.getId())
@@ -66,7 +67,7 @@ public class ConsortiumService {
                     existingConsortium.setConsortiumValue(consortium.getConsortiumValue());
                 }
                 if (consortium.getCreated() != null) {
-                    existingConsortium.setCreated(consortium.getCreated());
+                    existingConsortium.setCreated(now);
                 }
                 if (consortium.getMinimumBidValue() != null) {
                     existingConsortium.setMinimumBidValue(consortium.getMinimumBidValue());
@@ -102,6 +103,8 @@ public class ConsortiumService {
         List<ConsortiumStatusType> listStatusNotIn = new ArrayList<>();
 
         listStatusNotIn.add(ConsortiumStatusType.REGISTERED);
+        listStatusNotIn.add(ConsortiumStatusType.CLOSED);
+        listStatusNotIn.add(ConsortiumStatusType.WON);
 
         if (filterSegmentType.equals(SegmentType.ALL)) {
             return consortiumRepository.findAllByStatusNotIn(listStatusNotIn, pageable);

@@ -6,7 +6,7 @@
       "403": "Você não tem autorização para acessar esta página.",
       "404": "A página não existe.",
       "405": "O verbo HTTP utilizado não é suportado para essa URL.",
-      "500": "Erro interno do servidor."
+      "500": "Não foi possível processar a requisição."
     },
     "concurrencyFailure": "Outro usuário modificou esses dados ao mesmo tempo que você. Suas modificações foram rejeitadas.",
     "validation": "Erro de validação no servidor."

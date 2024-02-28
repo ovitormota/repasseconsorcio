@@ -1,204 +1,165 @@
-import React, { useState, useEffect } from 'react';
-import InfiniteScroll from 'react-infinite-scroller';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import { Button, Col, Row, Table } from 'reactstrap';
-import { openFile, byteSize, Translate, getSortState } from 'react-jhipster';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { Fragment, useEffect, useState } from 'react'
+import { Translate, getSortState } from 'react-jhipster'
+import { RouteComponentProps } from 'react-router-dom'
+import { Spinner } from 'reactstrap'
 
-import { getEntities, reset } from './consortium-administrator.reducer';
-import { IConsortiumAdministrator } from 'app/shared/model/consortium-administrator.model';
-import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
-import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
-import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
-import { useAppDispatch, useAppSelector } from 'app/config/store';
+import { Add, Delete, EditOutlined } from '@mui/icons-material'
+import { Avatar, Box, Button, IconButton, List, ListItem, ListItemIcon, ListItemText, ThemeProvider, Typography } from '@mui/material'
+import { useAppDispatch, useAppSelector } from 'app/config/store'
+import { Loading } from 'app/shared/components/Loading'
+import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
+import { defaultTheme } from 'app/shared/layout/themes'
+import { IConsortiumAdministrator } from 'app/shared/model/consortium-administrator.model'
+import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
+import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { ConsortiumAdministratorUpdateModal } from './ConsortiumAdministratorUpdateModal'
+import { deleteEntity, getEntities, reset } from './consortium-administrator.reducer'
 
 export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string }>) => {
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
 
-    const [paginationState, setPaginationState] = useState(
-        overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search)
-    );
-    const [sorting, setSorting] = useState(false);
+  const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search))
+  const [sorting, setSorting] = useState(false)
+  const [openConsorciumAdministratorUpdateModal, setOpenConsorciumAdministratorUpdateModal] = useState<boolean>(false)
+  const [consortiumAdministrator, setConsortiumAdministrator] = useState<IConsortiumAdministrator>(null)
 
-    const consortiumAdministratorList = useAppSelector(state => state.consortiumAdministrator.entities);
-    const loading = useAppSelector(state => state.consortiumAdministrator.loading);
-    const totalItems = useAppSelector(state => state.consortiumAdministrator.totalItems);
-    const links = useAppSelector(state => state.consortiumAdministrator.links);
-    const entity = useAppSelector(state => state.consortiumAdministrator.entity);
-    const updateSuccess = useAppSelector(state => state.consortiumAdministrator.updateSuccess);
+  const consortiumAdministratorList = useAppSelector((state) => state.consortiumAdministrator.entities)
+  const loading = useAppSelector((state) => state.consortiumAdministrator.loading)
+  const totalItems = useAppSelector((state) => state.consortiumAdministrator.totalItems)
+  const links = useAppSelector((state) => state.consortiumAdministrator.links)
+  const entity = useAppSelector((state) => state.consortiumAdministrator.entity)
+  const updateSuccess = useAppSelector((state) => state.consortiumAdministrator.updateSuccess)
 
-    const getAllEntities = () => {
-        dispatch(
-            getEntities({
-                page: paginationState.activePage - 1,
-                size: paginationState.itemsPerPage,
-                sort: `${paginationState.sort},${paginationState.order}`,
-            })
-        );
-    };
+  const getAllEntities = () => {
+    dispatch(
+      getEntities({
+        page: paginationState.activePage - 1,
+        size: paginationState.itemsPerPage,
+        sort: `${paginationState.sort},${paginationState.order}`,
+      })
+    )
+  }
 
-    const resetAll = () => {
-        dispatch(reset());
-        setPaginationState({
-            ...paginationState,
-            activePage: 1,
-        });
-        dispatch(getEntities({}));
-    };
+  const deleteConsortiumAdministrator = (consortiumAdministratorId: number) => {
+    dispatch(deleteEntity(consortiumAdministratorId))
+  }
 
-    useEffect(() => {
-        resetAll();
-    }, []);
+  const resetAll = () => {
+    dispatch(reset())
+    setPaginationState({
+      ...paginationState,
+      activePage: 1,
+    })
+    getAllEntities()
+  }
 
-    useEffect(() => {
-        if (updateSuccess) {
-            resetAll();
-        }
-    }, [updateSuccess]);
+  useEffect(() => {
+    if (updateSuccess) {
+      resetAll()
+    }
+  }, [updateSuccess])
 
-    useEffect(() => {
-        getAllEntities();
-    }, [paginationState.activePage]);
+  useEffect(() => {
+    resetAll()
+  }, [])
 
-    const handleLoadMore = () => {
-        if ((window as any).pageYOffset > 0) {
-            setPaginationState({
-                ...paginationState,
-                activePage: paginationState.activePage + 1,
-            });
-        }
-    };
+  const handleLoadMore = () => {
+    if ((window as any).pageYOffset > 0) {
+      setPaginationState({
+        ...paginationState,
+        activePage: paginationState.activePage + 1,
+      })
+    }
+  }
 
-    useEffect(() => {
-        if (sorting) {
-            getAllEntities();
-            setSorting(false);
-        }
-    }, [sorting]);
+  return (
+    <ThemeProvider theme={defaultTheme}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: { xs: 2, sm: 3 } }}>
+        <Typography color='secondary' fontWeight={'600'} fontSize={'18px'}>
+          <Translate contentKey='repasseconsorcioApp.consortiumAdministrator.detail.title'>Consortium Administrators</Translate>
+        </Typography>
+        <Button startIcon={<Add style={{ fontSize: 18 }} />} sx={{ ml: 'auto' }} variant='contained' color='secondary' size='small' onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(null)]}>
+          <Translate contentKey='entity.action.add'>Add</Translate>
+        </Button>
+      </Box>
+      {loading ? (
+        <Loading />
+      ) : (
+        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)' }} id='scrollableDiv'>
+          <InfiniteScroll
+            dataLength={consortiumAdministratorList.length}
+            next={handleLoadMore}
+            hasMore={paginationState.activePage - 1 < links.next}
+            scrollableTarget='scrollableDiv'
+            pullDownToRefresh
+            refreshFunction={getAllEntities}
+            pullDownToRefreshThreshold={50}
+            pullDownToRefreshContent={
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                <Typography color='secondary' variant='overline'>
+                  Puxe para atualizar
+                </Typography>
+                <Spinner color='warning' size='small' />
+              </Box>
+            }
+            releaseToRefreshContent={
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                <Typography color='secondary' variant='overline'>
+                  Solte para atualizar
+                </Typography>
+                <Spinner color='warning' size='small' />
+              </Box>
+            }
+            loader={
+              <div className='loader' key={0}>
+                Loading ...
+              </div>
+            }
+          >
+            <List sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', p: { xs: 0, sm: 3 } }}>
+              {!!consortiumAdministratorList?.length &&
+                consortiumAdministratorList?.map((consortium, index) => (
+                  <Fragment key={consortium.id}>
+                    <ListItem
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        p: 2,
+                        borderRadius: '1em',
+                        ':hover': {
+                          background: defaultTheme.palette.secondary['A100'],
+                          cursor: 'pointer',
+                        },
+                      }}
+                      onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(consortium)]}
+                    >
+                      <ListItemIcon sx={{ mr: 2 }}>
+                        <Avatar alt={consortium?.name} src={consortium?.name} sx={{ width: { sx: 40, sm: 50 }, height: { sx: 40, sm: 50 } }} />
+                      </ListItemIcon>
+                      <ListItemText primary={consortium?.name} primaryTypographyProps={{ fontSize: 'clamp(0.85rem, 1.8vw, 0.95rem) !important' }} />
+                      <IconButton>
+                        <EditOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
+                      </IconButton>
+                      <IconButton
+                        onClick={(event) => {
+                          event.stopPropagation(), deleteConsortiumAdministrator(consortium.id)
+                        }}
+                      >
+                        <Delete sx={{ color: defaultTheme.palette.error.main }} fontSize='small' />
+                      </IconButton>
+                    </ListItem>
+                  </Fragment>
+                ))}
+            </List>
+          </InfiniteScroll>
+          {!consortiumAdministratorList?.length && <NoDataIndicator />}
+          {openConsorciumAdministratorUpdateModal && <ConsortiumAdministratorUpdateModal setOpenConsorciumAdministratorUpdateModal={setOpenConsorciumAdministratorUpdateModal} consortiumAdministrator={consortiumAdministrator} />}
+        </Box>
+      )}
+    </ThemeProvider>
+  )
+}
 
-    const sort = p => () => {
-        dispatch(reset());
-        setPaginationState({
-            ...paginationState,
-            activePage: 1,
-            order: paginationState.order === ASC ? DESC : ASC,
-            sort: p,
-        });
-        setSorting(true);
-    };
-
-    const handleSyncList = () => {
-        resetAll();
-    };
-
-    const { match } = props;
-
-    return (
-        <div>
-            <h2 id="consortium-administrator-heading" data-cy="ConsortiumAdministratorHeading">
-                <Translate contentKey="repasseconsorcioApp.consortiumAdministrator.home.title">Consortium Administrators</Translate>
-                <div className="d-flex justify-content-end">
-                    <Button className="mr-2" color="info" onClick={handleSyncList} disabled={loading}>
-                        <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-                        <Translate contentKey="repasseconsorcioApp.consortiumAdministrator.home.refreshListLabel">Refresh List</Translate>
-                    </Button>
-                    <Link to={`${match.url}/new`} className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-                        <FontAwesomeIcon icon="plus" />
-                        &nbsp;
-                        <Translate contentKey="repasseconsorcioApp.consortiumAdministrator.home.createLabel">Create new Consortium Administrator</Translate>
-                    </Link>
-                </div>
-            </h2>
-            <div className="table-responsive">
-                <InfiniteScroll
-                    pageStart={paginationState.activePage}
-                    loadMore={handleLoadMore}
-                    hasMore={paginationState.activePage - 1 < links.next}
-                    loader={<div className="loader">Loading ...</div>}
-                    threshold={0}
-                    initialLoad={false}
-                >
-                    {consortiumAdministratorList && consortiumAdministratorList.length > 0 ? (
-                        <Table responsive>
-                            <thead>
-                                <tr>
-                                    <th className="hand" onClick={sort('id')}>
-                                        <Translate contentKey="repasseconsorcioApp.consortiumAdministrator.id">ID</Translate> <FontAwesomeIcon icon="sort" />
-                                    </th>
-                                    <th className="hand" onClick={sort('name')}>
-                                        <Translate contentKey="repasseconsorcioApp.consortiumAdministrator">Name</Translate> <FontAwesomeIcon icon="sort" />
-                                    </th>
-                                    <th className="hand" onClick={sort('image')}>
-                                        <Translate contentKey="repasseconsorcioApp.consortiumAdministrator.image">Image</Translate>{' '}
-                                        <FontAwesomeIcon icon="sort" />
-                                    </th>
-                                    <th />
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {consortiumAdministratorList.map((consortiumAdministrator, i) => (
-                                    <tr key={`entity-${i}`} data-cy="entityTable">
-                                        <td>
-                                            <Button tag={Link} to={`${match.url}/${consortiumAdministrator.id}`} color="link" size="sm">
-                                                {consortiumAdministrator.id}
-                                            </Button>
-                                        </td>
-                                        <td>{consortiumAdministrator.name}</td>
-                                        <td className="text-right">
-                                            <div className="btn-group flex-btn-group-container">
-                                                <Button
-                                                    tag={Link}
-                                                    to={`${match.url}/${consortiumAdministrator.id}`}
-                                                    color="info"
-                                                    size="sm"
-                                                    data-cy="entityDetailsButton"
-                                                >
-                                                    <FontAwesomeIcon icon="eye" />{' '}
-                                                    <span className="d-none d-md-inline">
-                                                        <Translate contentKey="entity.action.view">View</Translate>
-                                                    </span>
-                                                </Button>
-                                                <Button
-                                                    tag={Link}
-                                                    to={`${match.url}/${consortiumAdministrator.id}/edit`}
-                                                    color="primary"
-                                                    size="sm"
-                                                    data-cy="entityEditButton"
-                                                >
-                                                    <FontAwesomeIcon icon="pencil-alt" />{' '}
-                                                    <span className="d-none d-md-inline">
-                                                        <Translate contentKey="entity.action.edit">Edit</Translate>
-                                                    </span>
-                                                </Button>
-                                                <Button
-                                                    tag={Link}
-                                                    to={`${match.url}/${consortiumAdministrator.id}/delete`}
-                                                    color="danger"
-                                                    size="sm"
-                                                    data-cy="entityDeleteButton"
-                                                >
-                                                    <FontAwesomeIcon icon="trash" />{' '}
-                                                    <span className="d-none d-md-inline">
-                                                        <Translate contentKey="entity.action.delete">Delete</Translate>
-                                                    </span>
-                                                </Button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    ) : (
-                        !loading && (
-                            <div className="alert alert-warning">
-                                <Translate contentKey="repasseconsorcioApp.consortiumAdministrator.home.notFound">No Consortium Administrators found</Translate>
-                            </div>
-                        )
-                    )}
-                </InfiniteScroll>
-            </div>
-        </div>
-    );
-};
-
-export default ConsortiumAdministrator;
+export default ConsortiumAdministrator

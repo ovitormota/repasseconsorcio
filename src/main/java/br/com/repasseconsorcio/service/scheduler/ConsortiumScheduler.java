@@ -4,6 +4,8 @@ import br.com.repasseconsorcio.domain.Consortium;
 import br.com.repasseconsorcio.domain.enumeration.ConsortiumStatusType;
 import br.com.repasseconsorcio.repository.ConsortiumRepository;
 import br.com.repasseconsorcio.service.ConsortiumService;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,8 @@ public class ConsortiumScheduler {
 
     @Transactional
     public void execute() {
-        List<Consortium> consortiums = consortiumRepository.findAllByStatus(ConsortiumStatusType.OPEN);
+        Instant cutoffDate = Instant.now().minus(7, ChronoUnit.DAYS);
+        List<Consortium> consortiums = consortiumRepository.findAllByStatusAndCreatedDate(ConsortiumStatusType.OPEN, cutoffDate);
 
         consortiums.forEach(consortium -> {
             consortium.setStatus(ConsortiumStatusType.CLOSED);

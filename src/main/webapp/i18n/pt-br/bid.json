@@ -1,26 +1,26 @@
 {
-    "repasseconsorcioApp": {
-        "bid": {
-            "home": {
-                "title": "Lances registrados",
-                "refreshListLabel": "Atualizar lista",
-                "createLabel": "Dê um novo lance",
-                "createOrEditLabel": "Criar ou editar Bid",
-                "notFound": "Nenhum Bid encontrado"
-            },
-            "created": "Seu lance foi registrado com sucesso!",
-            "updated": "Um Bid foi atualizado com o identificador {{ param }}",
-            "deleted": "Um Bid foi excluído com o identificador {{ param }}",
-            "delete": {
-                "question": "Tem certeza de que deseja excluir Bid {{ id }}?"
-            },
-            "detail": {
-                "title": "Bid"
-            },
-            "id": "ID",
-            "value": "Digite o valor do lance",
-            "user": "User",
-            "consortium": "Consortium"
-        }
+  "repasseconsorcioApp": {
+    "bid": {
+      "home": {
+        "title": "Lances registrados",
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Aproveite e dê um lance",
+        "createOrEditLabel": "Criar ou editar Bid",
+        "notFound": "Nenhum Bid encontrado"
+      },
+      "created": "Seu lance foi registrado com sucesso!",
+      "updated": "Um Bid foi atualizado com o identificador {{ param }}",
+      "deleted": "Um Bid foi excluído com o identificador {{ param }}",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir Bid {{ id }}?"
+      },
+      "detail": {
+        "title": "Bid"
+      },
+      "id": "ID",
+      "value": "Digite o valor do lance",
+      "user": "User",
+      "consortium": "Consortium"
     }
+  }
 }

@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material';
+import { createTheme } from '@mui/material'
 
 export const defaultTheme = createTheme({
   palette: {
@@ -6,6 +6,7 @@ export const defaultTheme = createTheme({
     primary: {
       main: '#EFF2F1',
       light: 'rgba(244, 244, 244, 0.5)',
+      contrastText: 'rgb(43,43,43)',
     },
     secondary: {
       main: '#4059AD',
@@ -18,7 +19,23 @@ export const defaultTheme = createTheme({
     },
     warning: {
       main: '#FFA951',
-      light: 'rgba(255, 169, 81, 0.5)',
+      light: 'rgba(255, 169, 81, 0.9)',
+    },
+    error: {
+      main: '#FF5A5F',
+      light: 'rgba(255, 90, 95, 0.9)',
+    },
+    success: {
+      main: '#00C48C',
+      light: 'rgba(0, 196, 140, 0.9)',
+    },
+    info: {
+      main: '#00B8D9',
+      light: 'rgba(0, 184, 217, 0.9)',
+    },
+    text: {
+      primary: 'rgb(43,43,43)',
+      secondary: 'rgba(43,43,43, 0.7)',
     },
   },
   components: {
@@ -29,7 +46,6 @@ export const defaultTheme = createTheme({
         },
         root: {
           borderRadius: '8px',
-          color: '#4059AD',
         },
       },
     },
@@ -51,8 +67,7 @@ export const defaultTheme = createTheme({
           alignItems: 'center',
           flexDirection: 'column',
           width: '50%',
-          background: 'rgba(244, 244, 244, 0.8)',
-          margin: '-8px 4px',
+          margin: '-6px 2px',
           padding: '6px',
           borderRadius: '8px',
         },
@@ -99,4 +114,4 @@ export const defaultTheme = createTheme({
       },
     },
   },
-});
+})

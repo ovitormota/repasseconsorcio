@@ -1,39 +1,40 @@
 {
-    "repasseconsorcioApp": {
-        "consortium": {
-            "home": {
-                "title": "Consórcios",
-                "refreshListLabel": "Atualizar lista",
-                "createLabel": "Cadastre uma nova proposta",
-                "createOrEditLabel": "Criar ou editar Consórcio",
-                "notFound": "Nenhum Consórcio encontrado"
-            },
-            "created": "Sua proposta foi criada com sucesso e está aguardando aprovação.",
-            "updated": "Um Consórcio foi atualizado com o identificador {{ param }}",
-            "deleted": "Um Consórcio foi excluído com o identificador {{ param }}",
-            "delete": {
-                "question": "Tem certeza de que deseja excluir o Consórcio {{ id }}?"
-            },
-            "detail": {
-                "title": "Detalhes do Consórcio"
-            },
-            "id": "ID",
-            "consortiumAdministrator": "Administradora",
-            "consortiumValue": "Valor do crédito",
-            "minimumBidValue": "Valor mínimo do lance",
-            "numberOfInstallments": "Parcelas restantes",
-            "installmentValue": "Valor da parcela",
-            "segmentType": "Segmento",
-            "status": "Status",
-            "bids": "Lances",
-            "user": "Usuário",
-            "contemplationStatus": {
-                "title": "Status de Contemplação",
-                "approved": "Contemplado",
-                "disapproved": "Não Contemplado"
-            },
+  "repasseconsorcioApp": {
+    "consortium": {
+      "home": {
+        "title": "Consórcios",
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Cadastre uma nova proposta",
+        "createOrEditLabel": "Criar ou editar Consórcio",
+        "notFound": "Nenhum Consórcio encontrado"
+      },
+      "created": "Sua proposta foi criada com sucesso e está aguardando aprovação.",
+      "updated": "Um Consórcio foi atualizado com o identificador {{ param }}",
+      "deleted": "Um Consórcio foi excluído com o identificador {{ param }}",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir o Consórcio {{ id }}?"
+      },
+      "detail": {
+        "title": "Detalhes do Consórcio"
+      },
+      "id": "ID",
+      "consortiumAdministrator": "Administradora",
+      "consortiumValue": "Valor do crédito",
+      "minimumBidValue": "Valor mínimo do lance",
+      "numberOfInstallments": "Parcelas restantes",
+      "installmentValue": "Valor da parcela",
+      "segmentType": "Segmento",
+      "status": "Status",
+      "bid": "Lance",
+      "bids": "Lances",
+      "user": "Usuário",
+      "contemplationStatus": {
+        "title": "Status de Contemplação",
+        "approved": "Contemplado",
+        "disapproved": "Não Contemplado"
+      },
 
-            "approve": "Aprovar"
-        }
+      "approve": "Aprovar"
     }
+  }
 }

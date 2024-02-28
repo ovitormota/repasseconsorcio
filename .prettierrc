@@ -1,18 +1,20 @@
-# Prettier configuration
-
-printWidth: 160
-singleQuote: true
-tabWidth: 2
-useTabs: false
-
-# js and ts rules:
-arrowParens: avoid
-
-# jsx and tsx rules:
-jsxBracketSameLine: false
-
-# java rules:
-overrides:
-  - files: "*.java"
-    options:
-      tabWidth: 4
+{
+  "printWidth": 300,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": false,
+  "arrowParens": "always",
+  "quoteProps": "as-needed",
+  "trailingComma": "es5",
+  "jsxBracketSameLine": false,
+  "jsxSingleQuote": true,
+  "overrides": [
+    {
+      "files": "*.java",
+      "options": {
+        "tabWidth": 4
+      }
+    }
+  ]
+}
