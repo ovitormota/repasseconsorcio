@@ -90,7 +90,11 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
 
   return (
     <React.Fragment>
-      <Dialog open={true} sx={{ backgroundColor: defaultTheme.palette.background.default }} PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '50vw' } } }}>
+      <Dialog
+        open={true}
+        sx={{ backgroundColor: defaultTheme.palette.background.default }}
+        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '500px' } } }}
+      >
         <DialogContent>
           <form onSubmit={handleValidSubmit}>
             <ImageUploader onUpload={handleUpload} currentImage={fields.image} />
@@ -197,7 +201,13 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
               <Button variant='text' sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }} onClick={() => handleClose()}>
                 <Translate contentKey='entity.action.cancel'>Cancel</Translate>
               </Button>
-              <Button type='submit' color='secondary' variant='contained' sx={{ fontWeight: '600' }} disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || fields.password === '' || fields.confirmPassword === '' || !isPasswordsMatch() || !isEmailValid()}>
+              <Button
+                type='submit'
+                color='secondary'
+                variant='contained'
+                sx={{ fontWeight: '600' }}
+                disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || fields.password === '' || fields.confirmPassword === '' || !isPasswordsMatch() || !isEmailValid()}
+              >
                 <Translate contentKey='register.form.button'>Register</Translate>
                 {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.common.black }} />}
               </Button>

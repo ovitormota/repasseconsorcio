@@ -107,12 +107,13 @@ const handleAxiosError = (error: any): void => {
         break
 
       default:
-        handleDefaultError(data)
+        addErrorAlert('An unexpected error occurred', 'error.http.500')
+        break
     }
   } else if (config && config.url === 'api/account' && config.method === 'get') {
     console.log('Authentication Error: Trying to access url api/account with GET.')
   } else {
-    toast.error(error.message || 'Unknown error!')
+    addErrorAlert('An unexpected error occurred', 'error.http.401')
   }
 }
 
@@ -124,10 +125,10 @@ const handleRejectedAction = (action: any): void => {
     } else if (error.config && error.config.url === 'api/account' && error.config.method === 'get') {
       console.log('Authentication Error: Trying to access url api/account with GET.')
     } else {
-      toast.error(error.message || 'Unknown error!')
+      addErrorAlert('An unexpected error occurred', 'error.http.500')
     }
   } else if (error) {
-    toast.error(error.message || 'Unknown error!')
+    addErrorAlert('An unexpected error occurred', 'error.http.500')
   }
 }
 

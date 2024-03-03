@@ -22,3 +22,7 @@ export const formatCreated = (value) => {
     })
     .replace(',', ' -')
 }
+
+export const showElement = (toShow: boolean) => {
+  return { display: toShow ? '' : 'none' }
+}

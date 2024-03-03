@@ -93,8 +93,7 @@ public class ConsortiumResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/consortiums/{id}")
-    public ResponseEntity<Consortium> updateConsortium(@PathVariable(value = "id", required = false) final Long id, @RequestBody Consortium consortium)
-        throws URISyntaxException {
+    public ResponseEntity<Consortium> updateConsortium(@PathVariable(value = "id", required = false) final Long id, @RequestBody Consortium consortium) throws URISyntaxException {
         log.debug("REST request to update Consortium : {}, {}", id, consortium);
         if (consortium.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -109,21 +108,6 @@ public class ConsortiumResource {
 
         Consortium result = consortiumService.save(consortium);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, consortium.getId().toString())).body(result);
-    }
-
-    /**
-     * {@code GET  /consortiums} : get all the consortiums.
-     *
-     * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
-     *         of consortiums in body.
-     */
-    @GetMapping("/consortiums")
-    public ResponseEntity<List<Consortium>> getAllConsortiums(Pageable pageable, SegmentType filterSegmentType) {
-        log.debug("REST request to get a page of Consortiums");
-        Page<Consortium> page = consortiumService.findAllByStatusNotIn(pageable, filterSegmentType);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -153,11 +137,35 @@ public class ConsortiumResource {
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
+    /**
+     * {@code GET  /consortiums} : get all the consortiums.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of consortiums in body.
+     */
+    @GetMapping("/consortiums")
+    public ResponseEntity<List<Consortium>> getAllConsortiums(Pageable pageable, SegmentType filterSegmentType) {
+        log.debug("REST request to get a page of Consortiums");
+        Page<Consortium> page = consortiumService.findAllByStatusNotIn(pageable, filterSegmentType);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     @GetMapping("/proposal-approvals")
     public ResponseEntity<List<Consortium>> getConsortiumsByProposalApprovals(Pageable pageable, SegmentType filterSegmentType) {
         log.debug("REST request to get a page of Consortiums by Proposal Approvals");
         Page<Consortium> page = consortiumService.findAllByProposalApprovals(pageable, filterSegmentType);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "') or hasAuthority('" + AuthoritiesConstants.USER + "')")
+    @GetMapping("/my-proposals")
+    public ResponseEntity<List<Consortium>> getMyApprovals(Pageable pageable, SegmentType filterSegmentType) {
+        log.debug("REST request to get a page of Consortiums by Proposal Approvals");
+        Page<Consortium> page = consortiumService.findAllMyProposals(pageable, filterSegmentType);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -180,8 +188,7 @@ public class ConsortiumResource {
      */
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     @PatchMapping(value = "/proposal-approvals/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Consortium> partialUpdateConsortium(@PathVariable(value = "id", required = false) final Long id, @RequestBody Consortium consortium)
-        throws URISyntaxException {
+    public ResponseEntity<Consortium> partialUpdateConsortium(@PathVariable(value = "id", required = false) final Long id, @RequestBody Consortium consortium) throws URISyntaxException {
         log.debug("REST request to partial update Consortium partially : {}, {}", id, consortium);
         if (consortium.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

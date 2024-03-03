@@ -1,13 +1,18 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { Translate } from 'react-jhipster'
 
 import { CloseOutlined } from '@mui/icons-material'
 import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, ThemeProvider } from '@mui/material'
-import { IBid } from 'app/shared/model/bid.model'
+import { NoDataIndicatorRelative } from 'app/shared/components/NoDataIndicator'
 import { defaultTheme } from 'app/shared/layout/themes'
+import { IConsortium } from 'app/shared/model/consortium.model'
 import { formatCreated, formatCurrency } from 'app/shared/util/data-utils'
 import { BidUpdateModal } from './BidUpdateModal'
-import { IConsortium } from 'app/shared/model/consortium.model'
+import { useAppDispatch, useAppSelector } from 'app/config/store'
+import { hasAnyAuthority } from 'app/shared/auth/private-route'
+import { AUTHORITIES } from 'app/config/constants'
+import { getEntity } from '../consortium/consortium.reducer'
+import { Loading } from 'app/shared/components/Loading'
 
 interface IBidHistoryModalProps {
   setOpenBidHistoryModal: (open: boolean) => void
@@ -15,50 +20,63 @@ interface IBidHistoryModalProps {
 }
 
 export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IBidHistoryModalProps) => {
+  const dispatch = useAppDispatch()
+  const isAdmin = useAppSelector((state) => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN]))
   const [openBidUpdateModal, setOpenBidUpdateModal] = React.useState(false)
 
-  console.log('entityConsortium', entityConsortium)
+  const entityConsortiumUpdated = useAppSelector((state) => state.consortium.entity)
+  const loading = useAppSelector((state) => state.consortium.loading)
+
+  useEffect(() => {
+    if (entityConsortium?.id) {
+      dispatch(getEntity(entityConsortium.id))
+    }
+  }, [])
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Dialog
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { xs: 0, sm: 1 }, minWidth: { xs: '92vw', sm: '80vw', md: '50vw' } },
+          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { xs: 0, sm: 1 }, minWidth: { xs: '92vw', sm: '80vw', md: '500px' } },
         }}
         onClose={() => setOpenBidHistoryModal(false)}
       >
         <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between' }}>
           <Translate contentKey='repasseconsorcioApp.bid.home.title'>Bid</Translate>
           <IconButton onClick={() => setOpenBidHistoryModal(false)}>
-            <CloseOutlined sx={{ color: defaultTheme.palette.text.secondary }} fontSize='small' />
+            <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
         </DialogTitle>
         <DialogContent>
           <List>
-            {entityConsortium?.bids?.map((bid, index) => (
-              <Fragment key={index}>
-                <ListItem
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    p: 2,
-                    borderRadius: '1em',
-                    ':hover': {
-                      background: defaultTheme.palette.secondary['A100'],
-                    },
-                  }}
-                >
-                  <ListItemIcon>
-                    <Avatar alt={bid.user?.firstName} src={bid?.user?.image ?? bid.user?.firstName} sx={{ width: { sx: 40, sm: 50 }, height: { sx: 40, sm: 50 } }} />
-                  </ListItemIcon>
-                  <ListItemText secondary={formatCurrency(bid.value)} />
-                  <ListItemText primary={formatCreated(bid.created)} primaryTypographyProps={{ flexWrap: 'nowrap' }} />
-                </ListItem>
-                {index !== entityConsortium?.bids.length - 1 && <Divider sx={{ mx: 2 }} />}
-              </Fragment>
-            ))}
+            {!loading && entityConsortiumUpdated?.bids?.length
+              ? entityConsortiumUpdated?.bids?.map((bid, index) => (
+                  <Fragment key={index}>
+                    <ListItem
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        p: 2,
+                        borderRadius: '1em',
+                        ':hover': {
+                          background: defaultTheme.palette.secondary['A100'],
+                        },
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Avatar alt={bid.user?.firstName} src={bid?.user?.image ?? bid.user?.firstName} sx={{ width: { sx: 40, sm: 50 }, height: { sx: 40, sm: 50 } }} />
+                      </ListItemIcon>
+                      <ListItemText secondary={formatCurrency(bid.value)} />
+                      <ListItemText primary={formatCreated(bid.created)} primaryTypographyProps={{ flexWrap: 'nowrap' }} />
+                    </ListItem>
+                    {index !== entityConsortiumUpdated?.bids.length - 1 && <Divider sx={{ mx: 2 }} />}
+                  </Fragment>
+                ))
+              : !loading && <NoDataIndicatorRelative message='Nenhum lance encontrado' />}
+            {loading && <Loading height='10vh' />}
           </List>
 
           <DialogActions sx={{ mt: 2, px: 0 }}>
@@ -74,6 +92,7 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
                   backgroundColor: defaultTheme.palette.warning.main,
                 },
               }}
+              // disabled={isAdmin}
               onClick={() => setOpenBidUpdateModal(true)}
               variant='contained'
             >
@@ -82,7 +101,7 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
           </DialogActions>
         </DialogContent>
       </Dialog>
-      {openBidUpdateModal && <BidUpdateModal setOpenBidUpdateModal={setOpenBidUpdateModal} entityConsortium={entityConsortium} />}
+      {openBidUpdateModal && <BidUpdateModal setOpenBidUpdateModal={setOpenBidUpdateModal} entityConsortium={entityConsortiumUpdated} />}
     </ThemeProvider>
   )
 }

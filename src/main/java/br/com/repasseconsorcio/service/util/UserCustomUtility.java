@@ -3,6 +3,7 @@ package br.com.repasseconsorcio.service.util;
 import br.com.repasseconsorcio.domain.User;
 import br.com.repasseconsorcio.security.SecurityUtils;
 import br.com.repasseconsorcio.service.UserService;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +18,13 @@ public class UserCustomUtility {
     }
 
     public static User getUserCustom() {
-        String login = SecurityUtils.getCurrentUserLogin().get();
-        User loggedUser = userService.getUserWithAuthoritiesByLogin(login).get();
+        Optional<String> login = SecurityUtils.getCurrentUserLogin();
 
-        return loggedUser;
+        System.out.println("Login: " + login);
+        if (login.isPresent()) {
+            return userService.getUserWithAuthoritiesByLogin(login.get()).get();
+        }
+
+        return null;
     }
 }

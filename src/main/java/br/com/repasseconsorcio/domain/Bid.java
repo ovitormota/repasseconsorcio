@@ -34,7 +34,7 @@ public class Bid implements Serializable {
     private User user;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "bids", "user", "consortiumAdministrator" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "bids", "user" }, allowSetters = true)
     private Consortium consortium;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

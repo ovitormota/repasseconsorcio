@@ -3,6 +3,7 @@
     "bid": {
       "home": {
         "title": "Lances registrados",
+        "myBids": "Meus lances",
         "refreshListLabel": "Atualizar lista",
         "createLabel": "Aproveite e dê um lance",
         "createOrEditLabel": "Criar ou editar Bid",

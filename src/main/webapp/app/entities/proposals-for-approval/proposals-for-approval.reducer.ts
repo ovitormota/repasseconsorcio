@@ -3,9 +3,9 @@ import axios from 'axios'
 import { loadMoreDataWhenScrolled, parseHeaderForLinks } from 'react-jhipster'
 
 import { IConsortium, defaultValue } from 'app/shared/model/consortium.model'
+import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 import { EntityState, IQueryParams, createEntitySlice, serializeAxiosError } from 'app/shared/reducers/reducer.utils'
 import { cleanEntity } from 'app/shared/util/entity-utils'
-import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 
 const initialState: EntityState<IConsortium> = {
   loading: false,

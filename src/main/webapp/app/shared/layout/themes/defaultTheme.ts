@@ -73,7 +73,7 @@ export const defaultTheme = createTheme({
         },
         primary: {
           color: 'rgba(43,43,43, 0.7)',
-          fontSize: '12px',
+          fontSize: 'clamp(0.85rem, 1.8vw, 0.95rem)',
         },
         secondary: {
           color: 'rgb(43,43,43)',
@@ -110,6 +110,14 @@ export const defaultTheme = createTheme({
         body: {
           fontWeight: '500',
           color: 'rgba(43, 43, 43, 0.7)',
+        },
+      },
+    },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          fontSize: '0.8rem',
+          backgroundColor: 'rgba(64, 89, 173, 0.8)',
         },
       },
     },

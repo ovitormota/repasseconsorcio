@@ -9,7 +9,7 @@
         "notFound": "Nenhum Consórcio encontrado"
       },
       "created": "Sua proposta foi criada com sucesso e está aguardando aprovação.",
-      "updated": "Um Consórcio foi atualizado com o identificador {{ param }}",
+      "updated": "A proposta foi atualizada com sucesso.",
       "deleted": "Um Consórcio foi excluído com o identificador {{ param }}",
       "delete": {
         "question": "Tem certeza de que deseja excluir o Consórcio {{ id }}?"

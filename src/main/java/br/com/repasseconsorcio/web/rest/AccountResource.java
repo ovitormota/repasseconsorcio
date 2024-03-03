@@ -1,5 +1,6 @@
 package br.com.repasseconsorcio.web.rest;
 
+import br.com.repasseconsorcio.RepasseconsorcioApp;
 import br.com.repasseconsorcio.config.Constants;
 import br.com.repasseconsorcio.domain.User;
 import br.com.repasseconsorcio.repository.UserRepository;
@@ -42,10 +43,13 @@ public class AccountResource {
 
     private final MailService mailService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
+    private final RepasseconsorcioApp repasseconsorcioApp;
+
+    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService, RepasseconsorcioApp repasseconsorcioApp) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
+        this.repasseconsorcioApp = repasseconsorcioApp;
     }
 
     /**
@@ -63,7 +67,10 @@ public class AccountResource {
             throw new InvalidPasswordException();
         }
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
-        mailService.sendActivationEmail(user);
+
+        if (!repasseconsorcioApp.isDevMode()) {
+            mailService.sendActivationEmail(user);
+        }
     }
 
     /**
@@ -175,8 +182,6 @@ public class AccountResource {
     }
 
     private static boolean isPasswordLengthInvalid(String password) {
-        return (
-            StringUtils.isEmpty(password) || password.length() < ManagedUserVM.PASSWORD_MIN_LENGTH || password.length() > ManagedUserVM.PASSWORD_MAX_LENGTH
-        );
+        return (StringUtils.isEmpty(password) || password.length() < ManagedUserVM.PASSWORD_MIN_LENGTH || password.length() > ManagedUserVM.PASSWORD_MAX_LENGTH);
     }
 }

@@ -86,7 +86,7 @@ public class BidService {
     @Transactional(readOnly = true)
     public Page<Bid> findAll(Pageable pageable) {
         log.debug("Request to get all Bids");
-        return bidRepository.findAll(pageable);
+        return bidRepository.findAllByUserIsCurrentUser(pageable);
     }
 
     /**

@@ -5,6 +5,8 @@ import { logout } from 'app/shared/reducers/authentication'
 import { Redirect } from 'react-router-dom'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { Translate } from 'react-jhipster'
+import { getEntities, reset } from 'app/entities/consortium/consortium.reducer'
+import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 
 export const Logout = ({ setOpenLogoutModal }) => {
   const logoutUrl = useAppSelector((state) => state.authentication.logoutUrl)
@@ -15,6 +17,15 @@ export const Logout = ({ setOpenLogoutModal }) => {
   useEffect(() => {
     if (!isAuthenticated) {
       setOpenLogoutModal(false)
+      dispatch(reset())
+      dispatch(
+        getEntities({
+          page: 0,
+          size: 10,
+          sort: 'id,asc',
+          filterSegmentType: SegmentType.ALL,
+        })
+      )
     }
   }, [isAuthenticated])
 
@@ -31,7 +42,7 @@ export const Logout = ({ setOpenLogoutModal }) => {
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '50vw' } },
+          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '500px' } },
         }}
         onClose={() => setOpenLogoutModal(false)}
       >

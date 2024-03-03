@@ -12,7 +12,9 @@ import ErrorBoundary from 'app/shared/error/error-boundary'
 import { Header } from 'app/shared/layout/header/header'
 import { getProfile } from 'app/shared/reducers/application-profile'
 import { getSession } from 'app/shared/reducers/authentication'
-import { Toaster } from 'react-hot-toast'
+import toast, { ToastBar, Toaster } from 'react-hot-toast'
+import { IconButton } from '@mui/material'
+import { Close } from '@mui/icons-material'
 
 const baseHref = document.querySelector('base').getAttribute('href').replace(/\/$/, '')
 
@@ -33,7 +35,23 @@ export const App = () => {
 
   return (
     <Router basename={baseHref}>
-      <Toaster gutter={2} />
+      <Toaster gutter={2} toastOptions={{ duration: 5000, style: { flexWrap: 'nowrap', maxWidth: '400px' } }}>
+        {(t) => (
+          <ToastBar toast={t}>
+            {({ icon, message }) => (
+              <>
+                {icon}
+                {message}
+                {t.type !== 'loading' && (
+                  <IconButton>
+                    <Close onClick={() => toast.dismiss(t.id)} fontSize='small' />
+                  </IconButton>
+                )}
+              </>
+            )}
+          </ToastBar>
+        )}
+      </Toaster>
       <ErrorBoundary>
         <AppRoutes />
         <Header />

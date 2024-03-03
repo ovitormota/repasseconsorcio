@@ -25,3 +25,22 @@ export const NoDataIndicator = ({ message = 'Nenhum dado encontrado' }) => {
     </Box>
   )
 }
+
+export const NoDataIndicatorRelative = ({ message = 'Nenhum dado encontrado' }) => {
+  return (
+    <Box
+      sx={{
+        color: defaultTheme.palette.secondary.light,
+        textAlign: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      <SentimentDissatisfiedIcon sx={{ fontSize: 90, color: defaultTheme.palette.warning.main, mx: 'auto' }} />
+      <Typography variant='overline' sx={{ mt: 2 }}>
+        {message}
+      </Typography>
+    </Box>
+  )
+}

@@ -71,7 +71,7 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
               borderRadius: '1em',
               background: defaultTheme.palette.primary.main,
               p: { sm: 2 },
-              minWidth: { xs: '92vw', sm: '80vw', md: '50vw' },
+              minWidth: { xs: '92vw', sm: '80vw', md: '500px' },
               overflowX: 'hidden',
             },
           }}
@@ -93,7 +93,12 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
           <Box>
             <input ref={fileInputRef} type='file' accept='image/*' onChange={handleFileChange} style={{ display: 'none' }} />
             <Box sx={{ position: 'relative', display: 'inline-block' }}>
-              <Avatar src={croppedImage ?? defaultImage ?? account?.firstName} alt={isUser ? account?.firstName : null} sx={{ width: isUser ? 130 : 230, height: 130, cursor: 'pointer', fontSize: '3rem', borderRadius: isUser ? '50%' : '8px' }} onClick={handleAvatarClick} />
+              <Avatar
+                src={croppedImage ?? defaultImage ?? account?.firstName}
+                alt={isUser ? account?.firstName : null}
+                sx={{ width: isUser ? 130 : 230, height: 130, cursor: 'pointer', fontSize: '3rem', borderRadius: isUser ? '50%' : '8px' }}
+                onClick={handleAvatarClick}
+              />
               {selectedImage || croppedImage || defaultImage ? (
                 <IconButton
                   sx={{

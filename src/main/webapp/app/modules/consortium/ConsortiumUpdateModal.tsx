@@ -53,14 +53,14 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: 1, minWidth: { xs: '92vw', sm: '80vw', md: '50vw' } },
+          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: 1, minWidth: { xs: '92vw', sm: '80vw', md: '500px' } },
         }}
         onClose={() => setOpenConsortiumUpdateModal(false)}
       >
         <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between' }}>
           <Translate contentKey='repasseconsorcioApp.consortium.home.createLabel'>Reset your password</Translate>
           <IconButton onClick={() => setOpenConsortiumUpdateModal(false)}>
-            <CloseOutlined sx={{ color: defaultTheme.palette.text.secondary }} fontSize='small' />
+            <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
         </DialogTitle>
         <DialogContent>
@@ -70,7 +70,16 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
             <form onSubmit={saveEntity}>
               <FormControl fullWidth sx={{ mb: -1, mt: 1 }}>
                 <InputLabel id='consortium-segmentType-label'>{translate('repasseconsorcioApp.consortium.segmentType') + ' *'}</InputLabel>
-                <Select required id='consortium-segmentType' name='segmentType' label={translate('repasseconsorcioApp.consortium.segmentType')} fullWidth color='secondary' value={segmentType} onChange={(e) => setSegmentType(e.target.value as SegmentType)}>
+                <Select
+                  required
+                  id='consortium-segmentType'
+                  name='segmentType'
+                  label={translate('repasseconsorcioApp.consortium.segmentType')}
+                  fullWidth
+                  color='secondary'
+                  value={segmentType}
+                  onChange={(e) => setSegmentType(e.target.value as SegmentType)}
+                >
                   <MenuItem value='AUTOMOBILE'>{translate('repasseconsorcioApp.SegmentType.AUTOMOBILE')}</MenuItem>
                   <MenuItem value='REAL_ESTATE'>{translate('repasseconsorcioApp.SegmentType.REAL_ESTATE')}</MenuItem>
                   <MenuItem value='OTHER'>{translate('repasseconsorcioApp.SegmentType.OTHER')}</MenuItem>
@@ -78,12 +87,28 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
               </FormControl>
 
               <Box sx={{ mb: 2 }}>
-                <SelectPaginate apiUrl='/api/consortium-administrators' valueName='name' value={consortiumAdministrator} onChange={setConsortiumAdministrator} placeholder={translate('repasseconsorcioApp.consortium.consortiumAdministrator') + ' *'} isRequired={true} />
+                <SelectPaginate
+                  apiUrl='/api/consortium-administrators'
+                  valueName='name'
+                  value={consortiumAdministrator}
+                  onChange={setConsortiumAdministrator}
+                  placeholder={translate('repasseconsorcioApp.consortium.consortiumAdministrator') + ' *'}
+                  isRequired={true}
+                />
               </Box>
 
               <FormControl fullWidth>
                 <InputLabel id='consortium-segmentType-label'>{translate('repasseconsorcioApp.consortium.contemplationStatus.title') + ' *'}</InputLabel>
-                <Select required id='consortium-contemplationStatus' name='contemplationStatus' label={translate('repasseconsorcioApp.consortium.contemplationStatus.title')} fullWidth color='secondary' value={contemplationStatus} onChange={(e) => setContemplationStatus(e.target.value as boolean)}>
+                <Select
+                  required
+                  id='consortium-contemplationStatus'
+                  name='contemplationStatus'
+                  label={translate('repasseconsorcioApp.consortium.contemplationStatus.title')}
+                  fullWidth
+                  color='secondary'
+                  value={contemplationStatus}
+                  onChange={(e) => setContemplationStatus(e.target.value as boolean)}
+                >
                   <MenuItem value='true'>{translate('repasseconsorcioApp.consortium.contemplationStatus.approved')}</MenuItem>
                   <MenuItem value='false'>{translate('repasseconsorcioApp.consortium.contemplationStatus.disapproved')}</MenuItem>
                 </Select>
@@ -163,7 +188,13 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                 <Button onClick={() => setOpenConsortiumUpdateModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
                   <Translate contentKey='entity.action.cancel'>Cancel</Translate>
                 </Button>
-                <Button type='submit' variant='contained' color='secondary' disabled={!segmentType || !consortiumAdministrator || !consortiumValue || !numberOfInstallments || !installmentValue || !minimumBidValue} sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}>
+                <Button
+                  type='submit'
+                  variant='contained'
+                  color='secondary'
+                  disabled={!segmentType || !consortiumAdministrator || !consortiumValue || !numberOfInstallments || !installmentValue || !minimumBidValue}
+                  sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}
+                >
                   <Translate contentKey='entity.action.register'>Register</Translate>
                 </Button>
               </DialogActions>

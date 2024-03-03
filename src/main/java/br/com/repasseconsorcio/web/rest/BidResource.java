@@ -2,6 +2,7 @@ package br.com.repasseconsorcio.web.rest;
 
 import br.com.repasseconsorcio.domain.Bid;
 import br.com.repasseconsorcio.repository.BidRepository;
+import br.com.repasseconsorcio.security.AuthoritiesConstants;
 import br.com.repasseconsorcio.service.BidService;
 import br.com.repasseconsorcio.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -55,6 +57,7 @@ public class BidResource {
      *         has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.USER + "\")")
     @PostMapping("/bids")
     public ResponseEntity<Bid> createBid(@RequestBody Bid bid) throws URISyntaxException {
         log.debug("REST request to save Bid : {}", bid);
@@ -63,10 +66,7 @@ public class BidResource {
         }
 
         Bid result = bidService.save(bid);
-        return ResponseEntity
-            .created(new URI("/api/bids/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        return ResponseEntity.created(new URI("/api/bids/" + result.getId())).headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString())).body(result);
     }
 
     /**

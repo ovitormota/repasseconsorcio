@@ -40,21 +40,11 @@ public class RepasseconsorcioApp {
     @PostConstruct
     public void initApplication() {
         Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
-        if (
-            activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) &&
-            activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)
-        ) {
-            log.error(
-                "You have misconfigured your application! It should not run " + "with both the 'dev' and 'prod' profiles at the same time."
-            );
+        if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
+            log.error("You have misconfigured your application! It should not run " + "with both the 'dev' and 'prod' profiles at the same time.");
         }
-        if (
-            activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) &&
-            activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_CLOUD)
-        ) {
-            log.error(
-                "You have misconfigured your application! It should not " + "run with both the 'dev' and 'cloud' profiles at the same time."
-            );
+        if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_CLOUD)) {
+            log.error("You have misconfigured your application! It should not " + "run with both the 'dev' and 'cloud' profiles at the same time.");
         }
     }
 
@@ -73,10 +63,7 @@ public class RepasseconsorcioApp {
     private static void logApplicationStartup(Environment env) {
         String protocol = Optional.ofNullable(env.getProperty("server.ssl.key-store")).map(key -> "https").orElse("http");
         String serverPort = env.getProperty("server.port");
-        String contextPath = Optional
-            .ofNullable(env.getProperty("server.servlet.context-path"))
-            .filter(StringUtils::isNotBlank)
-            .orElse("/");
+        String contextPath = Optional.ofNullable(env.getProperty("server.servlet.context-path")).filter(StringUtils::isNotBlank).orElse("/");
         String hostAddress = "localhost";
         try {
             hostAddress = InetAddress.getLocalHost().getHostAddress();
@@ -99,5 +86,15 @@ public class RepasseconsorcioApp {
             contextPath,
             env.getActiveProfiles().length == 0 ? env.getDefaultProfiles() : env.getActiveProfiles()
         );
+    }
+
+    /**
+     * Checks if the application is in development mode.
+     *
+     * @return true if in development mode, false otherwise.
+     */
+    public boolean isDevMode() {
+        Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles().length == 0 ? env.getDefaultProfiles() : env.getActiveProfiles());
+        return activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT);
     }
 }

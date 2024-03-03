@@ -21,6 +21,8 @@ import { BidHistoryModal } from '../bid/BidHistoryModal'
 import { IBid } from 'app/shared/model/bid.model'
 import { formatCurrency } from 'app/shared/util/data-utils'
 import { Spinner } from 'reactstrap'
+import { hasAnyAuthority } from 'app/shared/auth/private-route'
+import { AUTHORITIES } from 'app/config/constants'
 
 export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -36,6 +38,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [order, setOrder] = useState(ASC)
 
+  const isAdmin = useAppSelector((state) => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN]))
   const isAuthenticated = useAppSelector((state) => state.authentication.isAuthenticated)
   const consortiumList = useAppSelector((state) => state.consortium.entities)
   const loading = useAppSelector((state) => state.consortium.loading)
@@ -114,7 +117,12 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
     }
 
     return !isSMScreen ? (
-      <Select value={filterSegmentType} IconComponent={FilterListRounded} onChange={(event) => handleSegmentChange(event.target.value)} sx={{ m: { xs: '3px', sm: 1 }, padding: '0 10px 0 0', height: '35px', fontSize: { xs: '14px', sm: '15px' } }}>
+      <Select
+        value={filterSegmentType}
+        IconComponent={FilterListRounded}
+        onChange={(event) => handleSegmentChange(event.target.value)}
+        sx={{ m: { xs: '3px', sm: 1 }, padding: '0 10px 0 0', height: '35px', fontSize: { xs: '14px', sm: '15px' } }}
+      >
         {getSegmentType().map((segment: SegmentType, index: number) => (
           <MenuItem key={index} value={segment}>
             {translate(`repasseconsorcioApp.SegmentType.${segment}`)}
@@ -177,19 +185,19 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
 
     return (
       <Card
-        variant='elevation'
         sx={{
           mx: { xs: 1.1, sm: 1.1 },
           my: { xs: 1.1, sm: 1.1 },
           width: '330px',
           maxWidth: '90vw',
-          background: 'transparent',
+          background: defaultTheme.palette.background.paper,
+          boxShadow: '0px 2px 2px 1px rgba(64, 89, 173, 0.2)',
           ':hover': {
             backgroundColor: defaultTheme.palette.primary.main,
             cursor: 'pointer',
           },
         }}
-        onClick={() => isAuthenticated && bids?.length && handleBidHistory(consortium)}
+        onClick={() => isAuthenticated && handleBidHistory(consortium)}
       >
         <CardContent sx={{ p: 1.5 }}>
           <List>
@@ -207,14 +215,26 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                   flexDirection: 'column-reverse',
                   background: 'none !important',
                 }}
+                primaryTypographyProps={{ fontSize: '12px !important' }}
                 primary={`${translate('repasseconsorcioApp.consortium.segmentType')}: ${translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}`}
                 secondary={name}
               />
             </ListItem>
 
-            <ListItemText sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }} primary={`${translate('repasseconsorcioApp.consortium.numberOfInstallments')} `} secondary={numberOfInstallments} />
-            <ListItemText sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }} primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `} secondary={formatCurrency(installmentValue)} />
             <ListItemText
+              primaryTypographyProps={{ fontSize: '12px !important' }}
+              sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
+              primary={`${translate('repasseconsorcioApp.consortium.numberOfInstallments')} `}
+              secondary={numberOfInstallments}
+            />
+            <ListItemText
+              primaryTypographyProps={{ fontSize: '12px !important' }}
+              sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
+              primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `}
+              secondary={formatCurrency(installmentValue)}
+            />
+            <ListItemText
+              primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.minimumBidValue')} `}
               secondary={bids?.length ? findMinValue(bids) : formatCurrency(minimumBidValue)}
@@ -222,6 +242,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
 
             <ListItem sx={{ mt: 1, mb: -2 }}>
               <ListItemText
+                primaryTypographyProps={{ fontSize: '12px !important' }}
                 primary={`${translate('repasseconsorcioApp.consortium.consortiumValue')} `}
                 secondary={formatCurrency(consortiumValue)}
                 secondaryTypographyProps={{
@@ -248,6 +269,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                 }}
                 variant='contained'
                 fullWidth
+                disabled={isAdmin}
                 onClick={(event) => {
                   event.stopPropagation()
                   handleBid(consortium)

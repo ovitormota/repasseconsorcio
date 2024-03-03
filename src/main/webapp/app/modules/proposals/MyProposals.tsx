@@ -3,8 +3,8 @@ import { AppBar, Avatar, Box, Button, Card, CardContent, Chip, IconButton, List,
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { AuctionTimer } from 'app/shared/components/AuctionTimer'
 import { Loading } from 'app/shared/components/Loading'
+import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
 import { IConsortium } from 'app/shared/model/consortium.model'
-import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { ASC, DESC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
@@ -14,24 +14,31 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
 import { defaultTheme } from 'app/shared/layout/themes'
-import { getEntities, partialUpdateEntity } from './proposals-for-approval.reducer'
+import { HomeLogin } from 'app/modules/login/HomeLogin'
+import { IBid } from 'app/shared/model/bid.model'
+import { formatCurrency } from 'app/shared/util/data-utils'
 import { Spinner } from 'reactstrap'
-import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
+import { BidHistoryModal } from 'app/entities/bid/BidHistoryModal'
+import { getEntities } from './my-proposal.reducer'
 
-export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>) => {
+export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
   const { isSMScreen, isMDScreen } = useBreakpoints()
   const history = props.history
 
   const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'consortiumValue'), props.location.search))
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
+  const [openBidUpdateModal, setOpenBidUpdateModal] = useState(false)
+  const [openBidHistoryModal, setOpenBidHistoryModal] = useState(false)
+  const [entityConsortium, setEntityConsortium] = useState<IConsortium>(null)
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [order, setOrder] = useState(ASC)
 
   const isAuthenticated = useAppSelector((state) => state.authentication.isAuthenticated)
-  const consortiumList = useAppSelector((state) => state.proposalsForApproval.entities)
-  const loading = useAppSelector((state) => state.proposalsForApproval.loading)
-  const links = useAppSelector((state) => state.proposalsForApproval.links)
+  const consortiumList = useAppSelector((state) => state.myProposals.entities)
+  const loading = useAppSelector((state) => state.myProposals.loading)
+  const links = useAppSelector((state) => state.myProposals.links)
 
   const getAllEntities = () => {
     dispatch(
@@ -53,37 +60,6 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
       ...paginationState,
       activePage: paginationState.activePage + 1,
     })
-  }
-
-  const setApproved = (consortium: IConsortium) => {
-    const updatedConsortium = {
-      ...consortium,
-      status: ConsortiumStatusType.OPEN,
-    }
-
-    dispatch(partialUpdateEntity(updatedConsortium))
-  }
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'CLOSED':
-        return 'error'
-      case 'OPEN':
-        return 'success'
-      case 'REGISTERED':
-        return 'warning'
-      case 'WON':
-        return 'primary'
-      default:
-        return 'default'
-    }
-  }
-
-  const formatCurrency = (value) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value)
   }
 
   const renderStatusRibbon = () => (
@@ -115,6 +91,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
             height: '35px',
             padding: '0 10px 0 0',
             fontSize: { xs: '14px', sm: '15px' },
+            borderColor: defaultTheme.palette.secondary.main,
           }}
         >
           {sortTypes.map((type, index) => (
@@ -142,7 +119,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
         onChange={(event) => handleSegmentChange(event.target.value)}
         sx={{ m: { xs: '3px', sm: 1 }, padding: '0 10px 0 0', height: '35px', fontSize: { xs: '14px', sm: '15px' } }}
       >
-        {getSegmentType().map((segment, index) => (
+        {getSegmentType().map((segment: SegmentType, index: number) => (
           <MenuItem key={index} value={segment}>
             {translate(`repasseconsorcioApp.SegmentType.${segment}`)}
           </MenuItem>
@@ -151,7 +128,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
     ) : (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         {getSegmentType().map((segment, index) => (
-          <Box key={index} onClick={() => handleSegmentChange(segment)} sx={{ m: { xs: '3px', sm: 1 }, p: 0 }}>
+          <Box key={index} onClick={() => handleSegmentChange(segment)} sx={{ m: '4px', p: 0 }}>
             <Chip
               label={translate(`repasseconsorcioApp.SegmentType.${segment}`)}
               variant={segment === filterSegmentType ? 'filled' : 'outlined'}
@@ -170,6 +147,24 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
     )
   }
 
+  const handleBid = (consortium: IConsortium) => {
+    if (!isAuthenticated) {
+      setOpenLoginModal(true)
+    } else {
+      setEntityConsortium(consortium), setOpenBidUpdateModal(true)
+    }
+  }
+
+  const handleBidHistory = (consortium: IConsortium) => {
+    setOpenBidHistoryModal(true)
+    setEntityConsortium(consortium)
+  }
+
+  const findMinValue = (bids: IBid[]) => {
+    const minValue = bids.reduce((min, bid) => (bid.value < min ? bid.value : min), bids[0].value)
+    return formatCurrency(minValue)
+  }
+
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
     const {
       consortiumAdministrator: { name, image },
@@ -181,7 +176,9 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
       contemplationStatus,
       minimumBidValue,
       status,
+      bids,
     } = consortium
+
     return (
       <Card
         sx={{
@@ -196,8 +193,9 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
             cursor: 'pointer',
           },
         }}
+        onClick={() => isAuthenticated && handleBidHistory(consortium)}
       >
-        <CardContent>
+        <CardContent sx={{ p: 1.5 }}>
           <List>
             {contemplationStatus && renderStatusRibbon()}
 
@@ -213,29 +211,34 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
                   flexDirection: 'column-reverse',
                   background: 'none !important',
                 }}
+                primaryTypographyProps={{ fontSize: '12px !important' }}
                 primary={`${translate('repasseconsorcioApp.consortium.segmentType')}: ${translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}`}
                 secondary={name}
               />
             </ListItem>
 
             <ListItemText
+              primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.numberOfInstallments')} `}
               secondary={numberOfInstallments}
             />
             <ListItemText
+              primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `}
               secondary={formatCurrency(installmentValue)}
             />
             <ListItemText
+              primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.minimumBidValue')} `}
-              secondary={formatCurrency(minimumBidValue)}
+              secondary={bids?.length ? findMinValue(bids) : formatCurrency(minimumBidValue)}
             />
 
-            <ListItem sx={{ mt: 2, mb: 1 }}>
+            <ListItem sx={{ mt: 1 }}>
               <ListItemText
+                primaryTypographyProps={{ fontSize: '12px !important' }}
                 primary={`${translate('repasseconsorcioApp.consortium.consortiumValue')} `}
                 secondary={formatCurrency(consortiumValue)}
                 secondaryTypographyProps={{
@@ -245,27 +248,11 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
               />
             </ListItem>
 
-            <ListItem>
-              <Button
-                sx={{
-                  mb: -2,
-                  background: defaultTheme.palette.secondary.main,
-                  color: defaultTheme.palette.secondary.contrastText,
-                  boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                  '&:hover': {
-                    backgroundColor: defaultTheme.palette.warning.main,
-                  },
-                }}
-                variant='contained'
-                fullWidth
-                onClick={() => setApproved(consortium)}
-              >
-                {translate('repasseconsorcioApp.consortium.approve')}
-              </Button>
+            <ListItem sx={{ p: 0, mb: -2 }}>
+              <AuctionTimer created={created} />
             </ListItem>
             <Chip
-              label={translate(`repasseconsorcioApp.ConsortiumStatusType.${status}`)}
-              color={getStatusColor(status)}
+              label={translate('repasseconsorcioApp.consortium.bids')}
               variant='filled'
               size='small'
               sx={{
@@ -366,6 +353,8 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
           {!consortiumList?.length && <NoDataIndicator />}
         </Box>
       )}
+      {openBidHistoryModal && <BidHistoryModal setOpenBidHistoryModal={setOpenBidHistoryModal} entityConsortium={entityConsortium} />}
+      {openLoginModal && <HomeLogin setOpenLoginModal={setOpenLoginModal} />}
     </ThemeProvider>
   )
 }

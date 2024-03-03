@@ -9,6 +9,8 @@ import { useDispatch } from 'react-redux'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { AccountRegister } from '../account/register/AccountRegister'
 import { RequestPassword } from './RequestPassword'
+import { getEntities, reset } from 'app/entities/consortium/consortium.reducer'
+import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 
 export const HomeLogin = ({ setOpenLoginModal }) => {
   const dispatch = useDispatch()
@@ -28,6 +30,15 @@ export const HomeLogin = ({ setOpenLoginModal }) => {
   useEffect(() => {
     if (loginSuccess) {
       setOpenLoginModal(false)
+      dispatch(reset())
+      dispatch(
+        getEntities({
+          page: 0,
+          size: 10,
+          sort: 'id,asc',
+          filterSegmentType: SegmentType.ALL,
+        })
+      )
     }
   }, [loginSuccess])
 
@@ -46,7 +57,7 @@ export const HomeLogin = ({ setOpenLoginModal }) => {
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '50vw' } },
+          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '500px' } },
         }}
         fullWidth
         onClose={() => isMDScreen && setOpenLoginModal(false)}
@@ -54,7 +65,7 @@ export const HomeLogin = ({ setOpenLoginModal }) => {
         <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} align='center'>
           <Translate contentKey='login.title.login'>Sign in</Translate>
           <IconButton onClick={() => setOpenLoginModal(false)} sx={{ position: 'absolute', right: '10px', top: '10px' }}>
-            <CloseOutlined sx={{ color: defaultTheme.palette.text.secondary }} fontSize='small' />
+            <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
         </DialogTitle>
         <DialogContent>
@@ -131,7 +142,14 @@ export const HomeLogin = ({ setOpenLoginModal }) => {
               <div style={{ flexGrow: 1, background: defaultTheme.palette.primary.contrastText, height: '0.5px' }}></div>
             </div>
 
-            <Button onClick={() => setOpenAccountRegisterModal(true)} fullWidth variant={username && password ? 'outlined' : 'contained'} size='large' color='secondary' sx={{ fontWeight: '600', mt: 2 }}>
+            <Button
+              onClick={() => setOpenAccountRegisterModal(true)}
+              fullWidth
+              variant={username && password ? 'outlined' : 'contained'}
+              size='large'
+              color='secondary'
+              sx={{ fontWeight: '600', mt: 2 }}
+            >
               <Translate contentKey='login.register.create'>Create an account</Translate>
             </Button>
           </form>

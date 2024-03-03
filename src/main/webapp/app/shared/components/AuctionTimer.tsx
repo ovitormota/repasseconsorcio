@@ -10,6 +10,7 @@ export const AuctionTimer = ({ created }: any) => {
       <ListItemText
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', background: 'none !important' }}
         primary={`Esse leilão termina em:`}
+        primaryTypographyProps={{ fontSize: '12px !important' }}
         secondary={
           <Countdown
             date={expirationDate}

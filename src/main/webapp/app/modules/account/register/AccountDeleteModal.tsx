@@ -24,7 +24,11 @@ export const AccountDeleteModal = ({ setDeleteAccountModalOpen }) => {
 
   return (
     <React.Fragment>
-      <Dialog open={true} sx={{ backgroundColor: defaultTheme.palette.background.default }} PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 0 }, minWidth: { xs: '92vw', sm: '80vw', md: '50vw' } } }}>
+      <Dialog
+        open={true}
+        sx={{ backgroundColor: defaultTheme.palette.background.default }}
+        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 0 }, minWidth: { xs: '92vw', sm: '80vw', md: '500px' } } }}
+      >
         <DialogContent>
           <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ mb: 4 }}>
             <Translate contentKey='userManagement.delete.question'>Are you sure you want to delete this user?</Translate>

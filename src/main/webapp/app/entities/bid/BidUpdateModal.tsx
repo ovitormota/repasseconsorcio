@@ -62,14 +62,14 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: 1, minWidth: { xs: '92vw', sm: '80vw', md: '50vw' } },
+          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: 1, minWidth: { xs: '92vw', sm: '80vw', md: '500px' } },
         }}
         onClose={() => setOpenBidUpdateModal(false)}
       >
         <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between' }}>
           <Translate contentKey='repasseconsorcioApp.bid.home.createLabel'>Create a new Bid</Translate>
           <IconButton onClick={() => setOpenBidUpdateModal(false)}>
-            <CloseOutlined sx={{ color: defaultTheme.palette.text.secondary }} fontSize='small' />
+            <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
         </DialogTitle>
         <DialogContent>
@@ -90,7 +90,9 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
                 helperText={
                   <div>
                     {'O valor mínimo do lance é '}
-                    <strong style={{ color: defaultTheme.palette.secondary.main }}>{isEmptyObject(bidEntity) ? formatCurrency(bidEntity?.value + 1) : formatCurrency(entityConsortium?.minimumBidValue + 1)}</strong>
+                    <strong style={{ color: defaultTheme.palette.secondary.main }}>
+                      {isEmptyObject(bidEntity) ? formatCurrency(bidEntity?.value + 1) : formatCurrency(entityConsortium?.minimumBidValue + 1)}
+                    </strong>
                   </div>
                 }
                 onValueChange={(values) => setBidValue(+values.floatValue)}
@@ -104,7 +106,13 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
                 <Button onClick={() => setOpenBidUpdateModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
                   <Translate contentKey='entity.action.cancel'>Cancel</Translate>
                 </Button>
-                <Button type='submit' variant='contained' color='secondary' disabled={!bidValue || bidValue <= (isEmptyObject(bidEntity) ? bidEntity?.value + 1 : entityConsortium?.minimumBidValue + 1)} sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}>
+                <Button
+                  type='submit'
+                  variant='contained'
+                  color='secondary'
+                  disabled={!bidValue || bidValue <= (isEmptyObject(bidEntity) ? bidEntity?.value + 1 : entityConsortium?.minimumBidValue + 1)}
+                  sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}
+                >
                   <Translate contentKey='entity.action.save'>Save</Translate>
                 </Button>
               </DialogActions>

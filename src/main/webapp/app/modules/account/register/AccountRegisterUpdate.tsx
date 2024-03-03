@@ -88,7 +88,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal }) => 
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '50vw' } },
+          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '500px' } },
         }}
       >
         <DialogContent>
@@ -159,7 +159,13 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal }) => 
                 <Button variant='text' sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px', mr: 2 }} onClick={() => handleClose()}>
                   <Translate contentKey='entity.action.cancel'>Cancel</Translate>
                 </Button>
-                <Button type='submit' color='secondary' variant='contained' sx={{ fontWeight: '600', gap: 1 }} disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || !isEmailValid()}>
+                <Button
+                  type='submit'
+                  color='secondary'
+                  variant='contained'
+                  sx={{ fontWeight: '600', gap: 1 }}
+                  disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || !isEmailValid()}
+                >
                   <Translate contentKey='entity.action.save'>Save</Translate>
                   {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.common.black }} />}
                 </Button>

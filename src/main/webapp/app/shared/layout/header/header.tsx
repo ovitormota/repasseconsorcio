@@ -1,5 +1,5 @@
 import { AccountBalance, Add, Checklist, Gavel, HomeOutlined, Login, LogoutOutlined, ManageAccounts, MoreVert, PriceCheck } from '@mui/icons-material'
-import { ListItem, ListItemIcon, ListItemText, Menu, MenuItem, ThemeProvider, Tooltip, styled } from '@mui/material'
+import { ListItemIcon, Menu, MenuItem, ThemeProvider, Tooltip, styled } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
@@ -7,21 +7,24 @@ import Fab from '@mui/material/Fab'
 import IconButton from '@mui/material/IconButton'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
+import { AUTHORITIES } from 'app/config/constants'
 import { useAppSelector } from 'app/config/store'
-import { ConsortiumAdministratorUpdateModal } from 'app/entities/consortium-administrator/ConsortiumAdministratorUpdateModal'
 import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
 import { ConsortiumUpdateModal } from 'app/modules/consortium/ConsortiumUpdateModal'
 import { HomeLogin } from 'app/modules/login/HomeLogin'
 import Logout from 'app/modules/login/logout'
-import * as React from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { hasAnyAuthority } from 'app/shared/auth/private-route'
 import { defaultTheme } from 'app/shared/layout/themes'
-import { fontSize } from '@mui/system'
+import { showElement } from 'app/shared/util/data-utils'
+import * as React from 'react'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 
 export const Header = () => {
   const isAuthenticated = useAppSelector((state) => state.authentication.isAuthenticated)
+  const isAdmin = useAppSelector((state) => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN]))
   const account = useAppSelector((state) => state.authentication.account)
   const history = useHistory()
+  const location = useLocation()
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
@@ -52,6 +55,21 @@ export const Header = () => {
     } else {
       setOpenLoginModal(true)
     }
+  }
+
+  const setBorderColorByPath = (path: string[]) => {
+    const matchingPath = path.find((p) => location.pathname === p)
+    return matchingPath ? defaultTheme.palette.secondary.main : defaultTheme.palette.background.paper
+  }
+
+  const setIconColorByPath = (path: string[]) => {
+    const matchingPath = path.find((p) => location.pathname === p)
+    return matchingPath ? defaultTheme.palette.secondary.main : defaultTheme.palette.grey[600]
+  }
+
+  const setFontWeightByPath = (path: string[]) => {
+    const matchingPath = path.find((p) => location.pathname === p)
+    return matchingPath ? 600 : 500
   }
 
   return (
@@ -167,22 +185,160 @@ export const Header = () => {
             <Box>
               <Box sx={{ flexGrow: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2 }}>
                 <Tooltip title='Início' style={{ cursor: 'pointer' }} onClick={() => history.replace('/')}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                    <IconButton color='secondary'>
-                      <HomeOutlined style={{ fontSize: 30 }} />
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'space-around',
+                      minWidth: { xs: '50px', md: '100px' },
+                      borderTop: `2px solid ${setBorderColorByPath(['/'])}`,
+
+                      ':hover': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                  >
+                    <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
+                      <HomeOutlined style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/']) }} />
                     </IconButton>
-                    <Typography variant='overline' sx={{ color: defaultTheme.palette.common.black, mt: -1 }} fontSize={10}>
+                    <Typography variant='overline' sx={{ color: setIconColorByPath(['/']) }} fontSize={10} fontWeight={setFontWeightByPath(['/'])}>
                       Início
                     </Typography>
                   </Box>
                 </Tooltip>
 
-                <Tooltip title={'Menu'} style={{ cursor: 'pointer' }}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                    <IconButton onClick={handleOpenNavMenu} aria-controls={open ? 'admin-menu' : undefined} aria-haspopup='true' aria-expanded={open ? 'true' : undefined} color='secondary'>
-                      <MoreVert style={{ fontSize: 30 }} />
+                <Tooltip title='Meus Lances' style={{ cursor: 'pointer' }}>
+                  <Box
+                    sx={{
+                      display: { xs: 'none', md: 'flex' },
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minWidth: { xs: '50px', md: '100px' },
+                      borderTop: `2px solid ${setBorderColorByPath(['/bid'])}`,
+
+                      ':hover': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                    onClick={() => history.replace('/bid')}
+                    style={showElement(!isAdmin)}
+                  >
+                    <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
+                      <PriceCheck style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid']) }} />
                     </IconButton>
-                    <Typography variant='overline' sx={{ color: defaultTheme.palette.common.black, mt: -1 }} fontSize={10}>
+                    <Typography variant='overline' sx={{ color: setIconColorByPath(['/bid']) }} fontSize={10} fontWeight={setFontWeightByPath(['/bid'])}>
+                      Lances
+                    </Typography>
+                  </Box>
+                </Tooltip>
+
+                <Tooltip title='Minhas Propostas' style={{ cursor: 'pointer' }}>
+                  <Box
+                    sx={{
+                      display: { xs: 'none', md: 'flex' },
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minWidth: { xs: '50px', md: '100px' },
+                      borderTop: `2px solid ${setBorderColorByPath(['/my-proposals'])}`,
+
+                      ':hover': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                    onClick={() => history.replace('/my-proposals')}
+                    style={showElement(!isAdmin)}
+                  >
+                    <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
+                      <Gavel style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/my-proposals']) }} />
+                    </IconButton>
+                    <Typography variant='overline' sx={{ color: setIconColorByPath(['/my-proposals']) }} fontSize={10} fontWeight={setFontWeightByPath(['/my-proposals'])}>
+                      Propostas
+                    </Typography>
+                  </Box>
+                </Tooltip>
+
+                <Tooltip title='Administradoras' style={{ cursor: 'pointer' }}>
+                  <Box
+                    sx={{
+                      display: { xs: 'none', md: 'flex' },
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minWidth: { xs: '50px', md: '100px' },
+                      borderTop: `2px solid ${setBorderColorByPath(['/consortium-administrator'])}`,
+
+                      ':hover': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                    onClick={() => history.replace('/consortium-administrator')}
+                    style={showElement(isAdmin)}
+                  >
+                    <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
+                      <AccountBalance style={{ fontSize: 23 }} sx={{ color: setIconColorByPath(['/consortium-administrator']) }} />
+                    </IconButton>
+                    <Typography variant='overline' sx={{ color: setIconColorByPath(['/consortium-administrator']) }} fontSize={10} fontWeight={setFontWeightByPath(['/consortium-administrator'])}>
+                      Administradoras
+                    </Typography>
+                  </Box>
+                </Tooltip>
+
+                <Tooltip title='Aprovações' style={{ cursor: 'pointer' }}>
+                  <Box
+                    sx={{
+                      display: { xs: 'none', md: 'flex' },
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minWidth: { xs: '50px', md: '100px' },
+                      borderTop: `2px solid ${setBorderColorByPath(['/proposal-approvals'])}`,
+
+                      ':hover': {
+                        cursor: 'pointer',
+                      },
+                    }}
+                    onClick={() => history.replace('/proposal-approvals')}
+                    style={showElement(isAdmin)}
+                  >
+                    <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
+                      <Checklist style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/proposal-approvals']) }} />
+                    </IconButton>
+                    <Typography variant='overline' sx={{ color: setIconColorByPath(['/proposal-approvals']) }} fontSize={10} fontWeight={setFontWeightByPath(['/proposal-approvals'])}>
+                      Aprovações
+                    </Typography>
+                  </Box>
+                </Tooltip>
+
+                <Tooltip title={'Menu'} style={{ cursor: 'pointer' }}>
+                  <Box
+                    sx={{
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      display: { xs: 'flex', md: 'none' },
+                      minWidth: { xs: '50px', md: '100px' },
+                      borderTop: `2px solid ${setBorderColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator'])}`,
+                    }}
+                  >
+                    <IconButton
+                      onClick={handleOpenNavMenu}
+                      aria-controls={open ? 'admin-menu' : undefined}
+                      aria-haspopup='true'
+                      aria-expanded={open ? 'true' : undefined}
+                      color='secondary'
+                      sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}
+                    >
+                      <MoreVert style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator']) }} />
+                    </IconButton>
+                    <Typography
+                      variant='overline'
+                      sx={{ color: setIconColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator']) }}
+                      fontSize={10}
+                      fontWeight={setFontWeightByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator'])}
+                    >
                       Menu
                     </Typography>
                   </Box>
@@ -214,6 +370,7 @@ export const Header = () => {
                       color: defaultTheme.palette.secondary.main,
                     },
                   }}
+                  style={showElement(isAdmin)}
                 >
                   <ListItemIcon>
                     <AccountBalance fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
@@ -230,6 +387,7 @@ export const Header = () => {
                   }}
                   component={Link}
                   to='/proposal-approvals'
+                  style={showElement(isAdmin)}
                 >
                   <ListItemIcon>
                     <Checklist fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
@@ -238,7 +396,9 @@ export const Header = () => {
                 </MenuItem>
 
                 <MenuItem
-                  // onClick={() => setOpenLogoutModal(true)}
+                  component={Link}
+                  to='/bid'
+                  style={showElement(!isAdmin)}
                   sx={{
                     py: 2,
                     ':hover': {
@@ -249,11 +409,13 @@ export const Header = () => {
                   <ListItemIcon>
                     <PriceCheck fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
                   </ListItemIcon>
-                  <Typography variant='subtitle2'>Meus Lances</Typography>
+                  <Typography variant='subtitle2'>Lances</Typography>
                 </MenuItem>
 
                 <MenuItem
-                  // onClick={() => setOpenLogoutModal(true)}
+                  component={Link}
+                  to='/my-proposals'
+                  style={showElement(!isAdmin)}
                   sx={{
                     py: 2,
                     ':hover': {
@@ -264,7 +426,7 @@ export const Header = () => {
                   <ListItemIcon>
                     <Gavel fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
                   </ListItemIcon>
-                  <Typography variant='subtitle2'>Minhas Propostas</Typography>
+                  <Typography variant='subtitle2'>Propostas</Typography>
                 </MenuItem>
               </Menu>
             </Box>
@@ -275,9 +437,6 @@ export const Header = () => {
       {openLogoutModal && <Logout setOpenLogoutModal={setOpenLogoutModal} />}
       {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} />}
       {openConsortiumUpdateModal && <ConsortiumUpdateModal setOpenConsortiumUpdateModal={setOpenConsortiumUpdateModal} />}
-      {/* {openConsorciumAdministratorModal && (
-                <ConsortiumAdministratorUpdateModal setOpenConsorciumAdministratorModal={setOpenConsorciumAdministratorModal} />
-            )} */}
     </ThemeProvider>
   )
 }
