@@ -51,9 +51,9 @@ export const RequestPassword = ({ setOpenRequestModal }) => {
       <Dialog
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
-        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '500px' } } }}
+        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
       >
-        <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between' }}>
+        <DialogTitle width='100%' color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Translate contentKey='reset.request.title'>Reset your password</Translate>
           <IconButton onClick={() => setOpenRequestModal(false)}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />

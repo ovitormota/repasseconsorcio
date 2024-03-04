@@ -23,4 +23,7 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
 
     @Query("select bid from Bid bid where bid.user.login = ?#{principal.username}")
     Page<Bid> findAllByUserIsCurrentUser(Pageable pageable);
+
+    @Query("select bid from Bid bid where bid.consortium.id = :consortiumId")
+    Page<Bid> findAllByConsortiumId(@Param("consortiumId") Long consortiumId, Pageable pageable);
 }

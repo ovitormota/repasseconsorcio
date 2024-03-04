@@ -233,12 +233,12 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
               primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `}
               secondary={formatCurrency(installmentValue)}
             />
-            <ListItemText
+            {/* <ListItemText
               primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.minimumBidValue')} `}
               secondary={bids?.length ? findMinValue(bids) : formatCurrency(minimumBidValue)}
-            />
+            /> */}
 
             <ListItem sx={{ mt: 1, mb: -2 }}>
               <ListItemText

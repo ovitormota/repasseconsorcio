@@ -1,13 +1,12 @@
+import { createAsyncThunk, isFulfilled, isPending } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { createAsyncThunk, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit'
 import { loadMoreDataWhenScrolled, parseHeaderForLinks } from 'react-jhipster'
 
-import { cleanEntity } from 'app/shared/util/entity-utils'
-import { IQueryParams, createEntitySlice, EntityState, serializeAxiosError } from 'app/shared/reducers/reducer.utils'
+import { getEntities as getEntitiesConsortium, getEntity as getEntityConsortiumUpdate } from 'app/entities/consortium/consortium.reducer'
 import { IBid, defaultValue } from 'app/shared/model/bid.model'
-import { getEntities as getEntitiesConsortium } from 'app/entities/consortium/consortium.reducer'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
-import { getEntity as getEntityConsortiumUpdate } from 'app/entities/consortium/consortium.reducer'
+import { EntityState, IQueryParams, createEntitySlice, serializeAxiosError } from 'app/shared/reducers/reducer.utils'
+import { cleanEntity } from 'app/shared/util/entity-utils'
 
 const initialState: EntityState<IBid> = {
   loading: false,
@@ -26,6 +25,15 @@ const apiUrl = 'api/bids'
 
 export const getEntities = createAsyncThunk('bid/fetch_entity_list', async ({ page, size, sort }: IQueryParams) => {
   const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`
+  return axios.get<IBid[]>(requestUrl)
+})
+
+interface IBidByConsortium extends IQueryParams {
+  consortiumId: string | number
+}
+
+export const getEntitiesByConsortium = createAsyncThunk('bid/fetch_entity_list_by_consortium', async ({ consortiumId, page, size, sort }: IBidByConsortium) => {
+  const requestUrl = `${apiUrl}/consortium/${consortiumId}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`
   return axios.get<IBid[]>(requestUrl)
 })
 
@@ -48,7 +56,7 @@ export const createEntity = createAsyncThunk(
   async (entity: IBid, thunkAPI) => {
     const result = await axios.post<IBid>(apiUrl, cleanEntity(entity))
     thunkAPI.dispatch(getEntitiesConsortium({ page: 0, size: 20, sort: 'consortiumValue,asc', filterSegmentType: SegmentType.ALL }))
-    thunkAPI.dispatch(getEntityConsortiumUpdate(entity.consortium.id))
+    thunkAPI.dispatch(getEntitiesByConsortium({ consortiumId: entity.consortium.id, page: 0, size: 10, sort: 'id,desc' }))
     return result
   },
   { serializeError: serializeAxiosError }
@@ -110,13 +118,24 @@ export const BidSlice = createEntitySlice({
           totalItems: parseInt(action.payload.headers['x-total-count'], 10),
         }
       })
+      .addMatcher(isFulfilled(getEntitiesByConsortium), (state, action) => {
+        const links = parseHeaderForLinks(action.payload.headers.link)
+
+        return {
+          ...state,
+          loading: false,
+          links,
+          entities: loadMoreDataWhenScrolled(state.entities, action.payload.data, links),
+          totalItems: parseInt(action.payload.headers['x-total-count'], 10),
+        }
+      })
       .addMatcher(isFulfilled(createEntity, updateEntity, partialUpdateEntity), (state, action) => {
         state.updating = false
         state.loading = false
         state.updateSuccess = true
         state.entity = action.payload.data
       })
-      .addMatcher(isPending(getEntities, getEntity, getLatestEntity), (state) => {
+      .addMatcher(isPending(getEntities, getEntitiesByConsortium, getEntity, getLatestEntity), (state) => {
         state.errorMessage = null
         state.updateSuccess = false
         state.loading = true

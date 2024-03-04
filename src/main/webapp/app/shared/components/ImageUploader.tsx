@@ -71,7 +71,7 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
               borderRadius: '1em',
               background: defaultTheme.palette.primary.main,
               p: { sm: 2 },
-              minWidth: { xs: '92vw', sm: '80vw', md: '500px' },
+              minWidth: { xs: '92vw', sm: '80vw', md: '600px' },
               overflowX: 'hidden',
             },
           }}

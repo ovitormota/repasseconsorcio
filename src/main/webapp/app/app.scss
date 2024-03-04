@@ -2,53 +2,53 @@
 // Import Bootstrap source files from node_modules
 @import 'node_modules/bootstrap/scss/bootstrap';
 body {
-    background: #fafafa;
-    margin: 0;
+  background: #fafafa;
+  margin: 0;
 }
 
 a {
-    color: #533f03;
-    font-weight: bold;
+  color: #533f03;
+  font-weight: bold;
 }
 
 * {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  &:after,
+  &::before {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    &:after,
-    &::before {
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-    }
+  }
 }
 
 .app-container {
-    box-sizing: border-box;
-    .view-container {
-        width: 100%;
-        height: calc(100% - 40px);
-        overflow-y: auto;
-        overflow-x: hidden;
-        .card {
-            padding: 1rem;
-        }
-        .view-routes {
-            height: 100%;
-            > div {
-                height: 100%;
-            }
-        }
+  box-sizing: border-box;
+  .view-container {
+    width: 100%;
+    height: calc(100% - 40px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    .card {
+      padding: 1rem;
     }
+    .view-routes {
+      height: 100%;
+      > div {
+        height: 100%;
+      }
+    }
+  }
 }
 
 .fullscreen {
-    position: fixed;
-    top: 100px;
-    left: 0px;
-    width: 99% !important;
-    height: calc(100vh - 110px) !important;
-    margin: 5px;
-    z-index: 1000;
-    padding: 5px 25px 50px 25px !important;
+  position: fixed;
+  top: 100px;
+  left: 0px;
+  width: 99% !important;
+  height: calc(100vh - 110px) !important;
+  margin: 5px;
+  z-index: 1000;
+  padding: 5px 25px 50px 25px !important;
 }
 
 /* ==========================================================================
@@ -56,10 +56,10 @@ Browser Upgrade Prompt
 ========================================================================== */
 
 .browserupgrade {
-    margin: 0.2em 0;
-    background: #ccc;
-    color: #000;
-    padding: 0.2em 0;
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
 }
 
 /* ==========================================================================
@@ -67,18 +67,18 @@ Custom button styles
 ========================================================================== */
 
 .icon-button > .btn {
+  background-color: transparent;
+  border-color: transparent;
+  padding: 0.5rem;
+  line-height: 1rem;
+  &:hover {
     background-color: transparent;
     border-color: transparent;
-    padding: 0.5rem;
-    line-height: 1rem;
-    &:hover {
-        background-color: transparent;
-        border-color: transparent;
-    }
-    &:focus {
-        -webkit-box-shadow: none;
-        box-shadow: none;
-    }
+  }
+  &:focus {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
 }
 
 /* ==========================================================================
@@ -87,69 +87,69 @@ Generic styles
 
 /* Temporary workaround for availity-reactstrap-validation */
 .invalid-feedback {
-    display: inline;
+  display: inline;
 }
 
 /* other generic styles */
 
 .title {
-    font-size: 1.25em;
-    margin: 1px 10px 1px 10px;
+  font-size: 1.25em;
+  margin: 1px 10px 1px 10px;
 }
 
 .description {
-    font-size: 0.9em;
-    margin: 1px 10px 1px 10px;
+  font-size: 0.9em;
+  margin: 1px 10px 1px 10px;
 }
 
 .shadow {
-    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
-    border-radius: 2px;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+  border-radius: 2px;
 }
 
 .error {
-    color: white;
-    background-color: red;
+  color: white;
+  background-color: red;
 }
 
 .break {
-    white-space: normal;
-    word-break: break-all;
+  white-space: normal;
+  word-break: break-all;
 }
 
 .break-word {
-    white-space: normal;
-    word-break: keep-all;
+  white-space: normal;
+  word-break: keep-all;
 }
 
 .preserve-space {
-    white-space: pre-wrap;
+  white-space: pre-wrap;
 }
 
 /* padding helpers */
 
 @mixin pad($size, $side) {
-    @if $size== '' {
-        @if $side== '' {
-            .pad {
-                padding: 10px !important;
-            }
-        } @else {
-            .pad {
-                padding-#{$side}: 10px !important;
-            }
-        }
+  @if $size== '' {
+    @if $side== '' {
+      .pad {
+        padding: 10px !important;
+      }
     } @else {
-        @if $side== '' {
-            .pad-#{$size} {
-                padding: #{$size}px !important;
-            }
-        } @else {
-            .pad-#{$side}-#{$size} {
-                padding-#{$side}: #{$size}px !important;
-            }
-        }
+      .pad {
+        padding-#{$side}: 10px !important;
+      }
     }
+  } @else {
+    @if $side== '' {
+      .pad-#{$size} {
+        padding: #{$size}px !important;
+      }
+    } @else {
+      .pad-#{$side}-#{$size} {
+        padding-#{$side}: #{$size}px !important;
+      }
+    }
+  }
 }
 
 @include pad('', '');
@@ -199,15 +199,15 @@ Generic styles
 @include pad('100', 'left');
 
 @mixin no-padding($side) {
-    @if $side== 'all' {
-        .no-padding {
-            padding: 0 !important;
-        }
-    } @else {
-        .no-padding-#{$side} {
-            padding-#{$side}: 0 !important;
-        }
+  @if $side== 'all' {
+    .no-padding {
+      padding: 0 !important;
     }
+  } @else {
+    .no-padding-#{$side} {
+      padding-#{$side}: 0 !important;
+    }
+  }
 }
 
 @include no-padding('left');
@@ -219,18 +219,18 @@ Generic styles
 /* end of padding helpers */
 
 .no-margin {
-    margin: 0px;
+  margin: 0px;
 }
 @mixin voffset($size) {
-    @if $size== '' {
-        .voffset {
-            margin-top: 2px !important;
-        }
-    } @else {
-        .voffset-#{$size} {
-            margin-top: #{$size}px !important;
-        }
+  @if $size== '' {
+    .voffset {
+      margin-top: 2px !important;
     }
+  } @else {
+    .voffset-#{$size} {
+      margin-top: #{$size}px !important;
+    }
+  }
 }
 
 @include voffset('');
@@ -245,8 +245,8 @@ Generic styles
 @include voffset('150');
 
 .readonly {
-    background-color: #eee;
-    opacity: 1;
+  background-color: #eee;
+  opacity: 1;
 }
 
 /* ==========================================================================
@@ -254,24 +254,24 @@ make sure browsers use the pointer cursor for anchors, even with no href
 ========================================================================== */
 
 a:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .hand {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 button.anchor-btn {
-    background: none;
-    border: none;
-    padding: 0;
-    align-items: initial;
-    text-align: initial;
-    width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  align-items: initial;
+  text-align: initial;
+  width: 100%;
 }
 
 a.anchor-btn:hover {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 /* ==========================================================================
@@ -280,59 +280,94 @@ Metrics and Health styles
 
 #threadDump .popover,
 #healthCheck .popover {
-    top: inherit;
-    display: block;
-    font-size: 10px;
-    max-width: 1024px;
+  top: inherit;
+  display: block;
+  font-size: 10px;
+  max-width: 1024px;
 }
 
 .thread-dump-modal-lock {
-    max-width: 450px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  max-width: 450px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #healthCheck .popover {
-    margin-left: -50px;
+  margin-left: -50px;
 }
 
 .health-details {
-    min-width: 400px;
+  min-width: 400px;
 }
 
 /* bootstrap 3 input-group 100% width
 http://stackoverflow.com/questions/23436430/bootstrap-3-input-group-100-width */
 
 .width-min {
-    width: 1% !important;
+  width: 1% !important;
 }
 
 /* jhipster-needle-scss-add-main JHipster will add new css style */
 
 .ribbon {
-    background-color: rgba(255, 169, 81, 0.5);
-    left: -70px;
-    top: 10px;
-    -moz-transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
-    -o-transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
-    transform: rotate(-45deg);
-    overflow: hidden;
-    position: absolute;
-    white-space: nowrap;
-    z-index: 1;
+  background-color: rgba(255, 169, 81, 0.5);
+  left: -70px;
+  top: 10px;
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  z-index: 1;
+  pointer-events: none;
+  a {
+    color: #fff;
+    display: block;
+    font-weight: 500;
+    margin: 1px 0;
+    padding: 5px 50px;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: 0 0 5px #cccc;
     pointer-events: none;
-    a {
-        color: #fff;
-        display: block;
-        font-weight: 500;
-        margin: 1px 0;
-        padding: 5px 50px;
-        text-align: center;
-        text-decoration: none;
-        text-shadow: 0 0 5px #cccc;
-        pointer-events: none;
-    }
+  }
+}
+
+.hr-text {
+  line-height: 1em;
+  position: relative;
+  outline: 0;
+  border: 0;
+  color: black;
+  text-align: center;
+  height: 1em;
+  opacity: 0.6;
+  &:before {
+    content: '';
+    background: linear-gradient(to right, transparent, #818078, transparent);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+  }
+  &:after {
+    content: attr(data-content);
+    position: relative;
+    display: inline-block;
+    color: black;
+
+    padding: 0 0.5em;
+    line-height: 1em;
+    color: black;
+    background-color: #eff2f1;
+  }
+}
+
+.modal-user-terms > li {
+  margin-left: -1em !important;
 }

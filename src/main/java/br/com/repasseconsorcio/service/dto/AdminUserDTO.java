@@ -3,6 +3,7 @@ package br.com.repasseconsorcio.service.dto;
 import br.com.repasseconsorcio.config.Constants;
 import br.com.repasseconsorcio.domain.Authority;
 import br.com.repasseconsorcio.domain.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,6 +49,7 @@ public class AdminUserDTO {
 
     private Instant lastModifiedDate;
 
+    @JsonIgnore
     private String image;
 
     private Set<String> authorities;

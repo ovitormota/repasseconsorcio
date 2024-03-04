@@ -69,12 +69,12 @@ export const ConsortiumAdministratorUpdateModal = ({ setOpenConsorciumAdministra
             borderRadius: '1em',
             background: defaultTheme.palette.primary.main,
             p: { sm: 2 },
-            minWidth: { xs: '92vw', sm: '80vw', md: '500px' },
+            minWidth: { xs: '92vw', sm: '80vw', md: '600px' },
           },
         }}
         onClose={() => setOpenConsorciumAdministratorUpdateModal(false)}
       >
-        <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between' }}>
+        <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Translate contentKey={`repasseconsorcioApp.consortiumAdministrator.home.title.${consortiumAdministrator?.id ? 'edit' : 'create'}`}>Create or edit a consortium administrator</Translate>
           <IconButton onClick={() => setOpenConsorciumAdministratorUpdateModal(false)}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />

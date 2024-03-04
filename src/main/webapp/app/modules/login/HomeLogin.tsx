@@ -12,7 +12,11 @@ import { RequestPassword } from './RequestPassword'
 import { getEntities, reset } from 'app/entities/consortium/consortium.reducer'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 
-export const HomeLogin = ({ setOpenLoginModal }) => {
+interface IHomeLoginProps {
+  setOpenLoginModal: (open: boolean) => void
+}
+
+export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
   const dispatch = useDispatch()
 
   const [username, setUsername] = useState('')
@@ -57,7 +61,7 @@ export const HomeLogin = ({ setOpenLoginModal }) => {
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '500px' } },
+          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
         }}
         fullWidth
         onClose={() => isMDScreen && setOpenLoginModal(false)}
@@ -134,13 +138,7 @@ export const HomeLogin = ({ setOpenLoginModal }) => {
               <Translate contentKey='login.form.button.login'>Sign in</Translate>
             </Button>
 
-            <div style={{ display: 'flex', alignItems: 'center', margin: '10px' }}>
-              <div style={{ flexGrow: 1, background: defaultTheme.palette.primary.contrastText, height: '0.5px' }}></div>
-              <Typography color='textSecondary' fontWeight={'400'} sx={{ mx: 4 }}>
-                ou
-              </Typography>
-              <div style={{ flexGrow: 1, background: defaultTheme.palette.primary.contrastText, height: '0.5px' }}></div>
-            </div>
+            <hr className='hr-text' data-content='ou' />
 
             <Button
               onClick={() => setOpenAccountRegisterModal(true)}

@@ -103,11 +103,11 @@ const handleAxiosError = (error: any): void => {
         break
 
       case 500:
-        addErrorAlert('An unexpected error occurred', 'error.http.500')
+        response.data.detail ? toast.error(response.data.detail) : addErrorAlert('An unexpected error occurred', 'error.http.500')
         break
 
       default:
-        addErrorAlert('An unexpected error occurred', 'error.http.500')
+        addErrorAlert('An unexpected error occurred', response.data.detail)
         break
     }
   } else if (config && config.url === 'api/account' && config.method === 'get') {

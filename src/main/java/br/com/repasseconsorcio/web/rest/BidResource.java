@@ -187,4 +187,12 @@ public class BidResource {
         bidService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
+
+    @GetMapping("/bids/consortium/{consortiumId}")
+    public ResponseEntity<List<Bid>> getBidsByConsortiumId(@PathVariable Long consortiumId, Pageable pageable) {
+        log.debug("REST request to get Bids by Consortium Id : {}", consortiumId);
+        Page<Bid> page = bidService.findAllByConsortiumId(consortiumId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
 }

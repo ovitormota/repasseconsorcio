@@ -93,7 +93,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
       <Dialog
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
-        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '500px' } } }}
+        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
       >
         <DialogContent>
           <form onSubmit={handleValidSubmit}>

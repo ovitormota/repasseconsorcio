@@ -35,7 +35,7 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
       <Card
         variant='elevation'
         sx={{
-          width: '400px',
+          width: '330px',
           maxWidth: '90vw',
           background: 'transparent',
           ':hover': {
@@ -75,11 +75,6 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
               sx={{ my: 1, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `}
               secondary={formatCurrency(installmentValue)}
-            />
-            <ListItemText
-              sx={{ my: 1, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-              primary={`${translate('repasseconsorcioApp.consortium.minimumBidValue')} `}
-              secondary={formatCurrency(minimumBidValue)}
             />
 
             <ListItem sx={{ mt: 2, mb: 0 }}>

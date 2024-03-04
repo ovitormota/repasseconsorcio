@@ -15,6 +15,7 @@ import { getSession } from 'app/shared/reducers/authentication'
 import toast, { ToastBar, Toaster } from 'react-hot-toast'
 import { IconButton } from '@mui/material'
 import { Close } from '@mui/icons-material'
+import { AppThemeProvider } from './shared/context/ThemeContext'
 
 const baseHref = document.querySelector('base').getAttribute('href').replace(/\/$/, '')
 
@@ -35,27 +36,29 @@ export const App = () => {
 
   return (
     <Router basename={baseHref}>
-      <Toaster gutter={2} toastOptions={{ duration: 5000, style: { flexWrap: 'nowrap', maxWidth: '400px' } }}>
-        {(t) => (
-          <ToastBar toast={t}>
-            {({ icon, message }) => (
-              <>
-                {icon}
-                {message}
-                {t.type !== 'loading' && (
-                  <IconButton>
-                    <Close onClick={() => toast.dismiss(t.id)} fontSize='small' />
-                  </IconButton>
-                )}
-              </>
-            )}
-          </ToastBar>
-        )}
-      </Toaster>
-      <ErrorBoundary>
-        <AppRoutes />
-        <Header />
-      </ErrorBoundary>
+      <AppThemeProvider>
+        <Toaster gutter={2} position='top-center' toastOptions={{ duration: 5000, style: { flexWrap: 'nowrap', maxWidth: '400px' } }}>
+          {(t) => (
+            <ToastBar toast={t}>
+              {({ icon, message }) => (
+                <>
+                  {icon}
+                  {message}
+                  {t.type !== 'loading' && (
+                    <IconButton>
+                      <Close onClick={() => toast.dismiss(t.id)} fontSize='small' />
+                    </IconButton>
+                  )}
+                </>
+              )}
+            </ToastBar>
+          )}
+        </Toaster>
+        <ErrorBoundary>
+          <AppRoutes />
+          <Header />
+        </ErrorBoundary>
+      </AppThemeProvider>
     </Router>
   )
 }

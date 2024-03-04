@@ -16,7 +16,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { HomeLogin } from 'app/modules/login/HomeLogin'
 import { IBid } from 'app/shared/model/bid.model'
-import { formatCurrency } from 'app/shared/util/data-utils'
+import { formatCurrency, getStatusColor } from 'app/shared/util/data-utils'
 import { Spinner } from 'reactstrap'
 import { BidHistoryModal } from 'app/entities/bid/BidHistoryModal'
 import { getEntities } from './my-proposal.reducer'
@@ -249,10 +249,11 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
             </ListItem>
 
             <ListItem sx={{ p: 0, mb: -2 }}>
-              <AuctionTimer created={created} />
+              <AuctionTimer created={created} status={status} />
             </ListItem>
             <Chip
-              label={translate('repasseconsorcioApp.consortium.bids')}
+              label={translate(`repasseconsorcioApp.ConsortiumStatusType.${status}`)}
+              color={getStatusColor(status)}
               variant='filled'
               size='small'
               sx={{

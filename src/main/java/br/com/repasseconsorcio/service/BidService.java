@@ -37,6 +37,11 @@ public class BidService {
      */
     public Bid save(Bid bid) {
         log.debug("Request to save Bid : {}", bid);
+        User loggedUser = UserCustomUtility.getUserCustom();
+
+        if (bid.getConsortium().getUser().getId().equals(loggedUser.getId())) {
+            throw new ServiceException("Não é possível dar lance para si mesmo.");
+        }
 
         Optional<Bid> latestBid = bidRepository.findLatestBid(bid.getConsortium().getId());
 
@@ -44,7 +49,6 @@ public class BidService {
             throw new ServiceException("Existe um lance mais recente com valor igual ou superior ao informado.");
         }
 
-        User loggedUser = UserCustomUtility.getUserCustom();
         Instant now = Instant.now();
 
         bid.setUser(loggedUser);
@@ -120,5 +124,11 @@ public class BidService {
     public Optional<Bid> findLatestBid(Long consortiumId) {
         log.debug("Request to get latest Bid");
         return bidRepository.findLatestBid(consortiumId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Bid> findAllByConsortiumId(Long consortiumId, Pageable pageable) {
+        log.debug("Request to get all Bids by consortium id");
+        return bidRepository.findAllByConsortiumId(consortiumId, pageable);
     }
 }

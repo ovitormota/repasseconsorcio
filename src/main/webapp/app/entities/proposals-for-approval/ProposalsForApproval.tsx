@@ -17,6 +17,7 @@ import { defaultTheme } from 'app/shared/layout/themes'
 import { getEntities, partialUpdateEntity } from './proposals-for-approval.reducer'
 import { Spinner } from 'reactstrap'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
+import { getStatusColor } from 'app/shared/util/data-utils'
 
 export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -62,21 +63,6 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
     }
 
     dispatch(partialUpdateEntity(updatedConsortium))
-  }
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'CLOSED':
-        return 'error'
-      case 'OPEN':
-        return 'success'
-      case 'REGISTERED':
-        return 'warning'
-      case 'WON':
-        return 'primary'
-      default:
-        return 'default'
-    }
   }
 
   const formatCurrency = (value) => {

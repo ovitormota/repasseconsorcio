@@ -103,7 +103,9 @@
       "save": "Salvar",
       "view": "Visualizar",
       "register": "Cadastrar",
-      "add": "Adicionar"
+      "add": "Adicionar",
+      "accept": "Aceitar",
+      "confirm": "Confirmar"
     },
     "detail": {
       "field": "Campo",
