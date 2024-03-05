@@ -16,6 +16,7 @@ const initialState: EntityState<IConsortium> = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
+  count: 0,
 }
 
 const apiUrl = 'api/proposal-approvals'
@@ -44,9 +45,21 @@ export const partialUpdateEntity = createAsyncThunk(
         filterSegmentType: SegmentType.ALL,
       })
     )
+    thunkAPI.dispatch(getCountConsortiumsByProposalApprovals())
     return result
   },
   { serializeError: serializeAxiosError }
+)
+
+export const getCountConsortiumsByProposalApprovals = createAsyncThunk(
+  'proposal-approvals/count_consortiums',
+  async () => {
+    const requestUrl = `${apiUrl}/count`
+    return axios.get<number>(requestUrl)
+  },
+  {
+    serializeError: serializeAxiosError,
+  }
 )
 
 // slice
@@ -66,13 +79,16 @@ export const ProposalsForApproval = createEntitySlice({
           totalItems: parseInt(action.payload.headers['x-total-count'], 10),
         }
       })
+      .addMatcher(isFulfilled(getCountConsortiumsByProposalApprovals), (state, action) => {
+        state.count = action.payload.data
+      })
       .addMatcher(isFulfilled(partialUpdateEntity), (state, action) => {
         state.updating = false
         state.loading = false
         state.updateSuccess = true
         state.entity = action.payload.data
       })
-      .addMatcher(isPending(getEntities, partialUpdateEntity), (state) => {
+      .addMatcher(isPending(getEntities, getCountConsortiumsByProposalApprovals, partialUpdateEntity), (state) => {
         state.errorMessage = null
         state.updateSuccess = false
         state.loading = true

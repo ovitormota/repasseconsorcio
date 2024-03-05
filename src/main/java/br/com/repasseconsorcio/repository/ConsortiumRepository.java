@@ -48,4 +48,7 @@ public interface ConsortiumRepository extends JpaRepository<Consortium, Long> {
 
     @Query("SELECT consortium FROM Consortium consortium WHERE consortium.user.login = ?#{principal.username} AND consortium.segmentType = ?1")
     Page<Consortium> findAllMyProposalByUserIsCurrentUserAndSegmentType(SegmentType segmentType, Pageable pageable);
+
+    @Query("SELECT count(consortium) FROM Consortium consortium WHERE consortium.status = ?1")
+    Long countByStatusIn(List<ConsortiumStatusType> status);
 }

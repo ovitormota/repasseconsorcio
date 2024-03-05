@@ -173,4 +173,14 @@ public class ConsortiumService {
 
         return consortiumRepository.findAllMyProposalByUserIsCurrentUserAndSegmentType(filterSegmentType, pageable);
     }
+
+    public Long countByProposalApprovals() {
+        log.debug("Request to count all Consortiums by Proposal Approvals");
+
+        List<ConsortiumStatusType> statusTypes = new ArrayList<>();
+
+        statusTypes.add(ConsortiumStatusType.REGISTERED);
+
+        return consortiumRepository.countByStatusIn(statusTypes);
+    }
 }

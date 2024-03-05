@@ -1,5 +1,5 @@
 import { CloseOutlined, Visibility, VisibilityOff } from '@mui/icons-material'
-import { Alert, Button, Dialog, DialogContent, DialogTitle, IconButton, InputAdornment, TextField, ThemeProvider, Typography } from '@mui/material'
+import { Alert, Box, Button, Dialog, DialogContent, DialogTitle, IconButton, InputAdornment, TextField, ThemeProvider, Typography } from '@mui/material'
 import { useAppSelector } from 'app/config/store'
 import { login } from 'app/shared/reducers/authentication'
 import { useBreakpoints } from 'app/shared/util/useBreakpoints'
@@ -67,7 +67,9 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
         onClose={() => isMDScreen && setOpenLoginModal(false)}
       >
         <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} align='center'>
-          <Translate contentKey='login.title.login'>Sign in</Translate>
+          <Box sx={{ width: '100%', height: '100%' }}>
+            <img src='content/images/logo-repasse-completed-white.png' alt='Logo' width='100px' height='100px' />
+          </Box>
           <IconButton onClick={() => setOpenLoginModal(false)} sx={{ position: 'absolute', right: '10px', top: '10px' }}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
@@ -88,7 +90,7 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
               InputProps={{
                 style: { borderRadius: '8px' },
               }}
-              sx={{ mt: 3 }}
+              sx={{ mt: 2 }}
             />
 
             <TextField

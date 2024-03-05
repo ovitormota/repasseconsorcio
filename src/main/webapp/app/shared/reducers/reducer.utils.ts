@@ -1,49 +1,41 @@
-import {
-  AnyAction,
-  AsyncThunk,
-  ActionReducerMapBuilder,
-  createSlice,
-  SerializedError,
-  SliceCaseReducers,
-  ValidateSliceCaseReducers,
-} from '@reduxjs/toolkit';
-import { AxiosError } from 'axios';
+import { AnyAction, AsyncThunk, ActionReducerMapBuilder, createSlice, SerializedError, SliceCaseReducers, ValidateSliceCaseReducers } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 
 /**
  * Model for redux actions with pagination
  */
-export type IQueryParams = { query?: string; page?: number; size?: number; sort?: string };
+export type IQueryParams = { query?: string; page?: number; size?: number; sort?: string }
 
 /**
  * Useful types for working with actions
  */
-type GenericAsyncThunk = AsyncThunk<unknown, unknown, any>;
-export type PendingAction = ReturnType<GenericAsyncThunk['pending']>;
-export type RejectedAction = ReturnType<GenericAsyncThunk['rejected']>;
-export type FulfilledAction = ReturnType<GenericAsyncThunk['fulfilled']>;
+type GenericAsyncThunk = AsyncThunk<unknown, unknown, any>
+export type PendingAction = ReturnType<GenericAsyncThunk['pending']>
+export type RejectedAction = ReturnType<GenericAsyncThunk['rejected']>
+export type FulfilledAction = ReturnType<GenericAsyncThunk['fulfilled']>
 
 /**
  * Check if the async action type is rejected
  */
 export function isRejectedAction(action: AnyAction) {
-  return action.type.endsWith('/rejected');
+  return action.type.endsWith('/rejected')
 }
 
 /**
  * Check if the async action type is pending
  */
 export function isPendingAction(action: AnyAction) {
-  return action.type.endsWith('/pending');
+  return action.type.endsWith('/pending')
 }
 
 /**
  * Check if the async action type is completed
  */
 export function isFulfilledAction(action: AnyAction) {
-  return action.type.endsWith('/fulfilled');
+  return action.type.endsWith('/fulfilled')
 }
 
-const commonErrorProperties: Array<keyof SerializedError> = ['name', 'message', 'stack', 'code'];
+const commonErrorProperties: Array<keyof SerializedError> = ['name', 'message', 'stack', 'code']
 
 /**
  * serialize function used for async action errors,
@@ -52,30 +44,31 @@ const commonErrorProperties: Array<keyof SerializedError> = ['name', 'message', 
 export const serializeAxiosError = (value: any): AxiosError | SerializedError => {
   if (typeof value === 'object' && value !== null) {
     if (value.isAxiosError) {
-      return value;
+      return value
     } else {
-      const simpleError: SerializedError = {};
+      const simpleError: SerializedError = {}
       for (const property of commonErrorProperties) {
         if (typeof value[property] === 'string') {
-          simpleError[property] = value[property];
+          simpleError[property] = value[property]
         }
       }
 
-      return simpleError;
+      return simpleError
     }
   }
-  return { message: String(value) };
-};
+  return { message: String(value) }
+}
 
 export interface EntityState<T> {
-  loading: boolean;
-  errorMessage: string | null;
-  entities: ReadonlyArray<T>;
-  entity: T;
-  links?: any;
-  updating: boolean;
-  totalItems?: number;
-  updateSuccess: boolean;
+  loading: boolean
+  errorMessage: string | null
+  entities: ReadonlyArray<T>
+  entity: T
+  links?: any
+  updating: boolean
+  totalItems?: number
+  updateSuccess: boolean
+  count?: number
 }
 
 /**
@@ -89,11 +82,11 @@ export const createEntitySlice = <T, Reducers extends SliceCaseReducers<EntitySt
   extraReducers,
   skipRejectionHandling,
 }: {
-  name: string;
-  initialState: EntityState<T>;
-  reducers?: ValidateSliceCaseReducers<EntityState<T>, Reducers>;
-  extraReducers?: (builder: ActionReducerMapBuilder<EntityState<T>>) => void;
-  skipRejectionHandling?: boolean;
+  name: string
+  initialState: EntityState<T>
+  reducers?: ValidateSliceCaseReducers<EntityState<T>, Reducers>
+  extraReducers?: (builder: ActionReducerMapBuilder<EntityState<T>>) => void
+  skipRejectionHandling?: boolean
 }) => {
   return createSlice({
     name,
@@ -103,12 +96,12 @@ export const createEntitySlice = <T, Reducers extends SliceCaseReducers<EntitySt
        * Reset the entity state to initial state
        */
       reset() {
-        return initialState;
+        return initialState
       },
       ...reducers,
     },
     extraReducers(builder) {
-      extraReducers(builder);
+      extraReducers(builder)
       /*
        * Common rejection logic is handled here.
        * If you want to add your own rejcetion logic, pass `skipRejectionHandling: true`
@@ -116,12 +109,12 @@ export const createEntitySlice = <T, Reducers extends SliceCaseReducers<EntitySt
        * */
       if (!skipRejectionHandling) {
         builder.addMatcher(isRejectedAction, (state, action) => {
-          state.loading = false;
-          state.updating = false;
-          state.updateSuccess = false;
-          state.errorMessage = action.error.message;
-        });
+          state.loading = false
+          state.updating = false
+          state.updateSuccess = false
+          state.errorMessage = action.error.message
+        })
       }
     },
-  });
-};
+  })
+}

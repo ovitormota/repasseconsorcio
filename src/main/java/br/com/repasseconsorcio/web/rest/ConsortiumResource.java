@@ -205,4 +205,10 @@ public class ConsortiumResource {
 
         return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, consortium.getId().toString()));
     }
+
+    @GetMapping("/proposal-approvals/count")
+    public ResponseEntity<Long> countConsortiumsByProposalApprovals() {
+        log.debug("REST request to count Consortiums by Proposal Approvals");
+        return ResponseEntity.ok(consortiumService.countByProposalApprovals());
+    }
 }

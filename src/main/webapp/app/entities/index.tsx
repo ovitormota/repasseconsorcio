@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch } from 'react-router-dom'
+import { Redirect, Switch } from 'react-router-dom'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import ErrorBoundaryRoute from 'app/shared/error/error-boundary-route'
@@ -22,6 +22,8 @@ const Routes = ({ match }) => (
       <PrivateRoute path={`${match.url}proposal-approvals`} component={ProposalsForApproval} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path={`${match.url}my-proposals`} component={MyProposals} hasAnyAuthorities={[AUTHORITIES.USER]} />
       <ErrorBoundaryRoute path={'/'} exact component={Consortium} />
+      <Redirect path='*' to='/' />
+
       {/* jhipster-needle-add-route-path - JHipster will add routes here */}
     </Switch>
   </div>

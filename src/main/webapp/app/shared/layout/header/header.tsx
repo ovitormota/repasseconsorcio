@@ -1,5 +1,5 @@
 import { AccountBalance, Add, Checklist, Gavel, HomeOutlined, Login, LogoutOutlined, ManageAccounts, MoreVert, PriceCheck } from '@mui/icons-material'
-import { ListItemIcon, Menu, MenuItem, ThemeProvider, Tooltip, styled } from '@mui/material'
+import { Badge, ListItemIcon, Menu, MenuItem, ThemeProvider, Tooltip, styled } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
 import Avatar from '@mui/material/Avatar'
 import Box from '@mui/material/Box'
@@ -9,6 +9,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { AUTHORITIES } from 'app/config/constants'
 import { useAppSelector } from 'app/config/store'
+import { getCountConsortiumsByProposalApprovals } from 'app/entities/proposals-for-approval/proposals-for-approval.reducer'
 import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
 import { ConsortiumUpdateModal } from 'app/modules/consortium/ConsortiumUpdateModal'
 import { HomeLogin } from 'app/modules/login/HomeLogin'
@@ -19,6 +20,7 @@ import { defaultTheme } from 'app/shared/layout/themes'
 import { showElement } from 'app/shared/util/data-utils'
 import { useBreakpoints } from 'app/shared/util/useBreakpoints'
 import * as React from 'react'
+import { useDispatch } from 'react-redux'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 
 export const Header = () => {
@@ -26,8 +28,10 @@ export const Header = () => {
   const loading = useAppSelector((state) => state.authentication.loading)
   const isAdmin = useAppSelector((state) => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN]))
   const account = useAppSelector((state) => state.authentication.account)
+  const count = useAppSelector((state) => state.proposalsForApproval.count)
   const history = useHistory()
   const location = useLocation()
+  const dispatch = useDispatch()
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
@@ -36,6 +40,12 @@ export const Header = () => {
   const [openAccountRegisterUpdateModal, setOpenAccountRegisterUpdateModal] = React.useState(false)
   const [openLoginModal, setOpenLoginModal] = React.useState<boolean>(false)
   const { isMDScreen } = useBreakpoints()
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(getCountConsortiumsByProposalApprovals())
+    }
+  }, [isAuthenticated])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
@@ -316,7 +326,9 @@ export const Header = () => {
                       style={showElement(isAdmin)}
                     >
                       <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
-                        <Checklist style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/proposal-approvals']) }} />
+                        <Badge badgeContent={count} color='error'>
+                          <Checklist style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/proposal-approvals']) }} />
+                        </Badge>
                       </IconButton>
                       <Typography variant='overline' sx={{ color: setIconColorByPath(['/proposal-approvals']) }} fontSize={10} fontWeight={setFontWeightByPath(['/proposal-approvals'])}>
                         Aprovações
