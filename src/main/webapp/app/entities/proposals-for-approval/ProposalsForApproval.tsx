@@ -1,4 +1,4 @@
-import { FilterListRounded, SortRounded, SwapVertRounded } from '@mui/icons-material'
+import { ArrowOutward, Edit, FilterListRounded, SortRounded, SwapVertRounded } from '@mui/icons-material'
 import { AppBar, Avatar, Box, Button, Card, CardContent, Chip, IconButton, List, ListItem, ListItemIcon, ListItemText, MenuItem, Select, ThemeProvider, Tooltip, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { AuctionTimer } from 'app/shared/components/AuctionTimer'
@@ -18,6 +18,11 @@ import { getEntities, partialUpdateEntity } from './proposals-for-approval.reduc
 import { Spinner } from 'reactstrap'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
 import { getStatusColor } from 'app/shared/util/data-utils'
+import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
+import { IUser } from 'app/shared/model/user.model'
+import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
+import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
+import { SortingBox } from 'app/shared/components/SortingBox'
 
 export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -25,9 +30,12 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
   const history = props.history
 
   const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'consortiumValue'), props.location.search))
+  const [openAccountRegisterUpdateModal, setOpenAccountRegisterUpdateModal] = React.useState(false)
+  const [editUser, setEditUser] = useState<IUser | null>(null)
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [order, setOrder] = useState(ASC)
+  const sortTypes = ['consortiumAdministrator', 'numberOfInstallments', 'installmentValue', 'consortiumValue']
 
   const isAuthenticated = useAppSelector((state) => state.authentication.isAuthenticated)
   const consortiumList = useAppSelector((state) => state.proposalsForApproval.entities)
@@ -78,84 +86,6 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
     </div>
   )
 
-  const getSegmentType = () => {
-    return [SegmentType.ALL, SegmentType.AUTOMOBILE, SegmentType.REAL_ESTATE, SegmentType.OTHER]
-  }
-
-  const SortingBox = () => {
-    const sortTypes = ['consortiumAdministrator', 'numberOfInstallments', 'minimumBidValue', 'installmentValue', 'consortiumValue']
-
-    const handleSortChange = (event) => {
-      const selectedSortType = event.target.value
-      setCurrentSort(selectedSortType)
-    }
-
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Select
-          value={currentSort}
-          onChange={handleSortChange}
-          IconComponent={SortRounded}
-          color='secondary'
-          sx={{
-            height: '35px',
-            padding: '0 10px 0 0',
-            fontSize: { xs: '14px', sm: '15px' },
-          }}
-        >
-          {sortTypes.map((type, index) => (
-            <MenuItem key={index} value={type}>
-              {translate(`repasseconsorcioApp.consortium.${type}`)}
-            </MenuItem>
-          ))}
-        </Select>
-        <IconButton color='secondary' onClick={() => setOrder(order === ASC ? DESC : ASC)} sx={{ ml: { xs: 0, sm: 1 } }}>
-          <SwapVertRounded />
-        </IconButton>
-      </Box>
-    )
-  }
-
-  const SegmentFilter = () => {
-    const handleSegmentChange = (segment) => {
-      setFilterSegmentType((prevValue) => (segment === prevValue ? SegmentType.ALL : segment))
-    }
-
-    return !isSMScreen ? (
-      <Select
-        value={filterSegmentType}
-        IconComponent={FilterListRounded}
-        onChange={(event) => handleSegmentChange(event.target.value)}
-        sx={{ m: { xs: '3px', sm: 1 }, padding: '0 10px 0 0', height: '35px', fontSize: { xs: '14px', sm: '15px' } }}
-      >
-        {getSegmentType().map((segment, index) => (
-          <MenuItem key={index} value={segment}>
-            {translate(`repasseconsorcioApp.SegmentType.${segment}`)}
-          </MenuItem>
-        ))}
-      </Select>
-    ) : (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        {getSegmentType().map((segment, index) => (
-          <Box key={index} onClick={() => handleSegmentChange(segment)} sx={{ m: { xs: '3px', sm: 1 }, p: 0 }}>
-            <Chip
-              label={translate(`repasseconsorcioApp.SegmentType.${segment}`)}
-              variant={segment === filterSegmentType ? 'filled' : 'outlined'}
-              color='secondary'
-              sx={{
-                '&:hover': {
-                  backgroundColor: defaultTheme.palette.secondary.main,
-                  color: defaultTheme.palette.secondary.contrastText,
-                  cursor: 'pointer',
-                },
-              }}
-            />
-          </Box>
-        ))}
-      </Box>
-    )
-  }
-
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
     const {
       consortiumAdministrator: { name, image },
@@ -167,6 +97,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
       contemplationStatus,
       minimumBidValue,
       status,
+      user: { firstName },
     } = consortium
     return (
       <Card
@@ -177,10 +108,6 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
           maxWidth: '90vw',
           background: defaultTheme.palette.background.paper,
           boxShadow: '0px 2px 2px 1px rgba(64, 89, 173, 0.2)',
-          ':hover': {
-            backgroundColor: defaultTheme.palette.primary.main,
-            cursor: 'pointer',
-          },
         }}
       >
         <CardContent>
@@ -198,23 +125,55 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
                   alignItems: 'flex-start',
                   flexDirection: 'column-reverse',
                   background: 'none !important',
+                  padding: '0 !important',
                 }}
-                primary={`${translate('repasseconsorcioApp.consortium.segmentType')}: ${translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}`}
+                primaryTypographyProps={{
+                  fontSize: '12px !important',
+                  sx: {
+                    justifyContent: 'space-between',
+                    display: 'flex',
+                    width: '100%',
+                  },
+                }}
+                primary={
+                  <>
+                    <span>
+                      {translate('repasseconsorcioApp.consortium.segmentType')}: {translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}
+                    </span>
+                    <strong style={{ color: defaultTheme.palette.secondary.main }}>#{consortium?.id}</strong>
+                  </>
+                }
                 secondary={name}
               />
             </ListItem>
 
             <ListItemText
+              primaryTypographyProps={{ fontSize: '12px !important' }}
+              onClick={() => [setOpenAccountRegisterUpdateModal(true), setEditUser(consortium.user)]}
+              sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
+              primary={`${translate('repasseconsorcioApp.consortium.user')} `}
+              secondary={
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 1, cursor: 'pointer', ':hover': { scale: '1.1 !important' } }}>
+                  <Typography variant='caption'>{firstName}</Typography>
+                  <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
+                </Box>
+              }
+            />
+
+            <ListItemText
+              primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.numberOfInstallments')} `}
               secondary={numberOfInstallments}
             />
             <ListItemText
+              primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `}
               secondary={formatCurrency(installmentValue)}
             />
             <ListItemText
+              primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.minimumBidValue')} `}
               secondary={formatCurrency(minimumBidValue)}
@@ -234,7 +193,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
             <ListItem>
               <Button
                 sx={{
-                  mb: -2,
+                  mb: -3,
                   background: defaultTheme.palette.secondary.main,
                   color: defaultTheme.palette.secondary.contrastText,
                   boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
@@ -274,38 +233,12 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <AppBar
-        position='fixed'
-        sx={{
-          top: 0,
-          bottom: 'auto',
-          background: 'transparent',
-          boxShadow: 'none',
-          height: '60px',
-        }}
-      >
-        {!loading && (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%',
-              gap: { xs: 1, sm: 10 },
-            }}
-          >
-            {isAuthenticated && isMDScreen && (
-              <Tooltip title='Início' style={{ cursor: 'pointer', position: 'absolute', left: 20, top: 10 }} onClick={() => history.replace('/')}>
-                <Box sx={{ width: '110px', height: '40px', maxWidth: '110px' }}>
-                  <img src='content/images/logo-repasse-consorcio-text.png' alt='Logo' width='100%' height='100%' />
-                </Box>
-              </Tooltip>
-            )}
-            <SegmentFilter />
-            {!!consortiumList?.length && <SortingBox />}
-          </Box>
+      <AppBarComponent loading={loading}>
+        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} />
+        {!!consortiumList?.length && (
+          <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortium' />
         )}
-      </AppBar>
+      </AppBarComponent>
       {loading ? (
         <Loading />
       ) : (
@@ -350,6 +283,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
             </List>
           </InfiniteScroll>
           {!consortiumList?.length && <NoDataIndicator />}
+          {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} editUser={editUser} />}
         </Box>
       )}
     </ThemeProvider>

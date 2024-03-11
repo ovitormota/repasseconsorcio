@@ -21,7 +21,16 @@
       "id": "ID",
       "value": "Digite o valor do lance",
       "user": "User",
-      "consortium": "Consortium"
+      "consortium": "Consortium",
+      "table": {
+        "columns": {
+          "consortium.id": "Proposta",
+          "consortium.consortiumAdministrator.name": "Administradora",
+          "value": "Lance",
+          "consortium.segmentType": "Segmento",
+          "created": "Data do lance"
+        }
+      }
     }
   }
 }

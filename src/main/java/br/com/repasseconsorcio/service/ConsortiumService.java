@@ -62,7 +62,6 @@ public class ConsortiumService {
      */
     public Optional<Consortium> partialUpdate(Consortium consortium) {
         log.debug("Request to partially update Consortium : {}", consortium);
-        Instant now = Instant.now();
 
         return consortiumRepository
             .findById(consortium.getId())
@@ -71,7 +70,7 @@ public class ConsortiumService {
                     existingConsortium.setConsortiumValue(consortium.getConsortiumValue());
                 }
                 if (consortium.getCreated() != null) {
-                    existingConsortium.setCreated(now);
+                    existingConsortium.setCreated(consortium.getCreated());
                 }
                 if (consortium.getMinimumBidValue() != null) {
                     existingConsortium.setMinimumBidValue(consortium.getMinimumBidValue());

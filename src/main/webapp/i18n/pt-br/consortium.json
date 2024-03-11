@@ -8,6 +8,7 @@
         "createOrEditLabel": "Criar ou editar Consórcio",
         "notFound": "Nenhum Consórcio encontrado"
       },
+      "statusinvalid": "Não foi possível atualizar o status do Consórcio",
       "created": "Sua proposta foi criada com sucesso e está aguardando aprovação.",
       "updated": "A proposta foi atualizada com sucesso.",
       "deleted": "Um Consórcio foi excluído com o identificador {{ param }}",

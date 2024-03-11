@@ -5,6 +5,7 @@ import br.com.repasseconsorcio.domain.User;
 import br.com.repasseconsorcio.repository.BidRepository;
 import br.com.repasseconsorcio.service.util.UserCustomUtility;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
@@ -25,8 +26,11 @@ public class BidService {
 
     private final BidRepository bidRepository;
 
-    public BidService(BidRepository bidRepository) {
+    private final MailService mailService;
+
+    public BidService(BidRepository bidRepository, MailService mailService) {
         this.bidRepository = bidRepository;
+        this.mailService = mailService;
     }
 
     /**
@@ -38,6 +42,12 @@ public class BidService {
     public Bid save(Bid bid) {
         log.debug("Request to save Bid : {}", bid);
         User loggedUser = UserCustomUtility.getUserCustom();
+
+        Instant cutoffDate = bid.getConsortium().getCreated().plus(7, ChronoUnit.DAYS);
+
+        if (cutoffDate.isBefore(Instant.now())) {
+            throw new ServiceException("Não é possível dar lance em um consórcio que já encerrou.");
+        }
 
         if (bid.getConsortium().getUser().getId().equals(loggedUser.getId())) {
             throw new ServiceException("Não é possível dar lance para si mesmo.");
@@ -54,7 +64,13 @@ public class BidService {
         bid.setUser(loggedUser);
         bid.setCreated(now);
 
-        return bidRepository.save(bid);
+        Bid result = bidRepository.save(bid);
+
+        if (result.getId() != null) {
+            mailService.sendBidReceivedNotification(bid);
+        }
+
+        return result;
     }
 
     /**

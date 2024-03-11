@@ -4,7 +4,7 @@ export const defaultTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#EFF2F1',
+      main: '#ffffff',
       light: 'rgba(244, 244, 244, 0.5)',
       contrastText: 'rgb(43,43,43)',
     },
@@ -14,7 +14,7 @@ export const defaultTheme = createTheme({
       A100: 'rgba(64, 89, 173, 0.1)',
     },
     background: {
-      paper: '#EFF2F1',
+      paper: '#ffffff',
       default: 'rgba(244, 244, 244, 0.9)',
     },
     warning: {
@@ -54,7 +54,7 @@ export const defaultTheme = createTheme({
         outlined: {
           '&.MuiInputLabel-shrink': {
             color: '#4059AD',
-            background: '#EFF2F1',
+            background: '#ffffff',
           },
         },
       },
@@ -103,13 +103,54 @@ export const defaultTheme = createTheme({
     },
     MuiTableCell: {
       styleOverrides: {
+        root: {
+          textAlign: 'center',
+          border: 'none !important',
+          padding: '20px !important',
+          fontSize: 'clamp(0.7rem, 1.8vw, 0.9rem) !important',
+
+          '&:first-child': {
+            borderTopLeftRadius: '8px',
+            borderBottomLeftRadius: '8px',
+          },
+
+          '&:last-child': {
+            borderTopRightRadius: '8px',
+            borderBottomRightRadius: '8px',
+          },
+        },
         head: {
-          background: 'rgba(64, 89, 173, 0.1)',
-          fontWeight: '600',
+          padding: '20px !important',
         },
         body: {
-          fontWeight: '500',
           color: 'rgba(43, 43, 43, 0.7)',
+          margin: '10px !important',
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          ':hover': {
+            background: 'rgba(64, 89, 173, 0.1)',
+            cursor: 'pointer',
+          },
+        },
+        head: {
+          background: 'transparent',
+          cursor: 'default !important',
+          ':hover': {
+            background: 'transparent',
+          },
+        },
+      },
+    },
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          borderRadius: '8px',
+          mb: '150px',
+          cellSpacing: '0',
         },
       },
     },

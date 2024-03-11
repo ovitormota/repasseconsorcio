@@ -1,34 +1,35 @@
-import { FilterListRounded, SortRounded, SwapVertRounded } from '@mui/icons-material'
-import { AppBar, Avatar, Box, Button, Card, CardContent, Chip, IconButton, List, ListItem, ListItemIcon, ListItemText, MenuItem, Select, ThemeProvider, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, Card, CardContent, Chip, List, ListItem, ListItemIcon, ListItemText, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
+import { BidHistoryModal } from 'app/entities/bid/BidHistoryModal'
+import { HomeLogin } from 'app/modules/login/HomeLogin'
 import { AuctionTimer } from 'app/shared/components/AuctionTimer'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
+import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
+import { SortingBox } from 'app/shared/components/SortingBox'
+import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
+import { defaultTheme } from 'app/shared/layout/themes'
+import { IBid } from 'app/shared/model/bid.model'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
+import { formatCurrency, getStatusColor } from 'app/shared/util/data-utils'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
-import { ASC, DESC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
-import { useBreakpoints } from 'app/shared/util/useBreakpoints'
-import React, { Fragment, useEffect, useState } from 'react'
+import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
-import { defaultTheme } from 'app/shared/layout/themes'
-import { HomeLogin } from 'app/modules/login/HomeLogin'
-import { IBid } from 'app/shared/model/bid.model'
-import { formatCurrency, getStatusColor } from 'app/shared/util/data-utils'
 import { Spinner } from 'reactstrap'
-import { BidHistoryModal } from 'app/entities/bid/BidHistoryModal'
 import { getEntities } from './my-proposal.reducer'
 
 export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
-  const { isSMScreen, isMDScreen } = useBreakpoints()
-  const history = props.history
+
+  const sortTypes = ['consortiumAdministrator', 'numberOfInstallments', 'status', 'installmentValue', 'consortiumValue']
+  const scrollableBoxRef = useRef<HTMLDivElement>(null)
 
   const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'consortiumValue'), props.location.search))
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
-  const [openBidUpdateModal, setOpenBidUpdateModal] = useState(false)
   const [openBidHistoryModal, setOpenBidHistoryModal] = useState(false)
   const [entityConsortium, setEntityConsortium] = useState<IConsortium>(null)
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
@@ -67,93 +68,6 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
       <a href=''>{translate('repasseconsorcioApp.consortium.contemplationStatus.approved')}</a>
     </div>
   )
-
-  const getSegmentType = () => {
-    return [SegmentType.ALL, SegmentType.AUTOMOBILE, SegmentType.REAL_ESTATE, SegmentType.OTHER]
-  }
-
-  const SortingBox = () => {
-    const sortTypes = ['consortiumAdministrator', 'numberOfInstallments', 'minimumBidValue', 'installmentValue', 'consortiumValue']
-
-    const handleSortChange = (event) => {
-      const selectedSortType = event.target.value
-      setCurrentSort(selectedSortType)
-    }
-
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Select
-          value={currentSort}
-          onChange={handleSortChange}
-          IconComponent={SortRounded}
-          color='secondary'
-          sx={{
-            height: '35px',
-            padding: '0 10px 0 0',
-            fontSize: { xs: '14px', sm: '15px' },
-            borderColor: defaultTheme.palette.secondary.main,
-          }}
-        >
-          {sortTypes.map((type, index) => (
-            <MenuItem key={index} value={type}>
-              {translate(`repasseconsorcioApp.consortium.${type}`)}
-            </MenuItem>
-          ))}
-        </Select>
-        <IconButton color='secondary' onClick={() => setOrder(order === ASC ? DESC : ASC)} sx={{ ml: { xs: 0, sm: 1 } }}>
-          <SwapVertRounded />
-        </IconButton>
-      </Box>
-    )
-  }
-
-  const SegmentFilter = () => {
-    const handleSegmentChange = (segment) => {
-      setFilterSegmentType((prevValue) => (segment === prevValue ? SegmentType.ALL : segment))
-    }
-
-    return !isSMScreen ? (
-      <Select
-        value={filterSegmentType}
-        IconComponent={FilterListRounded}
-        onChange={(event) => handleSegmentChange(event.target.value)}
-        sx={{ m: { xs: '3px', sm: 1 }, padding: '0 10px 0 0', height: '35px', fontSize: { xs: '14px', sm: '15px' } }}
-      >
-        {getSegmentType().map((segment: SegmentType, index: number) => (
-          <MenuItem key={index} value={segment}>
-            {translate(`repasseconsorcioApp.SegmentType.${segment}`)}
-          </MenuItem>
-        ))}
-      </Select>
-    ) : (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        {getSegmentType().map((segment, index) => (
-          <Box key={index} onClick={() => handleSegmentChange(segment)} sx={{ m: '4px', p: 0 }}>
-            <Chip
-              label={translate(`repasseconsorcioApp.SegmentType.${segment}`)}
-              variant={segment === filterSegmentType ? 'filled' : 'outlined'}
-              color='secondary'
-              sx={{
-                '&:hover': {
-                  backgroundColor: defaultTheme.palette.secondary.main,
-                  color: defaultTheme.palette.secondary.contrastText,
-                  cursor: 'pointer',
-                },
-              }}
-            />
-          </Box>
-        ))}
-      </Box>
-    )
-  }
-
-  const handleBid = (consortium: IConsortium) => {
-    if (!isAuthenticated) {
-      setOpenLoginModal(true)
-    } else {
-      setEntityConsortium(consortium), setOpenBidUpdateModal(true)
-    }
-  }
 
   const handleBidHistory = (consortium: IConsortium) => {
     setOpenBidHistoryModal(true)
@@ -206,13 +120,27 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
               <ListItemText
                 sx={{
                   display: 'flex',
-                  justifyContent: 'right',
                   alignItems: 'flex-start',
                   flexDirection: 'column-reverse',
                   background: 'none !important',
+                  padding: '0 !important',
                 }}
-                primaryTypographyProps={{ fontSize: '12px !important' }}
-                primary={`${translate('repasseconsorcioApp.consortium.segmentType')}: ${translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}`}
+                primaryTypographyProps={{
+                  fontSize: '12px !important',
+                  sx: {
+                    justifyContent: 'space-between',
+                    display: 'flex',
+                    width: '100%',
+                  },
+                }}
+                primary={
+                  <>
+                    <span>
+                      {translate('repasseconsorcioApp.consortium.segmentType')}: {translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}
+                    </span>
+                    <strong style={{ color: defaultTheme.palette.secondary.main }}>#{consortium?.id}</strong>
+                  </>
+                }
                 secondary={name}
               />
             </ListItem>
@@ -261,11 +189,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
                 top: 0,
                 right: 0,
                 cursor: 'pointer',
-                color: defaultTheme.palette.secondary.contrastText,
-                background: defaultTheme.palette.warning.light,
-                '&:hover': {
-                  background: defaultTheme.palette.warning.main,
-                },
+                color: 'white',
               }}
             />
           </List>
@@ -276,42 +200,16 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <AppBar
-        position='fixed'
-        sx={{
-          top: 0,
-          bottom: 'auto',
-          background: 'transparent',
-          boxShadow: 'none',
-          height: '60px',
-        }}
-      >
-        {!loading && (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%',
-              gap: { xs: 1, sm: 10 },
-            }}
-          >
-            {isAuthenticated && isMDScreen && (
-              <Tooltip title='Início' style={{ cursor: 'pointer', position: 'absolute', left: 20, top: 10 }} onClick={() => history.replace('/')}>
-                <Box sx={{ width: '110px', height: '40px', maxWidth: '110px' }}>
-                  <img src='content/images/logo-repasse-consorcio-text.png' alt='Logo' width='100%' height='100%' />
-                </Box>
-              </Tooltip>
-            )}
-            <SegmentFilter />
-            {!!consortiumList?.length && <SortingBox />}
-          </Box>
+      <AppBarComponent loading={loading} scrollableBoxRef={scrollableBoxRef}>
+        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} />
+        {!!consortiumList?.length && (
+          <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortium' />
         )}
-      </AppBar>
+      </AppBarComponent>
       {loading ? (
         <Loading />
       ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', marginTop: '60px' }} id='scrollableDiv'>
+        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', paddingTop: '60px' }} id='scrollableDiv' ref={scrollableBoxRef}>
           <InfiniteScroll
             dataLength={consortiumList.length}
             next={handleLoadMore}

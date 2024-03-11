@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography'
 import { AUTHORITIES } from 'app/config/constants'
 import { useAppSelector } from 'app/config/store'
 import { getCountConsortiumsByProposalApprovals } from 'app/entities/proposals-for-approval/proposals-for-approval.reducer'
+import { AccountRegister } from 'app/modules/account/register/AccountRegister'
 import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
 import { ConsortiumUpdateModal } from 'app/modules/consortium/ConsortiumUpdateModal'
 import { HomeLogin } from 'app/modules/login/HomeLogin'
@@ -38,14 +39,15 @@ export const Header = () => {
   const [openConsortiumUpdateModal, setOpenConsortiumUpdateModal] = React.useState(false)
   const [openLogoutModal, setOpenLogoutModal] = React.useState(false)
   const [openAccountRegisterUpdateModal, setOpenAccountRegisterUpdateModal] = React.useState(false)
+  const [openAccountRegisterModal, setOpenAccountRegisterModal] = React.useState(false)
   const [openLoginModal, setOpenLoginModal] = React.useState<boolean>(false)
   const { isMDScreen } = useBreakpoints()
 
   React.useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && isAdmin) {
       dispatch(getCountConsortiumsByProposalApprovals())
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, isAdmin])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
@@ -62,11 +64,37 @@ export const Header = () => {
     setAnchorElUser(null)
   }
 
+  const handleDisplayFab = () => {
+    if (location.pathname === '/' && !isAdmin) {
+      return true
+    }
+    if (location.pathname === '/users' && isAdmin) {
+      return true
+    }
+    return false
+  }
+
   const handleFab = () => {
-    if (isAuthenticated) {
-      setOpenConsortiumUpdateModal(true)
-    } else {
-      setOpenLoginModal(true)
+    switch (location.pathname) {
+      case '/':
+        isAuthenticated ? setOpenConsortiumUpdateModal(true) : setOpenLoginModal(true)
+        break
+      case '/users':
+        setOpenAccountRegisterModal(true)
+        break
+      default:
+        break
+    }
+  }
+
+  const handleTooltipTextFab = () => {
+    switch (location.pathname) {
+      case '/':
+        return isAuthenticated ? 'Adicionar Proposta' : 'Entrar'
+      case '/users':
+        return 'Adicionar Usuário'
+      default:
+        return ''
     }
   }
 
@@ -182,25 +210,24 @@ export const Header = () => {
               )}
             </Box>
 
-            {!isAdmin && (
-              <Tooltip
-                title={isAuthenticated ? 'Adicionar Proposta' : 'Entrar'}
-                placement='top'
-                onClick={() => handleFab()}
-                sx={{
-                  background: defaultTheme.palette.primary.main,
-                  color: defaultTheme.palette.secondary.main,
-                  boxShadow: '0px 2px 2px #4059AD',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    backgroundColor: defaultTheme.palette.warning.main,
-                    color: defaultTheme.palette.primary.main,
-                  },
-                }}
-              >
-                <StyledFab>{isAuthenticated ? <Add sx={{ fontSize: 40 }} /> : <Login sx={{ fontSize: 30 }} />}</StyledFab>
-              </Tooltip>
-            )}
+            <Tooltip
+              title={handleTooltipTextFab()}
+              placement='top'
+              onClick={() => handleFab()}
+              style={showElement(handleDisplayFab())}
+              sx={{
+                background: defaultTheme.palette.primary.main,
+                color: defaultTheme.palette.secondary.main,
+                boxShadow: '0px 2px 2px #4059AD',
+                cursor: 'pointer',
+                '&:hover': {
+                  backgroundColor: defaultTheme.palette.warning.main,
+                  color: defaultTheme.palette.primary.main,
+                },
+              }}
+            >
+              <StyledFab>{isAuthenticated ? <Add sx={{ fontSize: 40 }} /> : <Login sx={{ fontSize: 30 }} />}</StyledFab>
+            </Tooltip>
             <Box sx={{ flexGrow: 1 }} />
 
             {isAuthenticated && (
@@ -233,7 +260,7 @@ export const Header = () => {
                   <Tooltip title='Meus Lances' style={{ cursor: 'pointer' }}>
                     <Box
                       sx={{
-                        display: { xs: 'none', md: 'flex' },
+                        display: { xs: 'none', lg: 'flex' },
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -251,7 +278,7 @@ export const Header = () => {
                         <PriceCheck style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid']) }} />
                       </IconButton>
                       <Typography variant='overline' sx={{ color: setIconColorByPath(['/bid']) }} fontSize={10} fontWeight={setFontWeightByPath(['/bid'])}>
-                        Lances
+                        Meus Lances
                       </Typography>
                     </Box>
                   </Tooltip>
@@ -259,7 +286,7 @@ export const Header = () => {
                   <Tooltip title='Minhas Propostas' style={{ cursor: 'pointer' }}>
                     <Box
                       sx={{
-                        display: { xs: 'none', md: 'flex' },
+                        display: { xs: 'none', lg: 'flex' },
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -277,7 +304,7 @@ export const Header = () => {
                         <Gavel style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/my-proposals']) }} />
                       </IconButton>
                       <Typography variant='overline' sx={{ color: setIconColorByPath(['/my-proposals']) }} fontSize={10} fontWeight={setFontWeightByPath(['/my-proposals'])}>
-                        Propostas
+                        Minhas Propostas
                       </Typography>
                     </Box>
                   </Tooltip>
@@ -285,7 +312,7 @@ export const Header = () => {
                   <Tooltip title='Administradoras' style={{ cursor: 'pointer' }}>
                     <Box
                       sx={{
-                        display: { xs: 'none', md: 'flex' },
+                        display: { xs: 'none', lg: 'flex' },
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -311,7 +338,7 @@ export const Header = () => {
                   <Tooltip title='Aprovações' style={{ cursor: 'pointer' }}>
                     <Box
                       sx={{
-                        display: { xs: 'none', md: 'flex' },
+                        display: { xs: 'none', lg: 'flex' },
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -336,15 +363,41 @@ export const Header = () => {
                     </Box>
                   </Tooltip>
 
+                  <Tooltip title='Usuários' style={{ cursor: 'pointer' }}>
+                    <Box
+                      sx={{
+                        display: { xs: 'none', lg: 'flex' },
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minWidth: { xs: '50px', md: '100px' },
+                        borderTop: `3px solid ${setBorderColorByPath(['/users'])}`,
+
+                        ':hover': {
+                          cursor: 'pointer',
+                        },
+                      }}
+                      onClick={() => history.replace('/users')}
+                      style={showElement(isAdmin)}
+                    >
+                      <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
+                        <ManageAccounts style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/users']) }} />
+                      </IconButton>
+                      <Typography variant='overline' sx={{ color: setIconColorByPath(['/users']) }} fontSize={10} fontWeight={setFontWeightByPath(['/users'])}>
+                        Usuários
+                      </Typography>
+                    </Box>
+                  </Tooltip>
+
                   <Tooltip title={'Menu'} style={{ cursor: 'pointer' }}>
                     <Box
                       sx={{
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        display: { xs: 'flex', md: 'none' },
+                        display: { xs: 'flex', lg: 'none' },
                         minWidth: { xs: '50px', md: '100px' },
-                        borderTop: `3px solid ${setBorderColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator'])}`,
+                        borderTop: `3px solid ${setBorderColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator', '/users'])}`,
                       }}
                     >
                       <IconButton
@@ -355,13 +408,16 @@ export const Header = () => {
                         color='secondary'
                         sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}
                       >
-                        <MoreVert style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator']) }} />
+                        <Badge badgeContent={anchorElNav === null ? count : 0} color='error'>
+                          <MoreVert style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator', '/users']) }} />
+                        </Badge>
                       </IconButton>
+
                       <Typography
                         variant='overline'
-                        sx={{ color: setIconColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator']) }}
+                        sx={{ color: setIconColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator', '/users']) }}
                         fontSize={10}
-                        fontWeight={setFontWeightByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator'])}
+                        fontWeight={setFontWeightByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator', '/users'])}
                       >
                         Menu
                       </Typography>
@@ -414,9 +470,28 @@ export const Header = () => {
                     style={showElement(isAdmin)}
                   >
                     <ListItemIcon>
-                      <Checklist fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
+                      <Badge badgeContent={count} color='error'>
+                        <Checklist fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
+                      </Badge>
                     </ListItemIcon>
                     <Typography variant='subtitle2'>Aprovações</Typography>
+                  </MenuItem>
+
+                  <MenuItem
+                    component={Link}
+                    to='/users'
+                    style={showElement(isAdmin)}
+                    sx={{
+                      py: 2,
+                      ':hover': {
+                        color: defaultTheme.palette.secondary.main,
+                      },
+                    }}
+                  >
+                    <ListItemIcon>
+                      <ManageAccounts fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
+                    </ListItemIcon>
+                    <Typography variant='subtitle2'>Usuários</Typography>
                   </MenuItem>
 
                   <MenuItem
@@ -433,7 +508,7 @@ export const Header = () => {
                     <ListItemIcon>
                       <PriceCheck fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
                     </ListItemIcon>
-                    <Typography variant='subtitle2'>Lances</Typography>
+                    <Typography variant='subtitle2'>Meus Lances</Typography>
                   </MenuItem>
 
                   <MenuItem
@@ -450,7 +525,7 @@ export const Header = () => {
                     <ListItemIcon>
                       <Gavel fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
                     </ListItemIcon>
-                    <Typography variant='subtitle2'>Propostas</Typography>
+                    <Typography variant='subtitle2'>Minhas Propostas</Typography>
                   </MenuItem>
                 </Menu>
               </Box>
@@ -460,7 +535,8 @@ export const Header = () => {
       )}
       {openLoginModal && <HomeLogin setOpenLoginModal={setOpenLoginModal} />}
       {openLogoutModal && <Logout setOpenLogoutModal={setOpenLogoutModal} />}
-      {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} />}
+      {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} editUser={account} />}
+      {openAccountRegisterModal && <AccountRegister setOpenAccountRegisterModal={setOpenAccountRegisterModal} />}
       {openConsortiumUpdateModal && <ConsortiumUpdateModal setOpenConsortiumUpdateModal={setOpenConsortiumUpdateModal} />}
     </ThemeProvider>
   )

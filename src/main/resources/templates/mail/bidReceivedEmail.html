@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="pt-br">
   <head>
-    <title th:text="#{email.reset.title}">Redefinição de Senha</title>
+    <title th:text="#{email.bidReceived.title}">Recebimento de Lance na Proposta</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
       body {
@@ -59,16 +59,16 @@
   </head>
   <body>
     <div id="container">
-      <h3 th:text="#{email.reset.title}">Redefinição de Senha</h3>
-      <p th:text="#{email.reset.greeting(${user.firstName})}">Prezado(a)</p>
-      <p th:text="#{email.reset.text1}">Para a sua conta Repasse Consórcio, foi solicitada a redefinição de senha. Por favor, clique no link abaixo para redefini-la:</p>
-      <p>
-        <a th:with="url=(@{|${baseUrl}/account/reset/finish?key=${user.resetKey}|})" th:href="${url}" th:text="${url}">Link de Redefinição</a>
+      <h3 th:text="#{email.bidReceived.title}">Recebimento de Lance na Proposta</h3>
+      <p th:text="#{email.bidReceived.greeting(${user.firstName})}">Prezado(a)</p>
+      <p th:text="#{email.bidReceived.text1(${consortium}, ${bid.value})}">
+        Recebemos o seu lance na proposta <strong th:text="${consortium.id}">ID da Proposta</strong> no valor de <strong th:text="${bid.value}">Valor do Lance</strong>.
       </p>
+      <p th:text="#{email.bidReceived.text2}">Agradecemos pela sua participação.</p>
       <footer>
-        <em th:text="#{email.reset.text2}">Atenciosamente, </em>
+        <em th:text="#{email.bidReceived.text3}">Atenciosamente, </em>
         <br />
-        <strong th:text="#{email.signature}">Equipe Repasse Consórcio.</strong>
+        <strong th:text="#{email.signature}">Nome da Sua Organização.</strong>
         <small th:text="#{email.bidReceived.description}"></small>
       </footer>
     </div>

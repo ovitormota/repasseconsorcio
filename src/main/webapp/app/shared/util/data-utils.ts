@@ -35,6 +35,17 @@ export const formatCreated = (value) => {
     .replace(',', ' -')
 }
 
+export const formatCreatedDate = (value) => {
+  const date = new Date(value)
+  return date
+    .toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit',
+    })
+    .replace(',', ' -')
+}
+
 export const showElement = (toShow: boolean) => {
   return { display: toShow ? '' : 'none' }
 }

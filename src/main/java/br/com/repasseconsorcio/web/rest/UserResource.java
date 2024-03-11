@@ -2,6 +2,7 @@ package br.com.repasseconsorcio.web.rest;
 
 import br.com.repasseconsorcio.config.Constants;
 import br.com.repasseconsorcio.domain.User;
+import br.com.repasseconsorcio.domain.enumeration.UserStatusType;
 import br.com.repasseconsorcio.repository.UserRepository;
 import br.com.repasseconsorcio.security.AuthoritiesConstants;
 import br.com.repasseconsorcio.service.MailService;
@@ -61,19 +62,7 @@ import tech.jhipster.web.util.ResponseUtil;
 public class UserResource {
 
     private static final List<String> ALLOWED_ORDERED_PROPERTIES = Collections.unmodifiableList(
-        Arrays.asList(
-            "id",
-            "login",
-            "firstName",
-            "lastName",
-            "email",
-            "activated",
-            "langKey",
-            "createdBy",
-            "createdDate",
-            "lastModifiedBy",
-            "lastModifiedDate"
-        )
+        Arrays.asList("id", "login", "firstName", "lastName", "email", "activated", "langKey", "createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate")
     );
 
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
@@ -149,10 +138,7 @@ public class UserResource {
         }
         Optional<AdminUserDTO> updatedUser = userService.updateUser(userDTO);
 
-        return ResponseUtil.wrapOrNotFound(
-            updatedUser,
-            HeaderUtil.createAlert(applicationName, "userManagement.updated", userDTO.getLogin())
-        );
+        return ResponseUtil.wrapOrNotFound(updatedUser, HeaderUtil.createAlert(applicationName, "userManagement.updated", userDTO.getLogin()));
     }
 
     /**
@@ -163,13 +149,13 @@ public class UserResource {
      */
     @GetMapping("/users")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<List<AdminUserDTO>> getAllUsers(Pageable pageable) {
+    public ResponseEntity<List<AdminUserDTO>> getAllUsers(Pageable pageable, UserStatusType filterStatusType) {
         log.debug("REST request to get all User for an admin");
         if (!onlyContainsAllowedProperties(pageable)) {
             return ResponseEntity.badRequest().build();
         }
 
-        final Page<AdminUserDTO> page = userService.getAllManagedUsers(pageable);
+        final Page<AdminUserDTO> page = userService.getAllManagedUsers(pageable, filterStatusType);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
-import { Button, Col, Row, Spinner, Table } from 'reactstrap'
+import { Button, Col, Row, Spinner } from 'reactstrap'
 import { Translate, TextFormat, getSortState, translate } from 'react-jhipster'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -10,7 +10,27 @@ import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants'
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
-import { AppBar, Avatar, Box, IconButton, List, ListItem, ListItemIcon, ListItemText, ThemeProvider, Tooltip, Typography } from '@mui/material'
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Chip,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  ThemeProvider,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { Loading } from 'app/shared/components/Loading'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -19,6 +39,9 @@ import { useBreakpoints } from 'app/shared/util/useBreakpoints'
 import { ConsortiumHistoryModal } from '../consortium/ConsortiumHistoryModal'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
+import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
+import { SortingBox } from 'app/shared/components/SortingBox'
+import { TypographStyled } from 'app/shared/layout/table/TableComponents'
 
 export const Bid = (props: RouteComponentProps<{ url: string }>) => {
   const { isSMScreen, isMDScreen } = useBreakpoints()
@@ -37,47 +60,28 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
   const loading = useAppSelector((state) => state.bid.loading)
   const links = useAppSelector((state) => state.bid.links)
   const [order, setOrder] = useState(DESC)
+  const [currentSort, setCurrentSort] = useState('value')
+  const sortTypes = isMDScreen ? ['consortium.consortiumAdministrator.name', 'created', 'value', 'consortium.id', 'consortium.segmentType'] : ['created', 'value', 'consortium.id']
 
   const getAllEntities = () => {
     dispatch(
       getEntities({
         page: paginationState.activePage - 1,
         size: paginationState.itemsPerPage,
-        sort: `${paginationState.sort},${order}`,
+        sort: currentSort + ',' + order,
       })
     )
   }
 
-  const resetAll = () => {
-    dispatch(reset())
-    setPaginationState({
-      ...paginationState,
-      activePage: 1,
-    })
-    dispatch(getEntities({}))
-  }
-
-  useEffect(() => {
-    resetAll()
-  }, [])
-
-  useEffect(() => {
-    if (updateSuccess) {
-      resetAll()
-    }
-  }, [updateSuccess])
-
   useEffect(() => {
     getAllEntities()
-  }, [paginationState.activePage])
+  }, [paginationState.activePage, currentSort, order])
 
   const handleLoadMore = () => {
-    if ((window as any).pageYOffset > 0) {
-      setPaginationState({
-        ...paginationState,
-        activePage: paginationState.activePage + 1,
-      })
-    }
+    setPaginationState({
+      ...paginationState,
+      activePage: paginationState.activePage + 1,
+    })
   }
 
   useEffect(() => {
@@ -89,39 +93,9 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <AppBar
-        position='fixed'
-        sx={{
-          top: 0,
-          bottom: 'auto',
-          background: 'transparent',
-          boxShadow: 'none',
-          height: '60px',
-        }}
-      >
-        {!loading && (
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%',
-              gap: { xs: 1, sm: 10 },
-            }}
-          >
-            {isAuthenticated && isMDScreen && (
-              <Tooltip title='Início' style={{ cursor: 'pointer', position: 'absolute', left: 20, top: 10 }} onClick={() => history.replace('/')}>
-                <Box sx={{ width: '110px', height: '40px', maxWidth: '110px' }}>
-                  <img src='content/images/logo-repasse-consorcio-text.png' alt='Logo' width='100%' height='100%' />
-                </Box>
-              </Tooltip>
-            )}
-            <Typography color='secondary' fontWeight={'600'} fontSize={'18px'}>
-              <Translate contentKey='repasseconsorcioApp.bid.home.myBids'>Meus lances</Translate>
-            </Typography>
-          </Box>
-        )}
-      </AppBar>
+      <AppBarComponent loading={loading} onClick={() => setOpenConsortiumHistoryModal(true)}>
+        <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.bid.table.columns' />
+      </AppBarComponent>
       {loading ? (
         <Loading />
       ) : (
@@ -136,17 +110,13 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
             pullDownToRefreshThreshold={50}
             pullDownToRefreshContent={
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Typography color='secondary' variant='overline'>
-                  Puxe para atualizar
-                </Typography>
+                <Typography color='secondary'>Puxe para atualizar</Typography>
                 <Spinner color='warning' size='small' />
               </Box>
             }
             releaseToRefreshContent={
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Typography color='secondary' variant='overline'>
-                  Solte para atualizar
-                </Typography>
+                <Typography color='secondary'>Solte para atualizar</Typography>
                 <Spinner color='warning' size='small' />
               </Box>
             }
@@ -156,43 +126,55 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
               </div>
             }
           >
-            <List sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', p: { xs: 0, sm: 3 } }}>
-              {!!bidList?.length &&
-                bidList?.map((bid, index) => (
-                  <Fragment key={index}>
-                    <ListItem
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        p: 2,
-                        borderRadius: '1em',
-                        ':hover': {
-                          background: defaultTheme.palette.secondary['A100'],
-                          cursor: 'pointer',
-                        },
-                      }}
-                      onClick={() => [setOpenConsortiumHistoryModal(true), setEntityConsortium(bid.consortium)]}
-                    >
-                      <ListItemIcon>
-                        <Avatar
-                          alt={bid?.consortium?.consortiumAdministrator?.name}
-                          src={bid?.consortium?.consortiumAdministrator?.name}
-                          sx={{ width: { sx: 40, sm: 50 }, height: { sx: 40, sm: 50 } }}
-                        />
-                      </ListItemIcon>
-                      {isMDScreen && (
-                        <>
-                          <ListItemText primary={bid?.consortium?.consortiumAdministrator?.name} />
-                          <ListItemText primary={translate(`repasseconsorcioApp.SegmentType.${bid.consortium?.segmentType}`)} />
-                        </>
-                      )}
-                      <ListItemText primary={formatCurrency(bid.value)} primaryTypographyProps={{ fontWeight: 'bold' }} />
-                      <ListItemText primary={formatCreated(bid.created)} />
-                    </ListItem>
-                  </Fragment>
-                ))}
-            </List>
+            <TableContainer sx={{ px: { xs: 0, sm: 2 } }}>
+              <Table>
+                <TableHead style={{ position: 'relative' }}>
+                  <TableRow>
+                    <TableCell>
+                      <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.id')}</TypographStyled>
+                    </TableCell>
+
+                    {isMDScreen && (
+                      <>
+                        <TableCell>
+                          <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.consortiumAdministrator.name')}</TypographStyled>
+                        </TableCell>
+                        <TableCell>
+                          <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.segmentType')}</TypographStyled>
+                        </TableCell>
+                      </>
+                    )}
+
+                    <TableCell>
+                      <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.value')}</TypographStyled>
+                    </TableCell>
+                    <TableCell>
+                      <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.created')}</TypographStyled>
+                    </TableCell>
+                  </TableRow>
+                  <hr className='hr-text' data-content='' style={{ position: 'absolute', width: '100%', top: '40px' }} />
+                </TableHead>
+
+                <TableBody>
+                  {bidList?.length &&
+                    bidList?.map((bid, index) => (
+                      <TableRow key={index} onClick={() => [setOpenConsortiumHistoryModal(true), setEntityConsortium(bid.consortium)]}>
+                        <TableCell>
+                          <Chip label={'#' + bid?.consortium?.id} color='secondary' variant='outlined' />
+                        </TableCell>
+                        {isMDScreen && (
+                          <>
+                            <TableCell>{bid.consortium?.consortiumAdministrator.name}</TableCell>
+                            <TableCell>{translate(`repasseconsorcioApp.SegmentType.${bid.consortium?.segmentType}`)}</TableCell>
+                          </>
+                        )}
+                        <TableCell>{formatCurrency(bid.value)}</TableCell>
+                        <TableCell>{formatCreated(bid.created)}</TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </InfiniteScroll>
           {!bidList?.length && <NoDataIndicator />}
         </Box>

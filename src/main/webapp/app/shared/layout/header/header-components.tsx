@@ -1,33 +1,34 @@
-import React from 'react';
-import { Translate } from 'react-jhipster';
+import React from 'react'
+import { Translate } from 'react-jhipster'
 
-import { NavItem, NavLink, NavbarBrand } from 'reactstrap';
-import { NavLink as Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { NavItem, NavLink, NavbarBrand } from 'reactstrap'
+import { NavLink as Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Typography } from '@mui/material'
 
-export const BrandIcon = props => (
-  <div {...props} className="brand-icon">
-    <img src="content/images/logo-jhipster.png" alt="Logo" />
+export const BrandIcon = (props) => (
+  <div {...props} className='brand-icon'>
+    <img src='content/images/logo-jhipster.png' alt='Logo' />
   </div>
-);
+)
 
 export const Brand = () => (
-  <NavbarBrand tag={Link} to="/" className="brand-logo">
+  <NavbarBrand tag={Link} to='/' className='brand-logo'>
     <BrandIcon />
-    <span className="brand-title">
-      <Translate contentKey="global.title">Repasseconsorcio</Translate>
+    <span className='brand-title'>
+      <Translate contentKey='global.title'>Repasseconsorcio</Translate>
     </span>
-    <span className="navbar-version">{VERSION}</span>
+    <span className='navbar-version'>{VERSION}</span>
   </NavbarBrand>
-);
+)
 
 export const Home = () => (
   <NavItem>
-    <NavLink tag={Link} to="/" className="d-flex align-items-center">
-      <FontAwesomeIcon icon="home" />
+    <NavLink tag={Link} to='/' className='d-flex align-items-center'>
+      <FontAwesomeIcon icon='home' />
       <span>
-        <Translate contentKey="global.menu.home">Home</Translate>
+        <Translate contentKey='global.menu.home'>Home</Translate>
       </span>
     </NavLink>
   </NavItem>
-);
+)

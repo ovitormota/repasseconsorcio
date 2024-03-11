@@ -105,7 +105,8 @@
       "register": "Cadastrar",
       "add": "Adicionar",
       "accept": "Aceitar",
-      "confirm": "Confirmar"
+      "confirm": "Confirmar",
+      "sorting": "Ordenar"
     },
     "detail": {
       "field": "Campo",

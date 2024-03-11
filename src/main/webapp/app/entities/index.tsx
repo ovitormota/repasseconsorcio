@@ -11,12 +11,14 @@ import { AUTHORITIES } from 'app/config/constants'
 import PrivateRoute from 'app/shared/auth/private-route'
 import { ProposalsForApproval } from 'app/entities/proposals-for-approval/ProposalsForApproval'
 import { MyProposals } from 'app/modules/proposals/MyProposals'
+import UserManagement from 'app/modules/administration/user-management/user-management'
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 const Routes = ({ match }) => (
   <div>
     <Switch>
       {/* prettier-ignore */}
+      <PrivateRoute path={`${match.url}users`} component={UserManagement} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path={`${match.url}consortium-administrator`} component={ConsortiumAdministrator} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <ErrorBoundaryRoute path={`${match.url}bid`} component={Bid} />
       <PrivateRoute path={`${match.url}proposal-approvals`} component={ProposalsForApproval} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />

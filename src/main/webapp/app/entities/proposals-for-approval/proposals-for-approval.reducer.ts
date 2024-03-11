@@ -46,6 +46,7 @@ export const partialUpdateEntity = createAsyncThunk(
       })
     )
     thunkAPI.dispatch(getCountConsortiumsByProposalApprovals())
+    thunkAPI.dispatch(getEntities({ page: 0, size: 10, sort: 'consortiumValue,asc', filterSegmentType: SegmentType.ALL }))
     return result
   },
   { serializeError: serializeAxiosError }

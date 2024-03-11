@@ -1,138 +1,151 @@
-import axios from 'axios';
-import { createAsyncThunk, createSlice, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
+import axios from 'axios'
+import { createAsyncThunk, createSlice, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit'
 
-import { IUser, defaultValue } from 'app/shared/model/user.model';
-import { IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
-import { clearAuthentication, getAccount, logout, logoutSession } from 'app/shared/reducers/authentication';
+import { IUser, defaultValue } from 'app/shared/model/user.model'
+import { IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils'
+import { clearAuthentication, getAccount, logout, logoutSession } from 'app/shared/reducers/authentication'
+import { loadMoreDataWhenScrolled, parseHeaderForLinks } from 'react-jhipster'
+import { StatusType } from 'app/shared/model/enumerations/status.model'
 
 const initialState = {
-    loading: false,
-    errorMessage: null,
-    users: [] as ReadonlyArray<IUser>,
-    authorities: [] as any[],
-    user: defaultValue,
-    updating: false,
-    updateSuccess: false,
-    totalItems: 0,
-    successMessage: null,
-};
+  loading: false,
+  errorMessage: null,
+  users: [] as ReadonlyArray<IUser>,
+  authorities: [] as any[],
+  user: defaultValue,
+  updating: false,
+  updateSuccess: false,
+  totalItems: 0,
+  links: { next: 0 },
+  successMessage: null,
+}
 
-const apiUrl = 'api/users';
-const adminUrl = 'api/admin/users';
+const apiUrl = 'api/users'
+const adminUrl = 'api/admin/users'
 
 // Async Actions
 
 export const getUsers = createAsyncThunk('userManagement/fetch_users', async ({ page, size, sort }: IQueryParams) => {
-    const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
-    return axios.get<IUser[]>(requestUrl);
-});
+  const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`
+  return axios.get<IUser[]>(requestUrl)
+})
 
-export const getUsersAsAdmin = createAsyncThunk('userManagement/fetch_users_as_admin', async ({ page, size, sort }: IQueryParams) => {
-    const requestUrl = `${adminUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
-    return axios.get<IUser[]>(requestUrl);
-});
+interface IGetUsersAsAdmin extends IQueryParams {
+  filterStatusType?: StatusType
+}
+
+export const getUsersAsAdmin = createAsyncThunk('userManagement/fetch_users_as_admin', async ({ page, size, sort, filterStatusType }: IGetUsersAsAdmin) => {
+  const requestUrl = `${adminUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&filterStatusType=${filterStatusType}` : ''}`
+  return axios.get<IUser[]>(requestUrl)
+})
 
 export const getRoles = createAsyncThunk('userManagement/fetch_roles', async () => {
-    return axios.get<any[]>(`api/authorities`);
-});
+  return axios.get<any[]>(`api/authorities`)
+})
 
 export const getUser = createAsyncThunk(
-    'userManagement/fetch_user',
-    async (id: string) => {
-        const requestUrl = `${adminUrl}/${id}`;
-        return axios.get<IUser>(requestUrl);
-    },
-    { serializeError: serializeAxiosError }
-);
+  'userManagement/fetch_user',
+  async (id: string) => {
+    const requestUrl = `${adminUrl}/${id}`
+    return axios.get<IUser>(requestUrl)
+  },
+  { serializeError: serializeAxiosError }
+)
 
 export const createUser = createAsyncThunk(
-    'userManagement/create_user',
-    async (user: IUser, thunkAPI) => {
-        const result = await axios.post<IUser>(adminUrl, user);
-        thunkAPI.dispatch(getUsersAsAdmin({}));
-        return result;
-    },
-    { serializeError: serializeAxiosError }
-);
+  'userManagement/create_user',
+  async (user: IUser, thunkAPI) => {
+    const result = await axios.post<IUser>(adminUrl, user)
+    thunkAPI.dispatch(getUsersAsAdmin({}))
+    return result
+  },
+  { serializeError: serializeAxiosError }
+)
 
 export const updateUser = createAsyncThunk(
-    'userManagement/update_user',
-    async (user: IUser, thunkAPI) => {
-        const result = await axios.put<IUser>(apiUrl, user);
-        thunkAPI.dispatch(getAccount());
-        return result;
-    },
-    { serializeError: serializeAxiosError }
-);
+  'userManagement/update_user',
+  async (user: IUser, thunkAPI) => {
+    const result = await axios.put<IUser>(apiUrl, user)
+    thunkAPI.dispatch(getAccount())
+    return result
+  },
+  { serializeError: serializeAxiosError }
+)
 
 export const deleteUser = createAsyncThunk(
-    'userManagement/delete_user',
-    async (login: string, thunkAPI) => {
-        const requestUrl = `${apiUrl}/${login}`;
-        const result = await axios.delete<IUser>(requestUrl);
-        thunkAPI.dispatch(logout());
+  'userManagement/delete_user',
+  async (login: string, thunkAPI) => {
+    const requestUrl = `${apiUrl}/${login}`
+    const result = await axios.delete<IUser>(requestUrl)
+    thunkAPI.dispatch(logout())
 
-        return result;
-    },
-    { serializeError: serializeAxiosError }
-);
+    return result
+  },
+  { serializeError: serializeAxiosError }
+)
 
-export type UserManagementState = Readonly<typeof initialState>;
+export type UserManagementState = Readonly<typeof initialState>
 
 export const UserManagementSlice = createSlice({
-    name: 'userManagement',
-    initialState: initialState as UserManagementState,
-    reducers: {
-        reset() {
-            return initialState;
-        },
+  name: 'userManagement',
+  initialState: initialState as UserManagementState,
+  reducers: {
+    reset() {
+      return initialState
     },
-    extraReducers(builder) {
-        builder
-            .addCase(getRoles.fulfilled, (state, action) => {
-                state.authorities = action.payload.data;
-            })
-            .addCase(getUser.fulfilled, (state, action) => {
-                state.loading = false;
-                state.user = action.payload.data;
-            })
-            .addCase(deleteUser.fulfilled, state => {
-                state.updating = false;
-                state.updateSuccess = true;
-                state.user = defaultValue;
-            })
-            .addMatcher(isFulfilled(getUsers, getUsersAsAdmin), (state, action) => {
-                state.loading = false;
-                state.users = action.payload.data;
-                state.totalItems = parseInt(action.payload.headers['x-total-count'], 10);
-            })
-            .addMatcher(isFulfilled(createUser, updateUser), (state, action) => {
-                state.updating = false;
-                state.loading = false;
-                state.updateSuccess = true;
-                state.user = action.payload.data;
-                state.successMessage = 'User has been created successfully';
-            })
-            .addMatcher(isPending(getUsers, getUsersAsAdmin, getUser), state => {
-                state.errorMessage = null;
-                state.updateSuccess = false;
-                state.loading = true;
-            })
-            .addMatcher(isPending(createUser, updateUser, deleteUser), state => {
-                state.errorMessage = null;
-                state.updateSuccess = false;
-                state.updating = true;
-            })
-            .addMatcher(isRejected(getUsers, getUsersAsAdmin, getUser, getRoles, createUser, updateUser, deleteUser), (state, action) => {
-                state.loading = false;
-                state.updating = false;
-                state.updateSuccess = false;
-                state.errorMessage = action.error.message;
-            });
-    },
-});
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(getRoles.fulfilled, (state, action) => {
+        state.authorities = action.payload.data
+      })
+      .addCase(getUser.fulfilled, (state, action) => {
+        state.loading = false
+        state.user = action.payload.data
+      })
+      .addCase(deleteUser.fulfilled, (state) => {
+        state.updating = false
+        state.updateSuccess = true
+        state.user = defaultValue
+      })
+      .addMatcher(isFulfilled(getUsers, getUsersAsAdmin), (state, action) => {
+        const links = parseHeaderForLinks(action.payload.headers.link)
 
-export const { reset } = UserManagementSlice.actions;
+        return {
+          ...state,
+          loading: false,
+          links,
+          users: loadMoreDataWhenScrolled(state.users, action.payload.data, links),
+          totalItems: parseInt(action.payload.headers['x-total-count'], 10),
+        }
+      })
+      .addMatcher(isFulfilled(createUser, updateUser), (state, action) => {
+        state.updating = false
+        state.loading = false
+        state.updateSuccess = true
+        state.user = action.payload.data
+        state.successMessage = 'User has been created successfully'
+      })
+      .addMatcher(isPending(getUsers, getUsersAsAdmin, getUser), (state) => {
+        state.errorMessage = null
+        state.updateSuccess = false
+        state.loading = true
+      })
+      .addMatcher(isPending(createUser, updateUser, deleteUser), (state) => {
+        state.errorMessage = null
+        state.updateSuccess = false
+        state.updating = true
+      })
+      .addMatcher(isRejected(getUsers, getUsersAsAdmin, getUser, getRoles, createUser, updateUser, deleteUser), (state, action) => {
+        state.loading = false
+        state.updating = false
+        state.updateSuccess = false
+        state.errorMessage = action.error.message
+      })
+  },
+})
+
+export const { reset } = UserManagementSlice.actions
 
 // Reducer
-export default UserManagementSlice.reducer;
+export default UserManagementSlice.reducer

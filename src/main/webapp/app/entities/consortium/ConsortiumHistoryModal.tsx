@@ -36,10 +36,10 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
         variant='elevation'
         sx={{
           width: '330px',
-          maxWidth: '90vw',
+          maxWidth: '80vw',
           background: 'transparent',
           ':hover': {
-            backgroundColor: defaultTheme.palette.primary.main,
+            backgroundColor: defaultTheme.palette.background.paper,
             cursor: 'pointer',
             scale: '1 !important',
           },
@@ -59,9 +59,24 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
                   justifyContent: 'right',
                   alignItems: 'flex-start',
                   flexDirection: 'column-reverse',
-                  background: 'none !important',
+                  padding: '0 !important',
                 }}
-                primary={`${translate('repasseconsorcioApp.consortium.segmentType')}: ${translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}`}
+                primaryTypographyProps={{
+                  fontSize: '12px !important',
+                  sx: {
+                    justifyContent: 'space-between',
+                    display: 'flex',
+                    width: '100%',
+                  },
+                }}
+                primary={
+                  <>
+                    <span>
+                      {translate('repasseconsorcioApp.consortium.segmentType')}: {translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}
+                    </span>
+                    <strong style={{ color: defaultTheme.palette.secondary.main }}>#{consortium?.id}</strong>
+                  </>
+                }
                 secondary={name}
               />
             </ListItem>

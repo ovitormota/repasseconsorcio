@@ -97,7 +97,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
       >
         <DialogContent>
           <form onSubmit={handleValidSubmit}>
-            <ImageUploader onUpload={handleUpload} currentImage={fields.image} />
+            <ImageUploader onUpload={handleUpload} currentImage={fields.image} name={null} />
             {visibleFields.includes('firstName') && (
               <TextField
                 type='text'

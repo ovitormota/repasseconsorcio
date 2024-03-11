@@ -1,11 +1,11 @@
 {
-    "repasseconsorcioApp": {
-        "ConsortiumStatusType": {
-            "null": "",
-            "CLOSED": "ENCERRADO",
-            "OPEN": "ABERTO",
-            "REGISTERED": "PENDENTE",
-            "WON": "CONTEMPLADO"
-        }
+  "repasseconsorcioApp": {
+    "ConsortiumStatusType": {
+      "null": "",
+      "CLOSED": "Encerrado",
+      "OPEN": "Aberto",
+      "REGISTERED": "Pendente",
+      "WON": "Contemplado"
     }
+  }
 }

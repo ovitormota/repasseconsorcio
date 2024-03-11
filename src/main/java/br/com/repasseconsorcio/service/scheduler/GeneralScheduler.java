@@ -12,7 +12,7 @@ public class GeneralScheduler {
         this.consortiumScheduler = consortiumScheduler;
     }
 
-    @Scheduled(cron = "0 */30 * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     public void executeConsortiumScheduler() {
         consortiumScheduler.execute();
     }

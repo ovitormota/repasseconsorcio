@@ -1,32 +1,33 @@
 {
-    "userManagement": {
-        "home": {
-            "title": "Usuários",
-            "refreshListLabel": "Atualizar lista",
-            "createLabel": "Adicionar",
-            "createOrEditLabel": "Criar ou editar usuário"
-        },
-        "created": "Novo usuário foi criado com o identificador {{ param }}",
-        "updated": "Usuário com o identificador {{ param }} foi atualizado ",
-        "deleted": "Sua conta foi excluída com sucesso. Aguardamos sua volta!",
-        "delete": {
-            "button": "Excluir Conta",
-            "question": "Você tem certeza que deseja excluir sua conta?"
-        },
-        "detail": {
-            "title": "Usuário"
-        },
-        "login": "Login",
-        "firstName": "Nome",
-        "lastName": "Sobrenome",
-        "email": "E-mail",
-        "activated": "Ativo",
-        "deactivated": "Inativo",
-        "profiles": "Perfis",
-        "langKey": "Idioma",
-        "createdBy": "Criado por",
-        "createdDate": "Criado em",
-        "lastModifiedBy": "Modificado por",
-        "lastModifiedDate": "Modificado em"
-    }
+  "userManagement": {
+    "home": {
+      "title": "Usuários",
+      "refreshListLabel": "Atualizar lista",
+      "createLabel": "Adicionar",
+      "createOrEditLabel": "Criar ou editar usuário"
+    },
+    "created": "Novo usuário foi criado com o identificador {{ param }}",
+    "updated": "O usuário {{ param }} foi atualizado com sucesso! ",
+    "deleted": "Sua conta foi excluída com sucesso. Aguardamos sua volta!",
+    "delete": {
+      "button": "Excluir Conta",
+      "question": "Você tem certeza que deseja excluir sua conta?"
+    },
+    "detail": {
+      "title": "Usuário"
+    },
+    "login": "Login",
+    "firstName": "Nome",
+    "lastName": "Sobrenome",
+    "email": "E-mail",
+    "activated": "Ativo",
+    "desactivated": "Inativo",
+    "all": "Todos",
+    "profiles": "Perfis",
+    "langKey": "Idioma",
+    "createdBy": "Criado por",
+    "createdDate": "Criado em",
+    "lastModifiedBy": "Modificado por",
+    "lastModifiedDate": "Modificado em"
+  }
 }

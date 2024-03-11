@@ -11,17 +11,16 @@ import { defaultTheme } from 'app/shared/layout/themes'
 interface IImageUploaderProps {
   onUpload: (image: any) => void
   currentImage?: string
+  name?: string
   isUser?: boolean
 }
 
-export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, currentImage, isUser = true }) => {
+export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, currentImage, name, isUser = true }) => {
   const cropperRef = useRef<any>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [croppedImage, setCroppedImage] = useState<string | null>(null)
   const [defaultImage, setDefaultImage] = useState<string | null>(currentImage)
-
-  const account = useAppSelector((state) => state.authentication.account)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -94,8 +93,8 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
             <input ref={fileInputRef} type='file' accept='image/*' onChange={handleFileChange} style={{ display: 'none' }} />
             <Box sx={{ position: 'relative', display: 'inline-block' }}>
               <Avatar
-                src={croppedImage ?? defaultImage ?? account?.firstName}
-                alt={isUser ? account?.firstName : null}
+                src={croppedImage ?? defaultImage ?? name}
+                alt={name}
                 sx={{ width: isUser ? 130 : 230, height: 130, cursor: 'pointer', fontSize: '3rem', borderRadius: isUser ? '50%' : '8px' }}
                 onClick={handleAvatarClick}
               />

@@ -1,10 +1,12 @@
 package br.com.repasseconsorcio.web.rest;
 
 import br.com.repasseconsorcio.domain.Consortium;
+import br.com.repasseconsorcio.domain.enumeration.ConsortiumStatusType;
 import br.com.repasseconsorcio.domain.enumeration.SegmentType;
 import br.com.repasseconsorcio.repository.ConsortiumRepository;
 import br.com.repasseconsorcio.security.AuthoritiesConstants;
 import br.com.repasseconsorcio.service.ConsortiumService;
+import br.com.repasseconsorcio.service.MailService;
 import br.com.repasseconsorcio.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -52,9 +54,12 @@ public class ConsortiumResource {
 
     private final ConsortiumRepository consortiumRepository;
 
-    public ConsortiumResource(ConsortiumService consortiumService, ConsortiumRepository consortiumRepository) {
+    private final MailService mailService;
+
+    public ConsortiumResource(ConsortiumService consortiumService, ConsortiumRepository consortiumRepository, MailService mailService) {
         this.consortiumService = consortiumService;
         this.consortiumRepository = consortiumRepository;
+        this.mailService = mailService;
     }
 
     /**
@@ -202,6 +207,14 @@ public class ConsortiumResource {
         }
 
         Optional<Consortium> result = consortiumService.partialUpdate(consortium);
+
+        if (result.isPresent()) {
+            if (result.get().getStatus().equals(ConsortiumStatusType.OPEN)) {
+                mailService.sendProposalStatusChanged(result.get());
+            } else {
+                throw new BadRequestAlertException("Invalid status", ENTITY_NAME, "statusinvalid");
+            }
+        }
 
         return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, consortium.getId().toString()));
     }

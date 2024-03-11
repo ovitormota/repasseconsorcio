@@ -2,7 +2,7 @@
 // Import Bootstrap source files from node_modules
 @import 'node_modules/bootstrap/scss/bootstrap';
 body {
-  background: #fafafa;
+  background: rgba(64, 89, 173, 0.01);
   margin: 0;
 }
 
@@ -311,9 +311,9 @@ http://stackoverflow.com/questions/23436430/bootstrap-3-input-group-100-width */
 /* jhipster-needle-scss-add-main JHipster will add new css style */
 
 .ribbon {
-  background-color: rgba(255, 169, 81, 0.5);
-  left: -70px;
+  background-color: rgba(255, 169, 81, 0.6);
   top: 10px;
+  left: -40px;
   -moz-transform: rotate(-45deg);
   -ms-transform: rotate(-45deg);
   -o-transform: rotate(-45deg);
@@ -326,10 +326,10 @@ http://stackoverflow.com/questions/23436430/bootstrap-3-input-group-100-width */
   pointer-events: none;
   a {
     color: #fff;
+    font-size: 12px;
     display: block;
-    font-weight: 500;
     margin: 1px 0;
-    padding: 5px 50px;
+    padding: 0px 20px;
     text-align: center;
     text-decoration: none;
     text-shadow: 0 0 5px #cccc;
@@ -348,7 +348,7 @@ http://stackoverflow.com/questions/23436430/bootstrap-3-input-group-100-width */
   opacity: 0.6;
   &:before {
     content: '';
-    background: linear-gradient(to right, transparent, #818078, transparent);
+    background: linear-gradient(to right, transparent, #4059ad, transparent);
     position: absolute;
     left: 0;
     top: 50%;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="pt-br">
   <head>
-    <title th:text="#{email.reset.title}">Redefinição de Senha</title>
+    <title th:text="#{email.auctionResultWinner.title}">Resultado do Leilão - #{consortium.id}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
       body {
@@ -20,7 +20,7 @@
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        border: 1px solid #4059ad;
+        border: 3px solid #4059ad;
       }
 
       h3 {
@@ -59,17 +59,16 @@
   </head>
   <body>
     <div id="container">
-      <h3 th:text="#{email.reset.title}">Redefinição de Senha</h3>
-      <p th:text="#{email.reset.greeting(${user.firstName})}">Prezado(a)</p>
-      <p th:text="#{email.reset.text1}">Para a sua conta Repasse Consórcio, foi solicitada a redefinição de senha. Por favor, clique no link abaixo para redefini-la:</p>
-      <p>
-        <a th:with="url=(@{|${baseUrl}/account/reset/finish?key=${user.resetKey}|})" th:href="${url}" th:text="${url}">Link de Redefinição</a>
-      </p>
+      <h3 th:text="#{email.auctionResultWinner.title(${consortium})}">Resultado do Leilão - #{consortium}</h3>
+      <p th:text="#{email.auctionResultWinner.greeting(${user.firstName})}">Parabéns, <strong th:text="${user.firstName}">Nome do Usuário</strong>!</p>
+      <p th:text="#{email.auctionResultWinner.text1(${consortium})}">O leilão da sua proposta com o ID <strong th:text="${consortium.id}">ID da Proposta</strong> encerrou e você foi o vencedor.</p>
+      <p th:text="#{email.auctionResultWinner.text2}">Vamos entrar em contato para solicitar os documentos necessários.</p>
+      <p th:text="#{email.auctionResultWinner.text3}">Agradecemos a sua participação.</p>
       <footer>
-        <em th:text="#{email.reset.text2}">Atenciosamente, </em>
+        <em th:text="#{email.auctionResultWinner.text4}">Atenciosamente, </em>
         <br />
-        <strong th:text="#{email.signature}">Equipe Repasse Consórcio.</strong>
-        <small th:text="#{email.bidReceived.description}"></small>
+        <strong th:text="#{email.signature}">Nome da Sua Organização.</strong>
+        <small th:text="#{email.auctionResultWinner.description}"></small>
       </footer>
     </div>
   </body>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="pt-br">
   <head>
-    <title th:text="#{email.reset.title}">Redefinição de Senha</title>
+    <title th:text="#{email.statusUpdate.title}">Atualização de Status da Proposta</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
       body {
@@ -33,11 +33,6 @@
         color: #000;
       }
 
-      strong {
-        font-weight: bold;
-        color: #4059ad;
-      }
-
       em {
         font-style: italic;
         color: #000;
@@ -59,16 +54,15 @@
   </head>
   <body>
     <div id="container">
-      <h3 th:text="#{email.reset.title}">Redefinição de Senha</h3>
-      <p th:text="#{email.reset.greeting(${user.firstName})}">Prezado(a)</p>
-      <p th:text="#{email.reset.text1}">Para a sua conta Repasse Consórcio, foi solicitada a redefinição de senha. Por favor, clique no link abaixo para redefini-la:</p>
-      <p>
-        <a th:with="url=(@{|${baseUrl}/account/reset/finish?key=${user.resetKey}|})" th:href="${url}" th:text="${url}">Link de Redefinição</a>
+      <h3 th:text="#{email.statusUpdate.title}">Atualização de Status da Proposta</h3>
+      <p th:text="#{email.statusUpdate.greeting(${user.firstName})}">Prezado(a)</p>
+      <p th:text="#{email.statusUpdate.text1(${consortium}, ${status})}">
+        O status da sua proposta foi atualizado para <strong th:text="${status}"></strong>. Por favor, revise as alterações e tome as medidas necessárias.
       </p>
       <footer>
-        <em th:text="#{email.reset.text2}">Atenciosamente, </em>
+        <em th:text="#{email.statusUpdate.text3}">Atenciosamente, </em>
         <br />
-        <strong th:text="#{email.signature}">Equipe Repasse Consórcio.</strong>
+        <strong th:text="#{email.signature}">Nome da Sua Organização.</strong>
         <small th:text="#{email.bidReceived.description}"></small>
       </footer>
     </div>

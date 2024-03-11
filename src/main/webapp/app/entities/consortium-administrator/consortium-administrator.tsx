@@ -11,10 +11,13 @@ import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { IConsortiumAdministrator } from 'app/shared/model/consortium-administrator.model'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
-import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
+import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { ConsortiumAdministratorUpdateModal } from './ConsortiumAdministratorUpdateModal'
 import { deleteEntity, getEntities, reset } from './consortium-administrator.reducer'
+import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
+import { SortingBox } from 'app/shared/components/SortingBox'
+import { get } from 'lodash'
 
 export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -23,6 +26,9 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
   const [sorting, setSorting] = useState(false)
   const [openConsorciumAdministratorUpdateModal, setOpenConsorciumAdministratorUpdateModal] = useState<boolean>(false)
   const [consortiumAdministrator, setConsortiumAdministrator] = useState<IConsortiumAdministrator>(null)
+  const [currentSort, setCurrentSort] = useState('name')
+  const [order, setOrder] = useState(ASC)
+  const sortTypes = ['name']
 
   const consortiumAdministratorList = useAppSelector((state) => state.consortiumAdministrator.entities)
   const loading = useAppSelector((state) => state.consortiumAdministrator.loading)
@@ -36,53 +42,40 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
       getEntities({
         page: paginationState.activePage - 1,
         size: paginationState.itemsPerPage,
-        sort: `${paginationState.sort},${paginationState.order}`,
+        sort: currentSort + ',' + order,
       })
     )
   }
+
+  useEffect(() => {
+    getAllEntities()
+  }, [currentSort, order])
 
   const deleteConsortiumAdministrator = (consortiumAdministratorId: number) => {
     dispatch(deleteEntity(consortiumAdministratorId))
   }
 
-  const resetAll = () => {
-    dispatch(reset())
+  const handleLoadMore = () => {
     setPaginationState({
       ...paginationState,
-      activePage: 1,
+      activePage: paginationState.activePage + 1,
     })
-    getAllEntities()
-  }
-
-  useEffect(() => {
-    if (updateSuccess) {
-      resetAll()
-    }
-  }, [updateSuccess])
-
-  useEffect(() => {
-    resetAll()
-  }, [])
-
-  const handleLoadMore = () => {
-    if ((window as any).pageYOffset > 0) {
-      setPaginationState({
-        ...paginationState,
-        activePage: paginationState.activePage + 1,
-      })
-    }
   }
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: { xs: 2, sm: 3 } }}>
+      {/* <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: { xs: 2, sm: 3 } }}>
         <Typography color='secondary' fontWeight={'600'} fontSize={'18px'}>
           <Translate contentKey='repasseconsorcioApp.consortiumAdministrator.detail.title'>Consortium Administrators</Translate>
         </Typography>
         <Button startIcon={<Add style={{ fontSize: 18 }} />} sx={{ ml: 'auto' }} variant='contained' color='secondary' size='small' onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(null)]}>
           <Translate contentKey='entity.action.add'>Add</Translate>
         </Button>
-      </Box>
+      </Box> */}
+      <AppBarComponent loading={loading} onClick={() => setOpenConsorciumAdministratorUpdateModal(true)}>
+        {/* <UserFilterChip filterStatusType={filterStatusType} setFilterStatusType={setFilterStatusType} /> */}
+        <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortiumAdministrator' />
+      </AppBarComponent>
       {loading ? (
         <Loading />
       ) : (
@@ -155,7 +148,9 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
             </List>
           </InfiniteScroll>
           {!consortiumAdministratorList?.length && <NoDataIndicator />}
-          {openConsorciumAdministratorUpdateModal && <ConsortiumAdministratorUpdateModal setOpenConsorciumAdministratorUpdateModal={setOpenConsorciumAdministratorUpdateModal} consortiumAdministrator={consortiumAdministrator} />}
+          {openConsorciumAdministratorUpdateModal && (
+            <ConsortiumAdministratorUpdateModal setOpenConsorciumAdministratorUpdateModal={setOpenConsorciumAdministratorUpdateModal} consortiumAdministrator={consortiumAdministrator} />
+          )}
         </Box>
       )}
     </ThemeProvider>

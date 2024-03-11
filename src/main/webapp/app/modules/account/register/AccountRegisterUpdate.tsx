@@ -8,8 +8,14 @@ import { reset, updateUser } from 'app/modules/administration/user-management/us
 import { ImageUploader } from 'app/shared/components/ImageUploader'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { AccountDeleteModal } from './AccountDeleteModal'
+import { IUser } from 'app/shared/model/user.model'
 
-export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal }) => {
+interface IAccountRegisterUpdateProps {
+  setOpenAccountRegisterUpdateModal: (open: boolean) => void
+  editUser: IUser | null
+}
+
+export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editUser }: IAccountRegisterUpdateProps) => {
   const dispatch = useAppDispatch()
 
   const [deleteAccountModalOpen, setDeleteAccountModalOpen] = useState(false)
@@ -20,20 +26,19 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal }) => 
     image: null,
   })
 
-  const account = useAppSelector((state) => state.authentication.account)
   const updateSuccess = useAppSelector((state) => state.userManagement.updateSuccess)
   const loading = useAppSelector((state) => state.userManagement.loading)
 
   useEffect(() => {
-    if (account?.id) {
+    if (editUser?.id) {
       setFields({
-        firstName: account.firstName,
-        lastName: account.lastName,
-        email: account.email,
-        image: account.image,
+        firstName: editUser.firstName,
+        lastName: editUser.lastName,
+        email: editUser.email,
+        image: editUser.image,
       })
     }
-  }, [account])
+  }, [editUser])
 
   useEffect(() => {
     if (updateSuccess) {
@@ -43,14 +48,13 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal }) => 
 
   const handleClose = () => {
     setOpenAccountRegisterUpdateModal(false)
-    dispatch(reset())
   }
 
   const handleValidSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     dispatch(
       updateUser({
-        ...account,
+        ...editUser,
         firstName: fields.firstName,
         lastName: fields.lastName,
         email: fields.email,
@@ -93,7 +97,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal }) => 
       >
         <DialogContent>
           <form onSubmit={handleValidSubmit}>
-            <ImageUploader onUpload={handleUpload} currentImage={fields.image} />
+            <ImageUploader onUpload={handleUpload} currentImage={fields.image} name={editUser?.firstName} />
 
             <TextField
               type='text'

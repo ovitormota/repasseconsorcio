@@ -1,8 +1,31 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { Translate, getSortState } from 'react-jhipster'
 
 import { CloseOutlined } from '@mui/icons-material'
-import { Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, ThemeProvider, Typography } from '@mui/material'
+import {
+  Avatar,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  ThemeProvider,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { AUTHORITIES } from 'app/config/constants'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { hasAnyAuthority } from 'app/shared/auth/private-route'
@@ -18,6 +41,7 @@ import { useLocation } from 'react-router-dom'
 import { Spinner } from 'reactstrap'
 import { BidUpdateModal } from './BidUpdateModal'
 import { getEntitiesByConsortium, reset } from './bid.reducer'
+import { TypographStyled } from 'app/shared/layout/table/TableComponents'
 
 interface IBidHistoryModalProps {
   setOpenBidHistoryModal: (open: boolean) => void
@@ -38,29 +62,31 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
   const loading = useAppSelector((state) => state.bid.loading)
   const account = useAppSelector((state) => state.authentication.account)
 
-  const getAllEntities = useCallback(() => {
-    dispatch(reset())
+  const getAllEntities = () => {
     dispatch(getEntitiesByConsortium({ consortiumId: entityConsortium.id, page: paginationState.activePage - 1, size: paginationState.itemsPerPage, sort: `${paginationState.sort},${order}` }))
-  }, [paginationState, entityConsortium])
-
-  const handleLoadMore = () => {
-    if ((window as any).pageYOffset > 0) {
-      setPaginationState({
-        ...paginationState,
-        activePage: paginationState.activePage + 1,
-      })
-    }
   }
 
   useEffect(() => {
     getAllEntities()
-  }, [getAllEntities])
+  }, [paginationState.activePage, order, entityConsortium?.id])
+
+  const handleLoadMore = () => {
+    setPaginationState({
+      ...paginationState,
+      activePage: paginationState.activePage + 1,
+    })
+  }
 
   useEffect(() => {
     if (entityConsortium?.user?.id === account.id) {
       setIsUser(true)
     }
   }, [entityConsortium])
+
+  const handleClose = () => {
+    dispatch(reset())
+    setOpenBidHistoryModal(false)
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -70,21 +96,21 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
         PaperProps={{
           sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { xs: 0, sm: 1 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
         }}
-        onClose={() => setOpenBidHistoryModal(false)}
+        onClose={handleClose}
       >
         <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Translate contentKey='repasseconsorcioApp.bid.home.title'>Bid</Translate>
-          <IconButton onClick={() => setOpenBidHistoryModal(false)}>
+          <IconButton onClick={handleClose}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
         </DialogTitle>
         <DialogContent sx={{ px: 1 }}>
-          <Box style={{ overflow: 'auto' }} id='scrollableDiv'>
+          <Box>
             <InfiniteScroll
               dataLength={bids?.length}
               next={handleLoadMore}
+              height={bids?.length ? '60vh' : '20vh'}
               hasMore={paginationState.activePage - 1 < links.next}
-              scrollableTarget='scrollableDiv'
               pullDownToRefresh
               refreshFunction={getAllEntities}
               pullDownToRefreshThreshold={50}
@@ -110,60 +136,65 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
                 </div>
               }
             >
-              <List>
-                {!loading && bids?.length
-                  ? bids.map((bid, index) => (
-                      <Fragment key={index}>
-                        <ListItem
-                          sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            p: 2,
-                            borderRadius: '1em',
-                            ':hover': {
-                              background: defaultTheme.palette.secondary['A100'],
-                            },
-                          }}
-                        >
-                          <ListItemIcon>
-                            <Avatar alt={bid.user?.firstName} src={bid?.user?.image ?? bid.user?.firstName} sx={{ width: { sx: 40, sm: 50 }, height: { sx: 40, sm: 50 } }} />
-                          </ListItemIcon>
-                          <ListItemText
-                            secondary={formatCurrency(bid.value)}
-                            secondaryTypographyProps={{ textOverflow: 'ellipsis', maxWidth: { xs: '25vw', md: '200px' }, overflow: 'hidden', whiteSpace: 'nowrap' }}
-                          />
-                          <ListItemText primary={formatCreated(bid.created)} primaryTypographyProps={{ flexWrap: 'nowrap', whiteSpace: 'nowrap' }} />
-                        </ListItem>
-                        {index !== bids?.length - 1 && <Divider sx={{ mx: 2 }} />}
-                      </Fragment>
-                    ))
-                  : !loading && <NoDataIndicatorRelative message='Nenhum lance encontrado' />}
-                {loading && <Loading height='10vh' />}
-              </List>
+              {!loading && bids?.length ? (
+                <TableContainer sx={{ px: { xs: 0, sm: 2 } }}>
+                  <Table>
+                    <TableHead style={{ position: 'relative' }}>
+                      <TableRow>
+                        <TableCell>
+                          <TypographStyled>Usuário</TypographStyled>
+                        </TableCell>
+                        <TableCell>
+                          <TypographStyled>Lance</TypographStyled>
+                        </TableCell>
+                        <TableCell>
+                          <TypographStyled>Data</TypographStyled>
+                        </TableCell>
+                      </TableRow>
+                      <hr className='hr-text' data-content='' style={{ position: 'absolute', width: '100%', top: '40px' }} />
+                    </TableHead>
 
-              <DialogActions sx={{ mt: 2, px: 2 }}>
-                <Button onClick={() => setOpenBidHistoryModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
-                  <Translate contentKey='entity.action.back'>Voltar</Translate>
-                </Button>
-                <Button
-                  sx={{
-                    background: defaultTheme.palette.secondary.main,
-                    color: defaultTheme.palette.secondary.contrastText,
-                    boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                    '&:hover': {
-                      backgroundColor: defaultTheme.palette.warning.main,
-                    },
-                  }}
-                  disabled={isAdmin || isUser}
-                  onClick={() => setOpenBidUpdateModal(true)}
-                  variant='contained'
-                >
-                  Dar um lance
-                </Button>
-              </DialogActions>
+                    <TableBody>
+                      {bids?.map((bid, index) => (
+                        <React.Fragment key={index}>
+                          <TableRow>
+                            <TableCell>
+                              <Avatar alt={bid.user?.firstName} src={bid?.user?.image ?? bid.user?.firstName} sx={{ width: { sx: 40, sm: 50 }, height: { sx: 40, sm: 50 }, m: 'auto' }} />
+                            </TableCell>
+                            <TableCell>{formatCurrency(bid.value)}</TableCell>
+                            <TableCell>{formatCreated(bid.created)}</TableCell>
+                          </TableRow>
+                        </React.Fragment>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                !loading && <NoDataIndicatorRelative message='Nenhum lance encontrado' />
+              )}
+              {loading && <Loading />}
             </InfiniteScroll>
           </Box>
+          <DialogActions sx={{ mt: 2, px: 2 }}>
+            <Button onClick={() => setOpenBidHistoryModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
+              <Translate contentKey='entity.action.back'>Voltar</Translate>
+            </Button>
+            <Button
+              sx={{
+                background: defaultTheme.palette.secondary.main,
+                color: defaultTheme.palette.secondary.contrastText,
+                boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                '&:hover': {
+                  backgroundColor: defaultTheme.palette.warning.main,
+                },
+              }}
+              disabled={isAdmin || isUser}
+              onClick={() => setOpenBidUpdateModal(true)}
+              variant='contained'
+            >
+              Dar um lance
+            </Button>
+          </DialogActions>
         </DialogContent>
       </Dialog>
       {openBidUpdateModal && <BidUpdateModal setOpenBidUpdateModal={setOpenBidUpdateModal} entityConsortium={entityConsortium} />}

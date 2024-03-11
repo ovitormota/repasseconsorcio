@@ -3,6 +3,7 @@ package br.com.repasseconsorcio.service;
 import br.com.repasseconsorcio.config.Constants;
 import br.com.repasseconsorcio.domain.Authority;
 import br.com.repasseconsorcio.domain.User;
+import br.com.repasseconsorcio.domain.enumeration.UserStatusType;
 import br.com.repasseconsorcio.repository.AuthorityRepository;
 import br.com.repasseconsorcio.repository.UserRepository;
 import br.com.repasseconsorcio.security.AuthoritiesConstants;
@@ -161,13 +162,7 @@ public class UserService {
         user.setResetDate(Instant.now());
         user.setActivated(true);
         if (userDTO.getAuthorities() != null) {
-            Set<Authority> authorities = userDTO
-                .getAuthorities()
-                .stream()
-                .map(authorityRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toSet());
+            Set<Authority> authorities = userDTO.getAuthorities().stream().map(authorityRepository::findById).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
             user.setAuthorities(authorities);
         }
         userRepository.save(user);
@@ -201,13 +196,7 @@ public class UserService {
                 user.setLangKey(Constants.DEFAULT_LANGUAGE);
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();
-                userDTO
-                    .getAuthorities()
-                    .stream()
-                    .map(authorityRepository::findById)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .forEach(managedAuthorities::add);
+                userDTO.getAuthorities().stream().map(authorityRepository::findById).filter(Optional::isPresent).map(Optional::get).forEach(managedAuthorities::add);
                 this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
                 return user;
@@ -269,8 +258,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<AdminUserDTO> getAllManagedUsers(Pageable pageable) {
-        return userRepository.findAll(pageable).map(AdminUserDTO::new);
+    public Page<AdminUserDTO> getAllManagedUsers(Pageable pageable, UserStatusType filterStatusType) {
+        if (filterStatusType.equals(UserStatusType.ALL)) {
+            return userRepository.findAll(pageable).map(AdminUserDTO::new);
+        }
+
+        boolean activated = filterStatusType.equals(UserStatusType.ACTIVATED);
+
+        return userRepository.findAllByStatusType(activated, pageable).map(AdminUserDTO::new);
     }
 
     @Transactional(readOnly = true)
