@@ -21,11 +21,13 @@ import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
 import { Spinner } from 'reactstrap'
 import { getEntities } from './my-proposal.reducer'
+import { StatusFilter } from 'app/shared/components/StatusFilter'
+import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 
 export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
 
-  const sortTypes = ['consortiumAdministrator', 'numberOfInstallments', 'status', 'installmentValue', 'consortiumValue']
+  const sortTypes = ['consortiumAdministrator', 'contemplationStatus', 'numberOfInstallments', 'installmentValue', 'consortiumValue']
   const scrollableBoxRef = useRef<HTMLDivElement>(null)
 
   const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'consortiumValue'), props.location.search))
@@ -33,6 +35,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
   const [openBidHistoryModal, setOpenBidHistoryModal] = useState(false)
   const [entityConsortium, setEntityConsortium] = useState<IConsortium>(null)
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
+  const [filterStatusType, SetFilterStatusType] = useState(ConsortiumStatusType.ALL)
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [order, setOrder] = useState(ASC)
 
@@ -48,13 +51,14 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
         size: paginationState.itemsPerPage,
         sort: `${currentSort},${order}`,
         filterSegmentType,
+        filterStatusType,
       })
     )
   }
 
   useEffect(() => {
     getAllEntities()
-  }, [paginationState.activePage, filterSegmentType, currentSort, order])
+  }, [paginationState.activePage, filterSegmentType, filterStatusType, currentSort, order])
 
   const handleLoadMore = () => {
     setPaginationState({
@@ -65,7 +69,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
 
   const renderStatusRibbon = () => (
     <div className='ribbon'>
-      <a href=''>{translate('repasseconsorcioApp.consortium.contemplationStatus.approved')}</a>
+      <a href=''>{translate('repasseconsorcioApp.consortium.contemplationTypeStatus.approved')}</a>
     </div>
   )
 
@@ -98,10 +102,10 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
         sx={{
           mx: { xs: 1.1, sm: 1.1 },
           my: { xs: 1.1, sm: 1.1 },
-          width: '330px',
-          maxWidth: '90vw',
+          width: { xs: '90vw', sm: '330px' },
           background: defaultTheme.palette.background.paper,
-          boxShadow: '0px 2px 2px 1px rgba(64, 89, 173, 0.2)',
+          boxShadow: '0px 2px 2px 1px rgba(97, 57, 173, 0.2)',
+          borderRadius: '1rem',
           ':hover': {
             backgroundColor: defaultTheme.palette.primary.main,
             cursor: 'pointer',
@@ -201,10 +205,9 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
   return (
     <ThemeProvider theme={defaultTheme}>
       <AppBarComponent loading={loading} scrollableBoxRef={scrollableBoxRef}>
-        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} />
-        {!!consortiumList?.length && (
-          <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortium' />
-        )}
+        <StatusFilter filterStatusType={filterStatusType} setFilterStatusType={SetFilterStatusType} />
+        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} onMaxWidth />
+        <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortium' onMaxWidth />
       </AppBarComponent>
       {loading ? (
         <Loading />

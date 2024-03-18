@@ -9,6 +9,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { AUTHORITIES } from 'app/config/constants'
 import { useAppSelector } from 'app/config/store'
+import { ConsortiumAdministratorUpdateModal } from 'app/entities/consortium-administrator/ConsortiumAdministratorUpdateModal'
 import { getCountConsortiumsByProposalApprovals } from 'app/entities/proposals-for-approval/proposals-for-approval.reducer'
 import { AccountRegister } from 'app/modules/account/register/AccountRegister'
 import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
@@ -37,6 +38,7 @@ export const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
   const [openConsortiumUpdateModal, setOpenConsortiumUpdateModal] = React.useState(false)
+  const [openConsorciumAdministratorUpdateModal, setOpenConsorciumAdministratorUpdateModal] = React.useState(false)
   const [openLogoutModal, setOpenLogoutModal] = React.useState(false)
   const [openAccountRegisterUpdateModal, setOpenAccountRegisterUpdateModal] = React.useState(false)
   const [openAccountRegisterModal, setOpenAccountRegisterModal] = React.useState(false)
@@ -71,6 +73,9 @@ export const Header = () => {
     if (location.pathname === '/users' && isAdmin) {
       return true
     }
+    if (location.pathname === '/consortium-administrator' && isAdmin) {
+      return true
+    }
     return false
   }
 
@@ -81,6 +86,9 @@ export const Header = () => {
         break
       case '/users':
         setOpenAccountRegisterModal(true)
+        break
+      case '/consortium-administrator':
+        setOpenConsorciumAdministratorUpdateModal(true)
         break
       default:
         break
@@ -93,6 +101,8 @@ export const Header = () => {
         return isAuthenticated ? 'Adicionar Proposta' : 'Entrar'
       case '/users':
         return 'Adicionar Usuário'
+      case '/consortium-administrator':
+        return 'Adicionar Administradora'
       default:
         return ''
     }
@@ -132,9 +142,7 @@ export const Header = () => {
             <Box>
               {!isAuthenticated ? (
                 <Tooltip title='Início' style={{ cursor: 'pointer' }} onClick={() => history.replace('/')}>
-                  <Box sx={{ width: '55%', height: '100%', maxWidth: '300px' }}>
-                    <img src='content/images/logo-repasse-consorcio-text.png' alt='Logo' width='100%' height='100%' />
-                  </Box>
+                  <img src='content/images/logo-repasse-consorcio-text.png' alt='Logo' width='110px' />
                 </Tooltip>
               ) : (
                 <React.Fragment>
@@ -218,7 +226,7 @@ export const Header = () => {
               sx={{
                 background: defaultTheme.palette.primary.main,
                 color: defaultTheme.palette.secondary.main,
-                boxShadow: '0px 2px 2px #4059AD',
+                boxShadow: '0px 2px 2px #6139AD',
                 cursor: 'pointer',
                 '&:hover': {
                   backgroundColor: defaultTheme.palette.warning.main,
@@ -538,6 +546,7 @@ export const Header = () => {
       {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} editUser={account} />}
       {openAccountRegisterModal && <AccountRegister setOpenAccountRegisterModal={setOpenAccountRegisterModal} />}
       {openConsortiumUpdateModal && <ConsortiumUpdateModal setOpenConsortiumUpdateModal={setOpenConsortiumUpdateModal} />}
+      {openConsorciumAdministratorUpdateModal && <ConsortiumAdministratorUpdateModal setOpenConsorciumAdministratorUpdateModal={setOpenConsorciumAdministratorUpdateModal} />}
     </ThemeProvider>
   )
 }

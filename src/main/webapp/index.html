@@ -1,68 +1,65 @@
 <!DOCTYPE html>
 <html class="no-js" lang="pt-br" dir="ltr">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>repasseconsorcio</title>
-        <meta name="description" content="Description for repasseconsorcio" />
-        <meta name="google" content="notranslate" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="theme-color" content="#000000" />
-        <link rel="icon" href="favicon.ico" />
-        <link rel="manifest" href="manifest.webapp" />
-        <link rel="stylesheet" href="content/css/loading.css" />
-        <!-- jhipster-needle-add-resources-to-root - JHipster will add new resources here -->
-    </head>
-    <body style="overflow: hidden">
-        <!--[if lt IE 9]>
-            <p class="browserupgrade">
-                You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your
-                experience.
-            </p>
-        <![endif]-->
-        <div id="root">
-            <div class="app-loading">
-                <div class="lds-pacman">
-                    <!-- Add your loading animation or content here -->
-                </div>
-            </div>
-            <div id="jhipster-error" style="display: none">
-                <h1>Oops! Something went wrong.</h1>
-                <p id="error-message">There was an issue loading the page. Please try again later.</p>
-            </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Repasse Consórcio</title>
+    <meta name="description" content="Description for repasseconsorcio" />
+    <meta name="google" content="notranslate" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" href="favicon.ico" />
+    <link rel="manifest" href="manifest.webapp" />
+    <link rel="stylesheet" href="content/css/loading.css" />
+    <!-- jhipster-needle-add-resources-to-root - JHipster will add new resources here -->
+  </head>
+  <body style="overflow: hidden">
+    <!--[if lt IE 9]>
+      <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <div id="root">
+      <div class="app-loading">
+        <div class="lds-pacman">
+          <!-- Add your loading animation or content here -->
         </div>
-        <noscript>
-            <h1>Please enable JavaScript to view this page.</h1>
-        </noscript>
-        <script type="text/javascript">
-            // Show an error message if the app loading takes more than 4 seconds
-            window.onload = function () {
-                setTimeout(showError, 4000);
-            };
+      </div>
+      <div id="jhipster-error" style="display: none">
+        <h1>Oops! Something went wrong.</h1>
+        <p id="error-message">There was an issue loading the page. Please try again later.</p>
+      </div>
+    </div>
+    <noscript>
+      <h1>Please enable JavaScript to view this page.</h1>
+    </noscript>
+    <script type="text/javascript">
+      // Show an error message if the app loading takes more than 4 seconds
+      window.onload = function () {
+        setTimeout(showError, 4000)
+      }
 
-            function showError() {
-                var errorElm = document.getElementById('jhipster-error');
-                var errorMessageElm = document.getElementById('error-message');
-                if (errorElm && errorElm.style && errorMessageElm) {
-                    errorMessageElm.innerHTML = 'Ocorreu um erro: ' + errorMessageElm;
-                    errorElm.style.display = 'block';
-                }
-            }
+      function showError() {
+        var errorElm = document.getElementById('jhipster-error')
+        var errorMessageElm = document.getElementById('error-message')
+        if (errorElm && errorElm.style && errorMessageElm) {
+          errorMessageElm.innerHTML = 'Ocorreu um erro: ' + errorMessageElm
+          errorElm.style.display = 'block'
+        }
+      }
 
-            // Capturing global errors
-            window.onerror = function (message, source, lineno, colno, error) {
-                var errorMessage = 'Ocorreu um erro não tratado: ' + message;
-                var errorElm = document.getElementById('jhipster-error');
-                var errorMessageElm = document.getElementById('error-message');
+      // Capturing global errors
+      window.onerror = function (message, source, lineno, colno, error) {
+        var errorMessage = 'Ocorreu um erro não tratado: ' + message
+        var errorElm = document.getElementById('jhipster-error')
+        var errorMessageElm = document.getElementById('error-message')
 
-                if (errorElm && errorElm.style && errorMessageElm) {
-                    errorMessageElm.innerHTML = errorMessage;
-                    errorElm.style.display = 'block';
-                }
+        if (errorElm && errorElm.style && errorMessageElm) {
+          errorMessageElm.innerHTML = errorMessage
+          errorElm.style.display = 'block'
+        }
 
-                // Return false to prevent the default browser error handling
-                return false;
-            };
-        </script>
-    </body>
+        // Return false to prevent the default browser error handling
+        return false
+      }
+    </script>
+  </body>
 </html>

@@ -6,4 +6,6 @@ export enum ConsortiumStatusType {
   REGISTERED = 'REGISTERED',
 
   WON = 'WON',
+
+  ALL = 'ALL',
 }

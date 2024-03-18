@@ -79,7 +79,7 @@ export const RequestPassword = ({ setOpenRequestModal }) => {
               onChange={(e) => setEmail(e.target.value)}
               sx={{ my: 4 }}
               InputProps={{
-                style: { borderRadius: '8px' },
+                style: { borderRadius: '1rem' },
               }}
             />
             <DialogActions sx={{ px: 0 }}>

@@ -7,6 +7,7 @@ import { IQueryParams, createEntitySlice, EntityState, serializeAxiosError } fro
 import { IConsortium, defaultValue } from 'app/shared/model/consortium.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 import { getEntities as getEntitiesForApproval } from 'app/entities/proposals-for-approval/proposals-for-approval.reducer'
+import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 
 const initialState: EntityState<IConsortium> = {
   loading: false,
@@ -25,10 +26,13 @@ const apiUrl = 'api/consortiums'
 
 interface IGetEntities extends IQueryParams {
   filterSegmentType?: SegmentType
+  filterStatusType?: ConsortiumStatusType
 }
 
-export const getEntities = createAsyncThunk('consortium/fetch_entity_list', async ({ page, size, sort, filterSegmentType }: IGetEntities) => {
-  const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&filterSegmentType=${filterSegmentType}&` : '?'}cacheBuster=${new Date().getTime()}`
+export const getEntities = createAsyncThunk('consortium/fetch_entity_list', async ({ page, size, sort, filterSegmentType, filterStatusType }: IGetEntities) => {
+  const requestUrl = `${apiUrl}${
+    sort ? `?page=${page}&size=${size}&sort=${sort}&filterSegmentType=${filterSegmentType}&filterStatusType=${filterStatusType}&` : '?'
+  }cacheBuster=${new Date().getTime()}`
   return axios.get<IConsortium[]>(requestUrl)
 })
 
@@ -103,15 +107,19 @@ export const ConsortiumSlice = createEntitySlice({
         state.updateSuccess = true
         state.entity = {}
       })
-      .addMatcher(isFulfilled(getEntities), (state, action) => {
-        const links = parseHeaderForLinks(action.payload.headers.link)
+      .addCase(getEntities.fulfilled, (state, action) => {
+        if (action.payload.data.length === 0) {
+          return initialState
+        } else {
+          const links = parseHeaderForLinks(action.payload.headers.link)
 
-        return {
-          ...state,
-          loading: false,
-          links,
-          entities: loadMoreDataWhenScrolled(state.entities, action.payload.data, links),
-          totalItems: parseInt(action.payload.headers['x-total-count'], 10),
+          return {
+            ...state,
+            loading: false,
+            links,
+            entities: loadMoreDataWhenScrolled(state.entities, action.payload.data, links),
+            totalItems: parseInt(action.payload.headers['x-total-count'], 10),
+          }
         }
       })
       .addMatcher(isFulfilled(createEntity, updateEntity, partialUpdateEntity), (state, action) => {

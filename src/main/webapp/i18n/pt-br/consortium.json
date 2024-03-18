@@ -29,7 +29,8 @@
       "bid": "Lance",
       "bids": "Lances",
       "user": "Usuário",
-      "contemplationStatus": {
+      "contemplationStatus": "Contemplado",
+      "contemplationTypeStatus": {
         "title": "Status de Contemplação",
         "approved": "Contemplado",
         "disapproved": "Não Contemplado"

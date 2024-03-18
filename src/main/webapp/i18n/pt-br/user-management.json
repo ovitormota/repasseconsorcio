@@ -20,6 +20,7 @@
     "firstName": "Nome",
     "lastName": "Sobrenome",
     "email": "E-mail",
+    "status": "Status",
     "activated": "Ativo",
     "desactivated": "Inativo",
     "all": "Todos",

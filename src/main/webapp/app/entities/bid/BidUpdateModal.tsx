@@ -112,7 +112,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
                 onValueChange={(values) => setBidValue(+values.floatValue)}
                 sx={{ mt: 1 }}
                 InputProps={{
-                  style: { borderRadius: '8px' },
+                  style: { borderRadius: '1rem' },
                 }}
               />
 

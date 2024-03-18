@@ -1,5 +1,5 @@
 import { SortRounded, SwapVertRounded } from '@mui/icons-material'
-import { Box, IconButton, MenuItem, Select, Tooltip, Typography } from '@mui/material'
+import { Box, FormControl, IconButton, InputLabel, MenuItem, Select, Tooltip, Typography } from '@mui/material'
 import React from 'react'
 import { translate } from 'react-jhipster'
 import { defaultTheme } from '../layout/themes'
@@ -12,9 +12,10 @@ interface ISortingBoxProps {
   setOrder: (order: string) => void
   sortTypes: string[]
   translateKey?: string
+  onMaxWidth?: boolean
 }
 
-export const SortingBox = ({ setCurrentSort, currentSort, setOrder, order, sortTypes, translateKey }: ISortingBoxProps) => {
+export const SortingBox = ({ setCurrentSort, currentSort, setOrder, order, sortTypes, translateKey, onMaxWidth }: ISortingBoxProps) => {
   const handleSortChange = (event) => {
     const selectedSortType = event.target.value
     setCurrentSort(selectedSortType)
@@ -23,26 +24,31 @@ export const SortingBox = ({ setCurrentSort, currentSort, setOrder, order, sortT
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <Typography variant='subtitle2' sx={{ color: defaultTheme.palette.text.secondary, mr: '10px', display: { xs: 'none', lg: 'block' } }}>
-        Ordenar por:
+        Ordenar:
       </Typography>
-      <Select
-        value={currentSort}
-        onChange={handleSortChange}
-        IconComponent={SortRounded}
-        color='secondary'
-        sx={{
-          height: '35px',
-          padding: '0 10px 0 0',
-          fontSize: { xs: '14px', sm: '15px' },
-          borderColor: defaultTheme.palette.secondary.main,
-        }}
-      >
-        {sortTypes.map((type, index) => (
-          <MenuItem key={index} value={type}>
-            {translate(`${translateKey}.${type}`)}
-          </MenuItem>
-        ))}
-      </Select>
+      <FormControl fullWidth>
+        <InputLabel sx={{ display: { xs: 'block', lg: 'none' }, color: defaultTheme.palette.text.secondary, fontSize: '0.9rem', background: '#F6F6F6' }}>Ordenar</InputLabel>
+        <Select
+          value={currentSort}
+          onChange={handleSortChange}
+          IconComponent={SortRounded}
+          color='secondary'
+          size='small'
+          sx={{
+            padding: '0 10px 0 0',
+            maxWidth: onMaxWidth ? '25vw' : '40vw',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            fontSize: '0.9rem',
+          }}
+        >
+          {sortTypes.map((type, index) => (
+            <MenuItem key={index} value={type}>
+              {translate(`${translateKey}.${type}`)}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <Tooltip title={order === ASC ? 'Crescente' : 'Decrescente'}>
         <IconButton color='secondary' onClick={() => setOrder(order === ASC ? DESC : ASC)} sx={{ ml: { xs: 0, sm: 1 } }}>
           <SwapVertRounded />

@@ -9,7 +9,7 @@ import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { ASC, DESC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import { useBreakpoints } from 'app/shared/util/useBreakpoints'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
@@ -19,18 +19,19 @@ import { getEntities } from './consortium.reducer'
 import { HomeLogin } from 'app/modules/login/HomeLogin'
 import { BidHistoryModal } from '../bid/BidHistoryModal'
 import { IBid } from 'app/shared/model/bid.model'
-import { formatCurrency } from 'app/shared/util/data-utils'
+import { formatCurrency, getStatusColor } from 'app/shared/util/data-utils'
 import { Spinner } from 'reactstrap'
 import { hasAnyAuthority } from 'app/shared/auth/private-route'
 import { AUTHORITIES } from 'app/config/constants'
 import { SortingBox } from 'app/shared/components/SortingBox'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
+import { StatusFilter } from 'app/shared/components/StatusFilter'
+import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 
 export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
-  const { isSMScreen, isMDScreen } = useBreakpoints()
-  const history = props.history
+  const scrollableBoxRef = useRef<HTMLDivElement>(null)
 
   const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'consortiumValue'), props.location.search))
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
@@ -38,9 +39,11 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
   const [openBidHistoryModal, setOpenBidHistoryModal] = useState(false)
   const [entityConsortium, setEntityConsortium] = useState<IConsortium>(null)
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
+  const [filterStatusType, SetFilterStatusType] = useState(ConsortiumStatusType.ALL)
+
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [order, setOrder] = useState(ASC)
-  const sortTypes = ['consortiumAdministrator', 'numberOfInstallments', 'installmentValue', 'consortiumValue']
+  const sortTypes = ['consortiumAdministrator', 'contemplationStatus', 'numberOfInstallments', 'installmentValue', 'consortiumValue']
 
   const isAdmin = useAppSelector((state) => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN]))
   const isAuthenticated = useAppSelector((state) => state.authentication.isAuthenticated)
@@ -55,13 +58,14 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
         size: paginationState.itemsPerPage,
         sort: `${currentSort},${order}`,
         filterSegmentType,
+        filterStatusType,
       })
     )
   }
 
   useEffect(() => {
     getAllEntities()
-  }, [paginationState.activePage, filterSegmentType, currentSort, order])
+  }, [paginationState.activePage, filterSegmentType, filterStatusType, currentSort, order])
 
   const handleLoadMore = () => {
     setPaginationState({
@@ -72,88 +76,9 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
 
   const renderStatusRibbon = () => (
     <div className='ribbon'>
-      <a href=''>{translate('repasseconsorcioApp.consortium.contemplationStatus.approved')}</a>
+      <a href=''>{translate('repasseconsorcioApp.consortium.contemplationTypeStatus.approved')}</a>
     </div>
   )
-
-  const getSegmentType = () => {
-    return [SegmentType.ALL, SegmentType.AUTOMOBILE, SegmentType.REAL_ESTATE, SegmentType.OTHER]
-  }
-
-  // const SortingBox = () => {
-  //   const sortTypes = ['consortiumAdministrator', 'numberOfInstallments', 'minimumBidValue', 'installmentValue', 'consortiumValue']
-
-  //   const handleSortChange = (event) => {
-  //     const selectedSortType = event.target.value
-  //     setCurrentSort(selectedSortType)
-  //   }
-
-  //   return (
-  //     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-  //       <Select
-  //         value={currentSort}
-  //         onChange={handleSortChange}
-  //         IconComponent={SortRounded}
-  //         color='secondary'
-  //         sx={{
-  //           height: '35px',
-  //           padding: '0 10px 0 0',
-  //           fontSize: { xs: '14px', sm: '15px' },
-  //           borderColor: defaultTheme.palette.secondary.main,
-  //         }}
-  //       >
-  //         {sortTypes.map((type, index) => (
-  //           <MenuItem key={index} value={type}>
-  //             {translate(`repasseconsorcioApp.consortium.${type}`)}
-  //           </MenuItem>
-  //         ))}
-  //       </Select>
-  //       <IconButton color='secondary' onClick={() => setOrder(order === ASC ? DESC : ASC)} sx={{ ml: { xs: 0, sm: 1 } }}>
-  //         <SwapVertRounded />
-  //       </IconButton>
-  //     </Box>
-  //   )
-  // }
-
-  // const SegmentFilter = () => {
-  //   const handleSegmentChange = (segment) => {
-  //     setFilterSegmentType((prevValue) => (segment === prevValue ? SegmentType.ALL : segment))
-  //   }
-
-  //   return !isSMScreen ? (
-  //     <Select
-  //       value={filterSegmentType}
-  //       IconComponent={FilterListRounded}
-  //       onChange={(event) => handleSegmentChange(event.target.value)}
-  //       sx={{ m: { xs: '3px', sm: 1 }, padding: '0 10px 0 0', height: '35px', fontSize: { xs: '14px', sm: '15px' } }}
-  //     >
-  //       {getSegmentType().map((segment: SegmentType, index: number) => (
-  //         <MenuItem key={index} value={segment}>
-  //           {translate(`repasseconsorcioApp.SegmentType.${segment}`)}
-  //         </MenuItem>
-  //       ))}
-  //     </Select>
-  //   ) : (
-  //     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-  //       {getSegmentType().map((segment, index) => (
-  //         <Box key={index} onClick={() => handleSegmentChange(segment)} sx={{ m: '4px', p: 0 }}>
-  //           <Chip
-  //             label={translate(`repasseconsorcioApp.SegmentType.${segment}`)}
-  //             variant={segment === filterSegmentType ? 'filled' : 'outlined'}
-  //             color='secondary'
-  //             sx={{
-  //               '&:hover': {
-  //                 backgroundColor: defaultTheme.palette.secondary.main,
-  //                 color: defaultTheme.palette.secondary.contrastText,
-  //                 cursor: 'pointer',
-  //               },
-  //             }}
-  //           />
-  //         </Box>
-  //       ))}
-  //     </Box>
-  //   )
-  // }
 
   const handleBid = (consortium: IConsortium) => {
     if (!isAuthenticated) {
@@ -192,10 +117,10 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
         sx={{
           mx: { xs: 1.1, sm: 1.1 },
           my: { xs: 1.1, sm: 1.1 },
-          width: '330px',
-          maxWidth: '90vw',
+          width: { xs: '90vw', sm: '330px' },
           background: defaultTheme.palette.background.paper,
-          boxShadow: '0px 2px 2px 1px rgba(64, 89, 173, 0.2)',
+          boxShadow: '0px 2px 2px 1px rgba(97, 57, 173, 0.2)',
+          borderRadius: '1rem',
           ':hover': {
             backgroundColor: defaultTheme.palette.primary.main,
             cursor: 'pointer',
@@ -252,12 +177,6 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
               primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `}
               secondary={formatCurrency(installmentValue)}
             />
-            {/* <ListItemText
-              primaryTypographyProps={{ fontSize: '12px !important' }}
-              sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-              primary={`${translate('repasseconsorcioApp.consortium.minimumBidValue')} `}
-              secondary={bids?.length ? findMinValue(bids) : formatCurrency(minimumBidValue)}
-            /> */}
 
             <ListItem sx={{ mt: 1, mb: -2 }}>
               <ListItemText
@@ -298,7 +217,8 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
               </Button>
             </ListItem>
             <Chip
-              label={translate('repasseconsorcioApp.consortium.bids')}
+              label={translate(`repasseconsorcioApp.ConsortiumStatusType.${status}`)}
+              color={getStatusColor(status)}
               variant='filled'
               size='small'
               sx={{
@@ -306,11 +226,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                 top: 0,
                 right: 0,
                 cursor: 'pointer',
-                color: defaultTheme.palette.secondary.contrastText,
-                background: defaultTheme.palette.warning.light,
-                '&:hover': {
-                  background: defaultTheme.palette.warning.main,
-                },
+                color: 'white',
               }}
             />
           </List>
@@ -321,16 +237,23 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <AppBarComponent loading={loading}>
-        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} />
-        {!!consortiumList?.length && (
-          <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortium' />
-        )}
+      <AppBarComponent loading={loading} scrollableBoxRef={scrollableBoxRef}>
+        {isAdmin && <StatusFilter filterStatusType={filterStatusType} setFilterStatusType={SetFilterStatusType} />}
+        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} isAdmin={isAdmin} onMaxWidth={isAdmin} />
+        <SortingBox
+          setCurrentSort={setCurrentSort}
+          currentSort={currentSort}
+          setOrder={setOrder}
+          order={order}
+          sortTypes={sortTypes}
+          translateKey='repasseconsorcioApp.consortium'
+          onMaxWidth={isAdmin}
+        />
       </AppBarComponent>
       {loading ? (
         <Loading />
       ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', marginTop: '60px' }} id='scrollableDiv'>
+        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', paddingTop: '60px' }} id='scrollableDiv' ref={scrollableBoxRef}>
           <InfiniteScroll
             dataLength={consortiumList.length}
             next={handleLoadMore}

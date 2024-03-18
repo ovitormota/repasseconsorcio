@@ -229,13 +229,33 @@
 
 // export default UserManagement;
 
-import React, { Fragment, useEffect, useState } from 'react'
-import { Translate, getSortState } from 'react-jhipster'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { Translate, getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
 import { Spinner } from 'reactstrap'
 
 import { Add, Delete, EditOutlined } from '@mui/icons-material'
-import { Avatar, Box, Button, Chip, IconButton, List, ListItem, ListItemIcon, ListItemText, ThemeProvider, Tooltip, Typography } from '@mui/material'
+import {
+  Avatar,
+  Box,
+  Button,
+  Chip,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Tab,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  ThemeProvider,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
@@ -252,9 +272,12 @@ import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { SortingBox } from 'app/shared/components/SortingBox'
 import { StatusType } from 'app/shared/model/enumerations/status.model'
 import { UserFilterChip } from 'app/shared/components/UserFilterChip'
+import { TypographStyled } from 'app/shared/layout/table/TableComponents'
+import { get } from 'lodash'
 
 export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
+  const scrollableBoxRef = useRef<HTMLDivElement>(null)
 
   const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search))
   const [openAccountRegisterUpdateModal, setOpenAccountRegisterUpdateModal] = React.useState(false)
@@ -306,14 +329,14 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <AppBarComponent loading={loading} onClick={() => setOpenAccountRegisterModal(true)}>
+      <AppBarComponent loading={loading} onClick={() => setOpenAccountRegisterModal(true)} scrollableBoxRef={scrollableBoxRef}>
         <UserFilterChip filterStatusType={filterStatusType} setFilterStatusType={setFilterStatusType} />
         <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='userManagement' />
       </AppBarComponent>
       {loading ? (
         <Loading />
       ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)' }} id='scrollableDiv'>
+        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', paddingTop: '60px' }} id='scrollableDiv' ref={scrollableBoxRef}>
           <InfiniteScroll
             dataLength={users.length}
             next={handleLoadMore}
@@ -344,38 +367,43 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
               </div>
             }
           >
-            <List sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', p: { xs: 0, sm: 3 } }}>
-              {!!users?.length &&
-                users?.map((user, index) => (
-                  <Fragment key={user.id}>
-                    <ListItem
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        p: 2,
-                        borderRadius: '1em',
-                        ':hover': {
-                          background: defaultTheme.palette.secondary['A100'],
-                          cursor: 'pointer',
-                        },
-                      }}
-                      onClick={() => [setOpenAccountRegisterUpdateModal(true), setEditUser(user)]}
-                    >
-                      <ListItemIcon sx={{ mr: 2 }}>
-                        <Avatar alt={user?.firstName} src={user?.firstName} sx={{ width: { sx: 40, sm: 50 }, height: { sx: 40, sm: 50 } }} />
-                      </ListItemIcon>
-                      <ListItemText primary={user?.firstName + ' ' + user?.lastName} primaryTypographyProps={{ fontSize: 'clamp(0.85rem, 1.8vw, 0.95rem) !important' }} />
-                      <ListItemText primary={user?.email} primaryTypographyProps={{ fontSize: 'clamp(0.85rem, 1.8vw, 0.95rem) !important' }} sx={{ display: { xs: 'none', md: 'center' } }} />
-                      <ListItemIcon>
-                        <Tooltip title={user?.activated ? 'Inativar' : 'Ativar'} placement='top'>
-                          <Chip label={user?.activated ? 'Ativo' : 'Inativo'} color={user?.activated ? 'success' : 'error'} variant='outlined' onClick={(event) => toggleActive(event, user)} />
-                        </Tooltip>
-                      </ListItemIcon>
-                    </ListItem>
-                  </Fragment>
-                ))}
-            </List>
+            <TableContainer sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', p: { xs: 0, sm: 3 } }}>
+              <Table>
+                <TableHead style={{ position: 'relative' }}>
+                  <TableRow>
+                    <TableCell />
+                    <TableCell>
+                      <TypographStyled>{translate('userManagement.firstName')}</TypographStyled>
+                    </TableCell>
+                    <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                      <TypographStyled>{translate('userManagement.email')}</TypographStyled>
+                    </TableCell>
+                    <TableCell>
+                      <TypographStyled>{translate('userManagement.status')}</TypographStyled>
+                    </TableCell>
+                  </TableRow>
+                  <hr className='hr-text' data-content='' style={{ position: 'absolute', width: '100%', top: '40px' }} />
+                </TableHead>
+
+                <TableBody>
+                  {!!users?.length &&
+                    users?.map((user, index) => (
+                      <TableRow key={user.id} onClick={() => [setOpenAccountRegisterUpdateModal(true), setEditUser(user)]}>
+                        <TableCell>
+                          <Avatar alt={user.firstName} src={get(user, 'name')} sx={{ margin: 'auto' }} />
+                        </TableCell>
+                        <TableCell>{user?.firstName + ' ' + user?.lastName}</TableCell>
+                        <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{user?.email}</TableCell>
+                        <TableCell>
+                          <Tooltip title={user?.activated ? 'Inativar' : 'Ativar'} placement='top' onClick={(event) => [event.stopPropagation(), toggleActive(event, user)]}>
+                            <Chip label={user?.activated ? 'Ativo' : 'Inativo'} color={user?.activated ? 'success' : 'error'} variant='outlined' />
+                          </Tooltip>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </InfiniteScroll>
           {!users?.length && <NoDataIndicator />}
           {openAccountRegisterModal && <AccountRegister setOpenAccountRegisterModal={setOpenAccountRegisterModal} />}

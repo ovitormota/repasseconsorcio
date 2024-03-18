@@ -9,7 +9,7 @@ import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { ASC, DESC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import { useBreakpoints } from 'app/shared/util/useBreakpoints'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
@@ -28,6 +28,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
   const dispatch = useAppDispatch()
   const { isSMScreen, isMDScreen } = useBreakpoints()
   const history = props.history
+  const scrollableBoxRef = useRef<HTMLDivElement>(null)
 
   const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'consortiumValue'), props.location.search))
   const [openAccountRegisterUpdateModal, setOpenAccountRegisterUpdateModal] = React.useState(false)
@@ -35,7 +36,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [order, setOrder] = useState(ASC)
-  const sortTypes = ['consortiumAdministrator', 'numberOfInstallments', 'installmentValue', 'consortiumValue']
+  const sortTypes = ['consortiumAdministrator', 'contemplationStatus', 'numberOfInstallments', 'installmentValue', 'consortiumValue']
 
   const isAuthenticated = useAppSelector((state) => state.authentication.isAuthenticated)
   const consortiumList = useAppSelector((state) => state.proposalsForApproval.entities)
@@ -82,7 +83,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
 
   const renderStatusRibbon = () => (
     <div className='ribbon'>
-      <a href=''>{translate('repasseconsorcioApp.consortium.contemplationStatus.approved')}</a>
+      <a href=''>{translate('repasseconsorcioApp.consortium.contemplationTypeStatus.approved')}</a>
     </div>
   )
 
@@ -104,10 +105,10 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
         sx={{
           mx: { xs: 1.1, sm: 1.1 },
           my: { xs: 1.1, sm: 1.1 },
-          width: '330px',
-          maxWidth: '90vw',
+          width: { xs: '90vw', sm: '330px' },
           background: defaultTheme.palette.background.paper,
-          boxShadow: '0px 2px 2px 1px rgba(64, 89, 173, 0.2)',
+          boxShadow: '0px 2px 2px 1px rgba(97, 57, 173, 0.2)',
+          borderRadius: '1rem',
         }}
       >
         <CardContent>
@@ -218,11 +219,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
                 top: 0,
                 right: 0,
                 cursor: 'pointer',
-                color: defaultTheme.palette.secondary.contrastText,
-                background: defaultTheme.palette.warning.light,
-                '&:hover': {
-                  background: defaultTheme.palette.warning.main,
-                },
+                color: 'white',
               }}
             />
           </List>
@@ -233,16 +230,14 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <AppBarComponent loading={loading}>
+      <AppBarComponent loading={loading} scrollableBoxRef={scrollableBoxRef}>
         <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} />
-        {!!consortiumList?.length && (
-          <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortium' />
-        )}
+        <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortium' />
       </AppBarComponent>
       {loading ? (
         <Loading />
       ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', marginTop: '60px' }} id='scrollableDiv'>
+        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', paddingTop: '60px' }} id='scrollableDiv' ref={scrollableBoxRef}>
           <InfiniteScroll
             dataLength={consortiumList.length}
             next={handleLoadMore}

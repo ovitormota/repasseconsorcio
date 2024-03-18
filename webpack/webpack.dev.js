@@ -1,17 +1,17 @@
-const webpack = require('webpack');
-const webpackMerge = require('webpack-merge').merge;
-const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
-const SimpleProgressWebpackPlugin = require('simple-progress-webpack-plugin');
-const WebpackNotifierPlugin = require('webpack-notifier');
-const path = require('path');
-const sass = require('sass');
+const webpack = require('webpack')
+const webpackMerge = require('webpack-merge').merge
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
+const SimpleProgressWebpackPlugin = require('simple-progress-webpack-plugin')
+const WebpackNotifierPlugin = require('webpack-notifier')
+const path = require('path')
+const sass = require('sass')
 
-const utils = require('./utils.js');
-const commonConfig = require('./webpack.common.js');
+const utils = require('./utils.js')
+const commonConfig = require('./webpack.common.js')
 
-const ENV = 'development';
+const ENV = 'development'
 
-module.exports = async options =>
+module.exports = async (options) =>
   webpackMerge(await commonConfig({ env: ENV }), {
     devtool: 'cheap-module-source-map', // https://reactjs.org/docs/cross-origin-errors.html
     mode: ENV,
@@ -100,8 +100,8 @@ module.exports = async options =>
       ),
       new webpack.HotModuleReplacementPlugin(),
       new WebpackNotifierPlugin({
-        title: 'Repasseconsorcio',
+        title: 'Repasse Consórcio',
         contentImage: path.join(__dirname, 'logo-jhipster.png'),
       }),
     ].filter(Boolean),
-  });
+  })

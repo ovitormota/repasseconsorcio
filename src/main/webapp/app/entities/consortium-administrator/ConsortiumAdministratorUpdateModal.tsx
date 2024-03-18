@@ -99,7 +99,7 @@ export const ConsortiumAdministratorUpdateModal = ({ setOpenConsorciumAdministra
                 onChange={(e) => setConsortiumName(e.target.value)}
                 sx={{ mt: 2 }}
                 InputProps={{
-                  style: { borderRadius: '8px' },
+                  style: { borderRadius: '1rem' },
                 }}
               />
 

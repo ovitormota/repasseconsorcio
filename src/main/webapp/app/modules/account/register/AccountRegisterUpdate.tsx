@@ -110,7 +110,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
               value={fields.firstName}
               data-cy='firstName'
               InputProps={{
-                style: { borderRadius: '8px' },
+                style: { borderRadius: '1rem' },
               }}
               sx={{ mt: 2, mb: 1 }}
               onChange={(e) => updateField('firstName', e.target.value)}
@@ -127,7 +127,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
               value={fields.lastName}
               data-cy='lastName'
               InputProps={{
-                style: { borderRadius: '8px' },
+                style: { borderRadius: '1rem' },
               }}
               sx={{ mt: 2, mb: 1 }}
               onChange={(e) => updateField('lastName', e.target.value)}
@@ -147,7 +147,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
               value={fields.email}
               helperText={'Para alterar o email, entre em contato com o suporte.'}
               InputProps={{
-                style: { borderRadius: '8px' },
+                style: { borderRadius: '1rem' },
               }}
               sx={{ mt: 2, mb: 1 }}
               onChange={(e) => updateField('email', e.target.value)}

@@ -5,7 +5,8 @@
       "CLOSED": "Encerrado",
       "OPEN": "Aberto",
       "REGISTERED": "Pendente",
-      "WON": "Contemplado"
+      "WON": "Arrematado",
+      "ALL": "Todos"
     }
   }
 }

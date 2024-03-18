@@ -1,5 +1,5 @@
 import { FilterListRounded } from '@mui/icons-material'
-import { Box, Chip, MenuItem, Select, Typography } from '@mui/material'
+import { Box, Chip, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import React from 'react'
 import { translate } from 'react-jhipster'
 import { defaultTheme } from '../layout/themes'
@@ -23,22 +23,38 @@ export const UserFilterChip = ({ setFilterStatusType, filterStatusType }: IUserF
   }
 
   return !isSMScreen ? (
-    <Select
-      value={filterStatusType}
-      IconComponent={FilterListRounded}
-      onChange={(event) => handleStatusChange(event.target.value)}
-      sx={{ m: { xs: '3px', sm: 1 }, padding: '0 10px 0 0', height: '35px', fontSize: { xs: '14px', sm: '15px' } }}
-    >
-      {getStatusType().map((status: StatusType, index: number) => (
-        <MenuItem key={index} value={status}>
-          {translate(`userManagement.${status.toLowerCase()}`)}
-        </MenuItem>
-      ))}
-    </Select>
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Typography variant='subtitle2' sx={{ color: defaultTheme.palette.text.secondary, mr: '10px', display: { xs: 'none', lg: 'block' } }}>
+        Status:
+      </Typography>
+      <FormControl fullWidth>
+        <InputLabel sx={{ display: { xs: 'block', lg: 'none' }, color: defaultTheme.palette.text.secondary, fontSize: '0.9rem', background: '#F6F6F6' }}>Status</InputLabel>
+        <Select
+          value={filterStatusType}
+          IconComponent={FilterListRounded}
+          onChange={(event) => handleStatusChange(event.target.value)}
+          color='secondary'
+          size='small'
+          sx={{
+            padding: '0 10px 0 0',
+            maxWidth: '40vw',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            fontSize: '0.9rem',
+          }}
+        >
+          {getStatusType().map((status: StatusType, index: number) => (
+            <MenuItem key={index} value={status}>
+              {translate(`userManagement.${status.toLowerCase()}`)}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
   ) : (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <Typography variant='subtitle2' sx={{ color: defaultTheme.palette.text.secondary, mr: '10px', display: { xs: 'none', lg: 'block' } }}>
-        Filtrar por:
+        Status:
       </Typography>
       {getStatusType().map((status, index) => (
         <Box key={index} onClick={() => handleStatusChange(status)} sx={{ m: '4px', p: 0 }}>

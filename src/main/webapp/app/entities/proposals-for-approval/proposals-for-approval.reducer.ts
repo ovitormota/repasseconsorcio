@@ -70,14 +70,19 @@ export const ProposalsForApproval = createEntitySlice({
   initialState,
   extraReducers(builder) {
     builder
-      .addMatcher(isFulfilled(getEntities), (state, action) => {
-        const links = parseHeaderForLinks(action.payload.headers.link)
-        return {
-          ...state,
-          loading: false,
-          links,
-          entities: loadMoreDataWhenScrolled(state.entities, action.payload.data, links),
-          totalItems: parseInt(action.payload.headers['x-total-count'], 10),
+      .addCase(getEntities.fulfilled, (state, action) => {
+        if (action.payload.data.length === 0) {
+          return initialState
+        } else {
+          const links = parseHeaderForLinks(action.payload.headers.link)
+
+          return {
+            ...state,
+            loading: false,
+            links,
+            entities: loadMoreDataWhenScrolled(state.entities, action.payload.data, links),
+            totalItems: parseInt(action.payload.headers['x-total-count'], 10),
+          }
         }
       })
       .addMatcher(isFulfilled(getCountConsortiumsByProposalApprovals), (state, action) => {

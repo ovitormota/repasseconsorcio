@@ -1,10 +1,10 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { Translate, getSortState } from 'react-jhipster'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { Translate, getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
 import { Spinner } from 'reactstrap'
 
 import { Add, Delete, EditOutlined } from '@mui/icons-material'
-import { Avatar, Box, Button, IconButton, List, ListItem, ListItemIcon, ListItemText, ThemeProvider, Typography } from '@mui/material'
+import { Avatar, Box, Button, IconButton, List, ListItem, ListItemIcon, ListItemText, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
@@ -18,9 +18,11 @@ import { deleteEntity, getEntities, reset } from './consortium-administrator.red
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { SortingBox } from 'app/shared/components/SortingBox'
 import { get } from 'lodash'
+import { TypographStyled } from 'app/shared/layout/table/TableComponents'
 
 export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
+  const scrollableBoxRef = useRef<HTMLDivElement>(null)
 
   const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search))
   const [sorting, setSorting] = useState(false)
@@ -64,22 +66,13 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      {/* <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: { xs: 2, sm: 3 } }}>
-        <Typography color='secondary' fontWeight={'600'} fontSize={'18px'}>
-          <Translate contentKey='repasseconsorcioApp.consortiumAdministrator.detail.title'>Consortium Administrators</Translate>
-        </Typography>
-        <Button startIcon={<Add style={{ fontSize: 18 }} />} sx={{ ml: 'auto' }} variant='contained' color='secondary' size='small' onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(null)]}>
-          <Translate contentKey='entity.action.add'>Add</Translate>
-        </Button>
-      </Box> */}
-      <AppBarComponent loading={loading} onClick={() => setOpenConsorciumAdministratorUpdateModal(true)}>
-        {/* <UserFilterChip filterStatusType={filterStatusType} setFilterStatusType={setFilterStatusType} /> */}
+      <AppBarComponent loading={loading} onClick={() => setOpenConsorciumAdministratorUpdateModal(true)} scrollableBoxRef={scrollableBoxRef}>
         <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortiumAdministrator' />
       </AppBarComponent>
       {loading ? (
         <Loading />
       ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)' }} id='scrollableDiv'>
+        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', paddingTop: '60px' }} id='scrollableDiv' ref={scrollableBoxRef}>
           <InfiniteScroll
             dataLength={consortiumAdministratorList.length}
             next={handleLoadMore}
@@ -110,42 +103,44 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
               </div>
             }
           >
-            <List sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', p: { xs: 0, sm: 3 } }}>
-              {!!consortiumAdministratorList?.length &&
-                consortiumAdministratorList?.map((consortium, index) => (
-                  <Fragment key={consortium.id}>
-                    <ListItem
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        p: 2,
-                        borderRadius: '1em',
-                        ':hover': {
-                          background: defaultTheme.palette.secondary['A100'],
-                          cursor: 'pointer',
-                        },
-                      }}
-                      onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(consortium)]}
-                    >
-                      <ListItemIcon sx={{ mr: 2 }}>
-                        <Avatar alt={consortium?.name} src={consortium?.name} sx={{ width: { sx: 40, sm: 50 }, height: { sx: 40, sm: 50 } }} />
-                      </ListItemIcon>
-                      <ListItemText primary={consortium?.name} primaryTypographyProps={{ fontSize: 'clamp(0.85rem, 1.8vw, 0.95rem) !important' }} />
-                      <IconButton>
-                        <EditOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
-                      </IconButton>
-                      <IconButton
-                        onClick={(event) => {
-                          event.stopPropagation(), deleteConsortiumAdministrator(consortium.id)
-                        }}
-                      >
-                        <Delete sx={{ color: defaultTheme.palette.error.main }} fontSize='small' />
-                      </IconButton>
-                    </ListItem>
-                  </Fragment>
-                ))}
-            </List>
+            <TableContainer sx={{ px: { xs: 0, sm: 2 } }}>
+              <Table>
+                <TableHead style={{ position: 'relative' }}>
+                  <TableRow>
+                    <TableCell>{/* <TypographStyled>{translate('repasseconsorcioApp.consortiumAdministrator.image')}</TypographStyled> */}</TableCell>
+                    <TableCell>
+                      <TypographStyled>{translate('repasseconsorcioApp.consortiumAdministrator.name')}</TypographStyled>
+                    </TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                  <hr className='hr-text' data-content='' style={{ position: 'absolute', width: '100%', top: '40px' }} />
+                </TableHead>
+
+                <TableBody>
+                  {!!consortiumAdministratorList?.length &&
+                    consortiumAdministratorList?.map((consortium, index) => (
+                      <TableRow key={index} onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(consortium)]}>
+                        <TableCell>
+                          <Avatar alt={consortium?.name} src={get(consortium, 'name')} sx={{ margin: 'auto' }} />
+                        </TableCell>
+                        <TableCell>{consortium?.name}</TableCell>
+                        <TableCell>
+                          <IconButton onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(consortium)]}>
+                            <EditOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
+                          </IconButton>
+                          <IconButton
+                            onClick={(event) => {
+                              event.stopPropagation(), deleteConsortiumAdministrator(consortium.id)
+                            }}
+                          >
+                            <Delete sx={{ color: defaultTheme.palette.error.main }} fontSize='small' />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </InfiniteScroll>
           {!consortiumAdministratorList?.length && <NoDataIndicator />}
           {openConsorciumAdministratorUpdateModal && (

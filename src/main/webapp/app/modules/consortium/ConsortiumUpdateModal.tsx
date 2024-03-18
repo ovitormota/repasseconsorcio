@@ -142,19 +142,19 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
               </Box>
 
               <FormControl fullWidth>
-                <InputLabel id='consortium-segmentType-label'>{translate('repasseconsorcioApp.consortium.contemplationStatus.title') + ' *'}</InputLabel>
+                <InputLabel id='consortium-segmentType-label'>{translate('repasseconsorcioApp.consortium.contemplationTypeStatus.title') + ' *'}</InputLabel>
                 <Select
                   required
                   id='consortium-contemplationStatus'
                   name='contemplationStatus'
-                  label={translate('repasseconsorcioApp.consortium.contemplationStatus.title')}
+                  label={translate('repasseconsorcioApp.consortium.contemplationTypeStatus.title')}
                   fullWidth
                   color='secondary'
                   value={contemplationStatus}
                   onChange={(e) => setContemplationStatus(e.target.value as boolean)}
                 >
-                  <MenuItem value='true'>{translate('repasseconsorcioApp.consortium.contemplationStatus.approved')}</MenuItem>
-                  <MenuItem value='false'>{translate('repasseconsorcioApp.consortium.contemplationStatus.disapproved')}</MenuItem>
+                  <MenuItem value='true'>{translate('repasseconsorcioApp.consortium.contemplationTypeStatus.approved')}</MenuItem>
+                  <MenuItem value='false'>{translate('repasseconsorcioApp.consortium.contemplationTypeStatus.disapproved')}</MenuItem>
                 </Select>
               </FormControl>
 
@@ -177,7 +177,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                 onValueChange={(values) => setConsortiumValue(+values.floatValue)}
                 sx={{ mt: 2 }}
                 InputProps={{
-                  style: { borderRadius: '8px' },
+                  style: { borderRadius: '1rem' },
                 }}
               />
 
@@ -199,7 +199,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                 onValueChange={(values) => setInstallmentValue(+values.floatValue)}
                 sx={{ mt: 2 }}
                 InputProps={{
-                  style: { borderRadius: '8px' },
+                  style: { borderRadius: '1rem' },
                 }}
               />
 
@@ -218,7 +218,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                 onChange={(e) => setNumberOfInstallments(+e.target.value)}
                 sx={{ mt: 2 }}
                 InputProps={{
-                  style: { borderRadius: '8px' },
+                  style: { borderRadius: '1rem' },
                 }}
               />
 
@@ -240,7 +240,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                 onValueChange={(values) => setMinimumBidValue(+values.floatValue)}
                 sx={{ mt: 2 }}
                 InputProps={{
-                  style: { borderRadius: '8px' },
+                  style: { borderRadius: '1rem' },
                 }}
               />
             </form>

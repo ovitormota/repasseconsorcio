@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect, Fragment, useRef } from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
 import { Button, Col, Row, Spinner } from 'reactstrap'
 import { Translate, TextFormat, getSortState, translate } from 'react-jhipster'
@@ -47,6 +47,7 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
   const { isSMScreen, isMDScreen } = useBreakpoints()
   const dispatch = useAppDispatch()
   const history = props.history
+  const scrollableBoxRef = useRef<HTMLDivElement>(null)
 
   const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'created'), props.location.search))
   const [sorting, setSorting] = useState(false)
@@ -93,13 +94,13 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <AppBarComponent loading={loading} onClick={() => setOpenConsortiumHistoryModal(true)}>
+      <AppBarComponent loading={loading} onClick={() => setOpenConsortiumHistoryModal(true)} scrollableBoxRef={scrollableBoxRef}>
         <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.bid.table.columns' />
       </AppBarComponent>
       {loading ? (
         <Loading />
       ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', marginTop: '60px' }} id='scrollableDiv'>
+        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', paddingTop: '60px' }} id='scrollableDiv' ref={scrollableBoxRef}>
           <InfiniteScroll
             dataLength={bidList?.length}
             next={handleLoadMore}
@@ -156,7 +157,7 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
                 </TableHead>
 
                 <TableBody>
-                  {bidList?.length &&
+                  {!!bidList?.length &&
                     bidList?.map((bid, index) => (
                       <TableRow key={index} onClick={() => [setOpenConsortiumHistoryModal(true), setEntityConsortium(bid.consortium)]}>
                         <TableCell>

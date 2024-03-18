@@ -11,6 +11,7 @@ import { AccountRegister } from '../account/register/AccountRegister'
 import { RequestPassword } from './RequestPassword'
 import { getEntities, reset } from 'app/entities/consortium/consortium.reducer'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
+import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 
 interface IHomeLoginProps {
   setOpenLoginModal: (open: boolean) => void
@@ -41,6 +42,7 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
           size: 10,
           sort: 'id,asc',
           filterSegmentType: SegmentType.ALL,
+          filterStatusType: ConsortiumStatusType.ALL,
         })
       )
     }
@@ -66,10 +68,10 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
         fullWidth
         onClose={() => isMDScreen && setOpenLoginModal(false)}
       >
-        <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} align='center'>
-          <Box sx={{ width: '100%', height: '100%' }}>
-            <img src='content/images/logo-repasse-completed-white.png' alt='Logo' width='100px' height='100px' />
-          </Box>
+        <DialogTitle color='secondary' align='center' sx={{ pt: 2 }}>
+          <Typography variant='overline' fontSize={20}>
+            Bem-vindo
+          </Typography>
           <IconButton onClick={() => setOpenLoginModal(false)} sx={{ position: 'absolute', right: '10px', top: '10px' }}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
@@ -88,7 +90,7 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
               value={username}
               onChange={(event) => setUsername(event.target.value)}
               InputProps={{
-                style: { borderRadius: '8px' },
+                style: { borderRadius: '1rem' },
               }}
               sx={{ mt: 2 }}
             />
@@ -105,7 +107,7 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               InputProps={{
-                style: { borderRadius: '8px', marginRight: '8px' },
+                style: { borderRadius: '1rem', marginRight: '8px' },
                 endAdornment: (
                   <InputAdornment position='end' style={{ marginRight: '5px' }}>
                     <IconButton edge='end' onClick={() => setShowPassword(!showPassword)} color='secondary'>

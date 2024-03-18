@@ -5,6 +5,7 @@ import { loadMoreDataWhenScrolled, parseHeaderForLinks } from 'react-jhipster'
 import { IConsortium, defaultValue } from 'app/shared/model/consortium.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 import { EntityState, IQueryParams, createEntitySlice } from 'app/shared/reducers/reducer.utils'
+import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 
 const initialState: EntityState<IConsortium> = {
   loading: false,
@@ -23,10 +24,13 @@ const myProposalsUrl = 'api/my-proposals'
 
 interface IGetEntities extends IQueryParams {
   filterSegmentType?: SegmentType
+  filterStatusType?: ConsortiumStatusType
 }
 
-export const getEntities = createAsyncThunk('my-proposals/fetch_entity_list', async ({ page, size, sort, filterSegmentType }: IGetEntities) => {
-  const requestUrl = `${myProposalsUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&filterSegmentType=${filterSegmentType}&` : '?'}cacheBuster=${new Date().getTime()}`
+export const getEntities = createAsyncThunk('my-proposals/fetch_entity_list', async ({ page, size, sort, filterSegmentType, filterStatusType }: IGetEntities) => {
+  const requestUrl = `${myProposalsUrl}${
+    sort ? `?page=${page}&size=${size}&sort=${sort}&filterSegmentType=${filterSegmentType}&filterStatusType=${filterStatusType}&` : '?'
+  }cacheBuster=${new Date().getTime()}`
   return axios.get<IConsortium[]>(requestUrl)
 })
 
@@ -38,13 +42,18 @@ export const MyProposals = createEntitySlice({
   extraReducers(builder) {
     builder
       .addMatcher(isFulfilled(getEntities), (state, action) => {
-        const links = parseHeaderForLinks(action.payload.headers.link)
-        return {
-          ...state,
-          loading: false,
-          links,
-          entities: loadMoreDataWhenScrolled(state.entities, action.payload.data, links),
-          totalItems: parseInt(action.payload.headers['x-total-count'], 10),
+        if (action.payload.data.length === 0) {
+          return initialState
+        } else {
+          const links = parseHeaderForLinks(action.payload.headers.link)
+
+          return {
+            ...state,
+            loading: false,
+            links,
+            entities: loadMoreDataWhenScrolled(state.entities, action.payload.data, links),
+            totalItems: parseInt(action.payload.headers['x-total-count'], 10),
+          }
         }
       })
       .addMatcher(isPending(getEntities), (state) => {

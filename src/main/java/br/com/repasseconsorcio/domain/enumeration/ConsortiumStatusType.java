@@ -8,4 +8,5 @@ public enum ConsortiumStatusType {
     OPEN,
     REGISTERED,
     WON,
+    ALL,
 }

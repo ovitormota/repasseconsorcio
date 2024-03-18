@@ -15,7 +15,7 @@ interface IConsortiumHistoryModalProps {
 export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityConsortium }: IConsortiumHistoryModalProps) => {
   const renderStatusRibbon = () => (
     <div className='ribbon'>
-      <a href=''>{translate('repasseconsorcioApp.consortium.contemplationStatus.approved')}</a>
+      <a href=''>{translate('repasseconsorcioApp.consortium.contemplationTypeStatus.approved')}</a>
     </div>
   )
 

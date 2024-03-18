@@ -64,7 +64,7 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
         sx={{
           top: 0,
           bottom: 'auto',
-          background: defaultTheme.palette.primary.main,
+          background: '#F6F6F6',
           boxShadow: 'none',
           height: trigger ? '70px' : '0px',
           transition: 'height 0.5s ease-in-out',
@@ -83,12 +83,10 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
           >
             {isAuthenticated && isMDScreen && (
               <Tooltip title='Início' style={{ cursor: 'pointer', position: 'absolute' }} onClick={() => history.replace('/')}>
-                <Box sx={{ width: '110px', height: '40px', maxWidth: '110px' }}>
-                  <img src='content/images/logo-repasse-consorcio-text.png' alt='Logo' width='100%' height='100%' />
-                </Box>
+                <img src='content/images/logo-repasse-consorcio-text.png' alt='Logo' width='100px' />
               </Tooltip>
             )}
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', gap: { xs: 2, md: 8 } }}>{children}</Box>
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', gap: { xs: 1, md: 4 } }}>{children}</Box>
           </Box>
         )}
       </AppBar>

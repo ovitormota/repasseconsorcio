@@ -150,9 +150,9 @@ public class ConsortiumResource {
      *         of consortiums in body.
      */
     @GetMapping("/consortiums")
-    public ResponseEntity<List<Consortium>> getAllConsortiums(Pageable pageable, SegmentType filterSegmentType) {
+    public ResponseEntity<List<Consortium>> getAllConsortiums(Pageable pageable, SegmentType filterSegmentType, ConsortiumStatusType filterStatusType) {
         log.debug("REST request to get a page of Consortiums");
-        Page<Consortium> page = consortiumService.findAllByStatusNotIn(pageable, filterSegmentType);
+        Page<Consortium> page = consortiumService.findAllByStatusNotIn(pageable, filterSegmentType, filterStatusType);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -166,11 +166,11 @@ public class ConsortiumResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
-    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.ADMIN + "') or hasAuthority('" + AuthoritiesConstants.USER + "')")
+    @PreAuthorize("hasAuthority('" + AuthoritiesConstants.USER + "')")
     @GetMapping("/my-proposals")
-    public ResponseEntity<List<Consortium>> getMyApprovals(Pageable pageable, SegmentType filterSegmentType) {
+    public ResponseEntity<List<Consortium>> getMyApprovals(Pageable pageable, SegmentType filterSegmentType, ConsortiumStatusType filterStatusType) {
         log.debug("REST request to get a page of Consortiums by Proposal Approvals");
-        Page<Consortium> page = consortiumService.findAllMyProposals(pageable, filterSegmentType);
+        Page<Consortium> page = consortiumService.findAllMyProposals(pageable, filterSegmentType, filterStatusType);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

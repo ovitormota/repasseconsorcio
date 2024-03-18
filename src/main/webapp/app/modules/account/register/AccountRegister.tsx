@@ -109,7 +109,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
                 color='secondary'
                 data-cy='firstName'
                 InputProps={{
-                  style: { borderRadius: '8px' },
+                  style: { borderRadius: '1rem' },
                 }}
                 sx={{ mt: 2, mb: 1 }}
                 onChange={(e) => updateField('firstName', e.target.value)}
@@ -126,7 +126,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
                 color='secondary'
                 data-cy='lastName'
                 InputProps={{
-                  style: { borderRadius: '8px' },
+                  style: { borderRadius: '1rem' },
                 }}
                 sx={{ mt: 2, mb: 1 }}
                 onChange={(e) => updateField('lastName', e.target.value)}
@@ -146,7 +146,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
                 error={!isEmailValid()}
                 helperText={!isEmailValid() && 'Seu e-mail é inválido'}
                 InputProps={{
-                  style: { borderRadius: '8px' },
+                  style: { borderRadius: '1rem' },
                 }}
                 sx={{ mt: 2, mb: 1 }}
                 onChange={(e) => updateField('email', e.target.value)}
@@ -164,7 +164,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
                 color='secondary'
                 data-cy='password'
                 InputProps={{
-                  style: { borderRadius: '8px' },
+                  style: { borderRadius: '1rem' },
                 }}
                 sx={{ mt: 2, mb: 1 }}
                 onChange={(e) => updateField('password', e.target.value)}
@@ -184,7 +184,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
                 error={!isPasswordsMatch()}
                 helperText={!isPasswordsMatch() && 'As senhas não conferem'}
                 InputProps={{
-                  style: { borderRadius: '8px' },
+                  style: { borderRadius: '1rem' },
                   endAdornment: (
                     <InputAdornment position='end' style={{ marginRight: '5px' }}>
                       <IconButton edge='end' onClick={() => setShowPassword(!showPassword)} color='secondary'>

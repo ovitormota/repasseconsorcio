@@ -7,6 +7,7 @@ import { defaultTheme } from 'app/shared/layout/themes'
 import { Translate } from 'react-jhipster'
 import { getEntities, reset } from 'app/entities/consortium/consortium.reducer'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
+import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 
 export const Logout = ({ setOpenLogoutModal }) => {
   const logoutUrl = useAppSelector((state) => state.authentication.logoutUrl)
@@ -24,6 +25,7 @@ export const Logout = ({ setOpenLogoutModal }) => {
           size: 10,
           sort: 'id,asc',
           filterSegmentType: SegmentType.ALL,
+          filterStatusType: ConsortiumStatusType.ALL,
         })
       )
     }

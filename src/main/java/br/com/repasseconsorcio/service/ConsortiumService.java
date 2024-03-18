@@ -16,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,29 +98,25 @@ public class ConsortiumService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<Consortium> findAllByStatusNotIn(Pageable pageable, SegmentType filterSegmentType) {
+    public Page<Consortium> findAllByStatusNotIn(Pageable pageable, SegmentType filterSegmentType, ConsortiumStatusType filterStatusType) {
         log.debug("Request to get all Consortiums");
-
-        List<ConsortiumStatusType> listStatusNotIn = new ArrayList<>();
-
-        listStatusNotIn.add(ConsortiumStatusType.REGISTERED);
-        listStatusNotIn.add(ConsortiumStatusType.CLOSED);
-        listStatusNotIn.add(ConsortiumStatusType.WON);
 
         Boolean isAuthenticated = SecurityUtils.hasCurrentUserNoneOfAuthorities(AuthoritiesConstants.ANONYMOUS);
 
-        Boolean isAdministrator = SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN);
+        Boolean isAdmin = SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN);
 
-        if (isAuthenticated && !isAdministrator) {
-            if (filterSegmentType.equals(SegmentType.ALL)) {
-                return consortiumRepository.findAllByStatusNotInAndUser(listStatusNotIn, pageable);
-            }
-            return consortiumRepository.findAllByStatusNotInAndSegmentTypeAndUser(listStatusNotIn, filterSegmentType, pageable);
+        filterSegmentType = filterSegmentType.equals(SegmentType.ALL) ? null : filterSegmentType;
+        filterStatusType = filterStatusType.equals(ConsortiumStatusType.ALL) ? null : filterStatusType;
+
+        if (isAuthenticated && !isAdmin) {
+            filterStatusType = ConsortiumStatusType.OPEN;
+            return consortiumRepository.findAllByStatusNotInAndSegmentTypeAndUser(filterStatusType, filterSegmentType, pageable);
         }
-        if (filterSegmentType.equals(SegmentType.ALL)) {
-            return consortiumRepository.findAllByStatusNotIn(listStatusNotIn, pageable);
+
+        if (!isAdmin) {
+            filterStatusType = ConsortiumStatusType.OPEN;
         }
-        return consortiumRepository.findAllByStatusNotInAndSegmentType(listStatusNotIn, filterSegmentType, pageable);
+        return consortiumRepository.findAllByAdminAndSegmentType(filterStatusType, filterSegmentType, pageable);
     }
 
     /**
@@ -163,14 +157,13 @@ public class ConsortiumService {
         return consortiumRepository.findAllByStatusInAndSegmentType(statusTypes, filterSegmentType, pageable);
     }
 
-    public Page<Consortium> findAllMyProposals(Pageable pageable, SegmentType filterSegmentType) {
+    public Page<Consortium> findAllMyProposals(Pageable pageable, SegmentType filterSegmentType, ConsortiumStatusType filterStatusType) {
         log.debug("Request to get all My Proposals");
 
-        if (filterSegmentType.equals(SegmentType.ALL)) {
-            return consortiumRepository.findAllMyProposalByUserIsCurrentUser(pageable);
-        }
+        filterSegmentType = filterSegmentType.equals(SegmentType.ALL) ? null : filterSegmentType;
+        filterStatusType = filterStatusType.equals(ConsortiumStatusType.ALL) ? null : filterStatusType;
 
-        return consortiumRepository.findAllMyProposalByUserIsCurrentUserAndSegmentType(filterSegmentType, pageable);
+        return consortiumRepository.findAllMyProposalByUserIsCurrentUserAndSegmentTypeAndStatus(filterStatusType, filterSegmentType, pageable);
     }
 
     public Long countByProposalApprovals() {
