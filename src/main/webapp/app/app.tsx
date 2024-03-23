@@ -16,7 +16,6 @@ import toast, { ToastBar, Toaster } from 'react-hot-toast'
 import { Button, IconButton } from '@mui/material'
 import { Add, Close } from '@mui/icons-material'
 import { AppThemeProvider } from './shared/context/ThemeContext'
-import { IntallPwaComponent } from './shared/components/IntallPwaComponent'
 
 const baseHref = document.querySelector('base').getAttribute('href').replace(/\/$/, '')
 
@@ -55,7 +54,6 @@ export const App = () => {
             </ToastBar>
           )}
         </Toaster>
-        <IntallPwaComponent />
         <ErrorBoundary>
           <AppRoutes />
           <Header />
