@@ -1,7 +1,7 @@
 import 'app/config/dayjs.ts'
 import './app.scss'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 import { AUTHORITIES } from 'app/config/constants'
@@ -16,23 +16,45 @@ import toast, { ToastBar, Toaster } from 'react-hot-toast'
 import { Button, IconButton } from '@mui/material'
 import { Add, Close } from '@mui/icons-material'
 import { AppThemeProvider } from './shared/context/ThemeContext'
+import { InstallPromptModal } from './shared/components/InstallPromptModal'
+import { isMobile } from 'react-device-detect'
 
 const baseHref = document.querySelector('base').getAttribute('href').replace(/\/$/, '')
 
 export const App = () => {
   const dispatch = useAppDispatch()
 
+  const [deferredPrompt, setDeferredPrompt] = useState(null)
+  const [modalOpen, setModalOpen] = useState(false)
+
+  useEffect(() => {
+    dispatch(getSession())
+    dispatch(getProfile())
+
+    const handler = (e) => {
+      e.preventDefault()
+      setDeferredPrompt(e)
+
+      const timeout = setTimeout(() => {
+        if (isMobile) {
+          setModalOpen(true)
+        }
+      }, 15000)
+
+      return () => clearTimeout(timeout)
+    }
+
+    window.addEventListener('beforeinstallprompt', handler)
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler)
+    }
+  }, [isMobile])
+
   useEffect(() => {
     dispatch(getSession())
     dispatch(getProfile())
   }, [])
-
-  const currentLocale = useAppSelector((state) => state.locale.currentLocale)
-  const isAuthenticated = useAppSelector((state) => state.authentication.isAuthenticated)
-  const isAdmin = useAppSelector((state) => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN]))
-  const ribbonEnv = useAppSelector((state) => state.applicationProfile.ribbonEnv)
-  const isInProduction = useAppSelector((state) => state.applicationProfile.inProduction)
-  const isOpenAPIEnabled = useAppSelector((state) => state.applicationProfile.isOpenAPIEnabled)
 
   return (
     <Router basename={baseHref}>
@@ -58,6 +80,7 @@ export const App = () => {
           <AppRoutes />
           <Header />
         </ErrorBoundary>
+        {<InstallPromptModal deferredPrompt={deferredPrompt} isOpen={modalOpen} onClose={() => setModalOpen(false)} />}
       </AppThemeProvider>
     </Router>
   )

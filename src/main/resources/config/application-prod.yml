@@ -35,7 +35,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://localhost:5432/repasseconsorcio
     username: repasseconsorcio
-    password:
+    password: 8ENr6d%bOo}PktJ
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -45,10 +45,14 @@ spring:
   liquibase:
     contexts: prod
   mail:
-    host: localhost
-    port: 25
-    username:
-    password:
+    host: smtppro.zoho.com
+    port: 587
+    username: suporte@repasseconsorcio.com.br
+    password: Global-6143
+    protocol: smtp
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
   thymeleaf:
     cache: true
   sleuth:

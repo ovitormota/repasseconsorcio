@@ -77,7 +77,7 @@ spring:
         - dev
         - api-docs
         # Uncomment to activate TLS for the dev profile
-        - tls
+        # - tls
   jmx:
     enabled: false
   data:
