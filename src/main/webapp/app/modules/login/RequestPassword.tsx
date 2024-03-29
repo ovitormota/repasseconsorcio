@@ -51,7 +51,7 @@ export const RequestPassword = ({ setOpenRequestModal }) => {
       <Dialog
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
-        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
+        PaperProps={{ sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
       >
         <DialogTitle width='100%' color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Translate contentKey='reset.request.title'>Reset your password</Translate>
@@ -79,7 +79,7 @@ export const RequestPassword = ({ setOpenRequestModal }) => {
               onChange={(e) => setEmail(e.target.value)}
               sx={{ my: 4 }}
               InputProps={{
-                style: { borderRadius: '1rem' },
+                style: { borderRadius: '10px' },
               }}
             />
             <DialogActions sx={{ px: 0 }}>

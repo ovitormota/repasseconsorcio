@@ -97,7 +97,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { md: 1 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { md: 1 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
         }}
         onClose={() => setOpenConsortiumUpdateModal(false)}
       >
@@ -177,7 +177,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                 onValueChange={(values) => setConsortiumValue(+values.floatValue)}
                 sx={{ mt: 2 }}
                 InputProps={{
-                  style: { borderRadius: '1rem' },
+                  style: { borderRadius: '10px' },
                 }}
               />
 
@@ -199,7 +199,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                 onValueChange={(values) => setInstallmentValue(+values.floatValue)}
                 sx={{ mt: 2 }}
                 InputProps={{
-                  style: { borderRadius: '1rem' },
+                  style: { borderRadius: '10px' },
                 }}
               />
 
@@ -218,7 +218,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                 onChange={(e) => setNumberOfInstallments(+e.target.value)}
                 sx={{ mt: 2 }}
                 InputProps={{
-                  style: { borderRadius: '1rem' },
+                  style: { borderRadius: '10px' },
                 }}
               />
 
@@ -240,7 +240,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                 onValueChange={(values) => setMinimumBidValue(+values.floatValue)}
                 sx={{ mt: 2 }}
                 InputProps={{
-                  style: { borderRadius: '1rem' },
+                  style: { borderRadius: '10px' },
                 }}
               />
             </form>

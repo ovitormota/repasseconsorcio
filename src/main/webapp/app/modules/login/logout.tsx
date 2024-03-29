@@ -44,7 +44,7 @@ export const Logout = ({ setOpenLogoutModal }) => {
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
         }}
         onClose={() => setOpenLogoutModal(false)}
       >

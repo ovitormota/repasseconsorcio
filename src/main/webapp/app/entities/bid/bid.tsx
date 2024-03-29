@@ -1,47 +1,23 @@
-import React, { useState, useEffect, Fragment, useRef } from 'react'
-import { Link, RouteComponentProps } from 'react-router-dom'
-import { Button, Col, Row, Spinner } from 'reactstrap'
-import { Translate, TextFormat, getSortState, translate } from 'react-jhipster'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React, { useEffect, useRef, useState } from 'react'
+import { getSortState, translate } from 'react-jhipster'
+import { RouteComponentProps } from 'react-router-dom'
 
-import { getEntities, reset } from './bid.reducer'
-import { IBid } from 'app/shared/model/bid.model'
-import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants'
-import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants'
-import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
+import { Box, Chip, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
-import {
-  AppBar,
-  Avatar,
-  Box,
-  Chip,
-  Divider,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  ThemeProvider,
-  Tooltip,
-  Typography,
-} from '@mui/material'
-import { defaultTheme } from 'app/shared/layout/themes'
 import { Loading } from 'app/shared/components/Loading'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import { formatCreated, formatCurrency } from 'app/shared/util/data-utils'
-import { useBreakpoints } from 'app/shared/util/useBreakpoints'
-import { ConsortiumHistoryModal } from '../consortium/ConsortiumHistoryModal'
-import { IConsortium } from 'app/shared/model/consortium.model'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
-import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { SortingBox } from 'app/shared/components/SortingBox'
+import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { TypographStyled } from 'app/shared/layout/table/TableComponents'
+import { defaultTheme } from 'app/shared/layout/themes'
+import { IConsortium } from 'app/shared/model/consortium.model'
+import { formatCreated, formatCurrency } from 'app/shared/util/data-utils'
+import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
+import { DESC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
+import { useBreakpoints } from 'app/shared/util/useBreakpoints'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { ConsortiumHistoryModal } from '../consortium/ConsortiumHistoryModal'
+import { getEntities } from './bid.reducer'
 
 export const Bid = (props: RouteComponentProps<{ url: string }>) => {
   const { isSMScreen, isMDScreen } = useBreakpoints()
@@ -112,13 +88,13 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
             pullDownToRefreshContent={
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                 <Typography color='secondary'>Puxe para atualizar</Typography>
-                <Spinner color='warning' size='small' />
+                <CircularProgress color='secondary' size={30} />
               </Box>
             }
             releaseToRefreshContent={
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                 <Typography color='secondary'>Solte para atualizar</Typography>
-                <Spinner color='warning' size='small' />
+                <CircularProgress color='secondary' size={30} />
               </Box>
             }
             loader={
@@ -127,38 +103,38 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
               </div>
             }
           >
-            <TableContainer sx={{ px: { xs: 0, sm: 2 } }}>
-              <Table>
-                <TableHead style={{ position: 'relative' }}>
-                  <TableRow>
-                    <TableCell>
-                      <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.id')}</TypographStyled>
-                    </TableCell>
+            {!!bidList?.length && (
+              <TableContainer sx={{ px: { xs: 0, sm: 2 } }}>
+                <Table>
+                  <TableHead style={{ position: 'relative' }}>
+                    <TableRow>
+                      <TableCell>
+                        <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.id')}</TypographStyled>
+                      </TableCell>
 
-                    {isMDScreen && (
-                      <>
-                        <TableCell>
-                          <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.consortiumAdministrator.name')}</TypographStyled>
-                        </TableCell>
-                        <TableCell>
-                          <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.segmentType')}</TypographStyled>
-                        </TableCell>
-                      </>
-                    )}
+                      {isMDScreen && (
+                        <>
+                          <TableCell>
+                            <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.consortiumAdministrator.name')}</TypographStyled>
+                          </TableCell>
+                          <TableCell>
+                            <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.segmentType')}</TypographStyled>
+                          </TableCell>
+                        </>
+                      )}
 
-                    <TableCell>
-                      <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.value')}</TypographStyled>
-                    </TableCell>
-                    <TableCell>
-                      <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.created')}</TypographStyled>
-                    </TableCell>
-                  </TableRow>
-                  <hr className='hr-text' data-content='' style={{ position: 'absolute', width: '100%', top: '40px' }} />
-                </TableHead>
+                      <TableCell>
+                        <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.value')}</TypographStyled>
+                      </TableCell>
+                      <TableCell>
+                        <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.created')}</TypographStyled>
+                      </TableCell>
+                    </TableRow>
+                    <hr className='hr-text' data-content='' style={{ position: 'absolute', width: '100%', top: '40px' }} />
+                  </TableHead>
 
-                <TableBody>
-                  {!!bidList?.length &&
-                    bidList?.map((bid, index) => (
+                  <TableBody>
+                    {bidList?.map((bid, index) => (
                       <TableRow key={index} onClick={() => [setOpenConsortiumHistoryModal(true), setEntityConsortium(bid.consortium)]}>
                         <TableCell>
                           <Chip label={'#' + bid?.consortium?.id} color='secondary' variant='outlined' />
@@ -173,9 +149,10 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
                         <TableCell>{formatCreated(bid.created)}</TableCell>
                       </TableRow>
                     ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
           </InfiniteScroll>
           {!bidList?.length && <NoDataIndicator />}
         </Box>

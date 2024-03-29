@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Translate, getSortState } from 'react-jhipster'
 
 import { CloseOutlined } from '@mui/icons-material'
@@ -6,16 +6,12 @@ import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
   IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Table,
   TableBody,
   TableCell,
@@ -23,7 +19,6 @@ import {
   TableHead,
   TableRow,
   ThemeProvider,
-  Tooltip,
   Typography,
 } from '@mui/material'
 import { AUTHORITIES } from 'app/config/constants'
@@ -31,6 +26,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { hasAnyAuthority } from 'app/shared/auth/private-route'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicatorRelative } from 'app/shared/components/NoDataIndicator'
+import { TypographStyled } from 'app/shared/layout/table/TableComponents'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { formatCreated, formatCurrency } from 'app/shared/util/data-utils'
@@ -38,10 +34,8 @@ import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-u
 import { DESC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useLocation } from 'react-router-dom'
-import { Spinner } from 'reactstrap'
 import { BidUpdateModal } from './BidUpdateModal'
 import { getEntitiesByConsortium, reset } from './bid.reducer'
-import { TypographStyled } from 'app/shared/layout/table/TableComponents'
 
 interface IBidHistoryModalProps {
   setOpenBidHistoryModal: (open: boolean) => void
@@ -94,7 +88,7 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { xs: 0, sm: 1 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { xs: 0, sm: 1 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
         }}
         onClose={handleClose}
       >
@@ -119,7 +113,7 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
                   <Typography color='secondary' variant='overline'>
                     Puxe para atualizar
                   </Typography>
-                  <Spinner color='warning' size='small' />
+                  <CircularProgress color='secondary' size={30} />
                 </Box>
               }
               releaseToRefreshContent={
@@ -127,7 +121,7 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
                   <Typography color='secondary' variant='overline'>
                     Solte para atualizar
                   </Typography>
-                  <Spinner color='warning' size='small' />
+                  <CircularProgress color='secondary' size={30} />
                 </Box>
               }
               loader={
@@ -185,7 +179,7 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
                 color: defaultTheme.palette.secondary.contrastText,
                 boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                 '&:hover': {
-                  backgroundColor: defaultTheme.palette.warning.main,
+                  backgroundColor: defaultTheme.palette.secondary.light,
                 },
               }}
               disabled={isAdmin || isUser}

@@ -63,15 +63,15 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
         }}
         fullWidth
         onClose={() => isMDScreen && setOpenLoginModal(false)}
       >
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 5 }}>
+          <img src='content/images/logo-repasse-text-black.png' alt='Logo Repasse Consórcio' style={{ width: '100px' }} />
+        </Box>
         <DialogTitle color='secondary' align='center' sx={{ pt: 2 }}>
-          <Typography variant='overline' fontSize={20}>
-            Bem-vindo
-          </Typography>
           <IconButton onClick={() => setOpenLoginModal(false)} sx={{ position: 'absolute', right: '10px', top: '10px' }}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
@@ -90,7 +90,7 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
               value={username}
               onChange={(event) => setUsername(event.target.value)}
               InputProps={{
-                style: { borderRadius: '1rem' },
+                style: { borderRadius: '10px' },
               }}
               sx={{ mt: 2 }}
             />
@@ -107,7 +107,7 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               InputProps={{
-                style: { borderRadius: '1rem', marginRight: '8px' },
+                style: { borderRadius: '10px', marginRight: '8px' },
                 endAdornment: (
                   <InputAdornment position='end' style={{ marginRight: '5px' }}>
                     <IconButton edge='end' onClick={() => setShowPassword(!showPassword)} color='secondary'>

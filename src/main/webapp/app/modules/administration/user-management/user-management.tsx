@@ -229,51 +229,28 @@
 
 // export default UserManagement;
 
-import React, { Fragment, useEffect, useRef, useState } from 'react'
-import { Translate, getSortState, translate } from 'react-jhipster'
+import React, { useEffect, useRef, useState } from 'react'
+import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
-import { Spinner } from 'reactstrap'
 
-import { Add, Delete, EditOutlined } from '@mui/icons-material'
-import {
-  Avatar,
-  Box,
-  Button,
-  Chip,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  ThemeProvider,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Avatar, Box, Chip, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Tooltip, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
+import { AccountRegister } from 'app/modules/account/register/AccountRegister'
+import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
+import { SortingBox } from 'app/shared/components/SortingBox'
+import { UserFilterChip } from 'app/shared/components/UserFilterChip'
+import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
+import { TypographStyled } from 'app/shared/layout/table/TableComponents'
 import { defaultTheme } from 'app/shared/layout/themes'
-import { IConsortiumAdministrator } from 'app/shared/model/consortium-administrator.model'
+import { StatusType } from 'app/shared/model/enumerations/status.model'
+import { IUser } from 'app/shared/model/user.model'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
+import { get } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getUsersAsAdmin, updateUser } from './user-management.reducer'
-import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
-import { IUser } from 'app/shared/model/user.model'
-import { AccountRegister } from 'app/modules/account/register/AccountRegister'
-import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
-import { SortingBox } from 'app/shared/components/SortingBox'
-import { StatusType } from 'app/shared/model/enumerations/status.model'
-import { UserFilterChip } from 'app/shared/components/UserFilterChip'
-import { TypographStyled } from 'app/shared/layout/table/TableComponents'
-import { get } from 'lodash'
 
 export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -350,7 +327,7 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
                 <Typography color='secondary' variant='overline'>
                   Puxe para atualizar
                 </Typography>
-                <Spinner color='warning' size='small' />
+                <CircularProgress color='secondary' size={30} />
               </Box>
             }
             releaseToRefreshContent={
@@ -358,7 +335,7 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
                 <Typography color='secondary' variant='overline'>
                   Solte para atualizar
                 </Typography>
-                <Spinner color='warning' size='small' />
+                <CircularProgress color='secondary' size={30} />
               </Box>
             }
             loader={

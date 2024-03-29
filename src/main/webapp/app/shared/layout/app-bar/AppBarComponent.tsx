@@ -64,8 +64,9 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
         sx={{
           top: 0,
           bottom: 'auto',
-          background: '#F6F6F6',
-          boxShadow: 'none',
+          background: 'rgba(107, 48, 190, 0.03)',
+          borderRadius: '0px 0px 1px 1px',
+          boxShadow: '10px 10px 20px rgba(107, 48, 190, 0.05)',
           height: trigger ? '70px' : '0px',
           transition: 'height 0.5s ease-in-out',
         }}
@@ -82,8 +83,8 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
             }}
           >
             {isAuthenticated && isMDScreen && (
-              <Tooltip title='Início' style={{ cursor: 'pointer', position: 'absolute' }} onClick={() => history.replace('/')}>
-                <img src='content/images/logo-repasse-consorcio-text.png' alt='Logo' width='100px' />
+              <Tooltip title='Repasse Consórcio' style={{ cursor: 'pointer', position: 'absolute' }} onClick={() => history.replace('/')}>
+                <img src='content/images/logo-repasse.png' alt='Logo' width='40px' />
               </Tooltip>
             )}
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', gap: { xs: 1, md: 4 } }}>{children}</Box>

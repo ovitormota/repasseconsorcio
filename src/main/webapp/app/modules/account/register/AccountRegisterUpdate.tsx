@@ -92,7 +92,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
         }}
       >
         <DialogContent>
@@ -110,7 +110,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
               value={fields.firstName}
               data-cy='firstName'
               InputProps={{
-                style: { borderRadius: '1rem' },
+                style: { borderRadius: '10px' },
               }}
               sx={{ mt: 2, mb: 1 }}
               onChange={(e) => updateField('firstName', e.target.value)}
@@ -127,7 +127,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
               value={fields.lastName}
               data-cy='lastName'
               InputProps={{
-                style: { borderRadius: '1rem' },
+                style: { borderRadius: '10px' },
               }}
               sx={{ mt: 2, mb: 1 }}
               onChange={(e) => updateField('lastName', e.target.value)}
@@ -147,7 +147,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
               value={fields.email}
               helperText={'Para alterar o email, entre em contato com o suporte.'}
               InputProps={{
-                style: { borderRadius: '1rem' },
+                style: { borderRadius: '10px' },
               }}
               sx={{ mt: 2, mb: 1 }}
               onChange={(e) => updateField('email', e.target.value)}

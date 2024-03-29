@@ -1,4 +1,4 @@
-import { Avatar, Box, Card, CardContent, Chip, List, ListItem, ListItemIcon, ListItemText, ThemeProvider, Typography } from '@mui/material'
+import { Avatar, Box, Card, CardContent, Chip, CircularProgress, List, ListItem, ListItemIcon, ListItemText, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { BidHistoryModal } from 'app/entities/bid/BidHistoryModal'
 import { HomeLogin } from 'app/modules/login/HomeLogin'
@@ -7,10 +7,12 @@ import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
 import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
 import { SortingBox } from 'app/shared/components/SortingBox'
+import { StatusFilter } from 'app/shared/components/StatusFilter'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { IBid } from 'app/shared/model/bid.model'
 import { IConsortium } from 'app/shared/model/consortium.model'
+import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 import { formatCurrency, getStatusColor } from 'app/shared/util/data-utils'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
@@ -19,10 +21,7 @@ import React, { Fragment, useEffect, useRef, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
-import { Spinner } from 'reactstrap'
 import { getEntities } from './my-proposal.reducer'
-import { StatusFilter } from 'app/shared/components/StatusFilter'
-import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 
 export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -105,7 +104,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
           width: { xs: '90vw', sm: '330px' },
           background: defaultTheme.palette.background.paper,
           boxShadow: '0px 2px 2px 1px rgba(97, 57, 173, 0.2)',
-          borderRadius: '1rem',
+          borderRadius: '10px',
           ':hover': {
             backgroundColor: defaultTheme.palette.primary.main,
             cursor: 'pointer',
@@ -226,7 +225,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
                 <Typography color='secondary' variant='overline'>
                   Puxe para atualizar
                 </Typography>
-                <Spinner color='warning' size='small' />
+                <CircularProgress color='secondary' size={30} />
               </Box>
             }
             releaseToRefreshContent={
@@ -234,7 +233,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
                 <Typography color='secondary' variant='overline'>
                   Solte para atualizar
                 </Typography>
-                <Spinner color='warning' size='small' />
+                <CircularProgress color='secondary' size={30} />
               </Box>
             }
             loader={

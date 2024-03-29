@@ -93,7 +93,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
       <Dialog
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
-        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
+        PaperProps={{ sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
       >
         <DialogContent>
           <form onSubmit={handleValidSubmit}>
@@ -109,7 +109,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
                 color='secondary'
                 data-cy='firstName'
                 InputProps={{
-                  style: { borderRadius: '1rem' },
+                  style: { borderRadius: '10px' },
                 }}
                 sx={{ mt: 2, mb: 1 }}
                 onChange={(e) => updateField('firstName', e.target.value)}
@@ -126,7 +126,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
                 color='secondary'
                 data-cy='lastName'
                 InputProps={{
-                  style: { borderRadius: '1rem' },
+                  style: { borderRadius: '10px' },
                 }}
                 sx={{ mt: 2, mb: 1 }}
                 onChange={(e) => updateField('lastName', e.target.value)}
@@ -146,7 +146,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
                 error={!isEmailValid()}
                 helperText={!isEmailValid() && 'Seu e-mail é inválido'}
                 InputProps={{
-                  style: { borderRadius: '1rem' },
+                  style: { borderRadius: '10px' },
                 }}
                 sx={{ mt: 2, mb: 1 }}
                 onChange={(e) => updateField('email', e.target.value)}
@@ -164,7 +164,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
                 color='secondary'
                 data-cy='password'
                 InputProps={{
-                  style: { borderRadius: '1rem' },
+                  style: { borderRadius: '10px' },
                 }}
                 sx={{ mt: 2, mb: 1 }}
                 onChange={(e) => updateField('password', e.target.value)}
@@ -184,7 +184,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
                 error={!isPasswordsMatch()}
                 helperText={!isPasswordsMatch() && 'As senhas não conferem'}
                 InputProps={{
-                  style: { borderRadius: '1rem' },
+                  style: { borderRadius: '10px' },
                   endAdornment: (
                     <InputAdornment position='end' style={{ marginRight: '5px' }}>
                       <IconButton edge='end' onClick={() => setShowPassword(!showPassword)} color='secondary'>

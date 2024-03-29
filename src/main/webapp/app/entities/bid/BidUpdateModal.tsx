@@ -76,7 +76,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: 1, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: 1, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
         }}
         onClose={() => setOpenBidUpdateModal(false)}
       >
@@ -112,7 +112,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
                 onValueChange={(values) => setBidValue(+values.floatValue)}
                 sx={{ mt: 1 }}
                 InputProps={{
-                  style: { borderRadius: '1rem' },
+                  style: { borderRadius: '10px' },
                 }}
               />
 

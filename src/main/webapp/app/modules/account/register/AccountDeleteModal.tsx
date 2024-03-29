@@ -27,7 +27,7 @@ export const AccountDeleteModal = ({ setDeleteAccountModalOpen }) => {
       <Dialog
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
-        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 0 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
+        PaperProps={{ sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { sm: 0 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
       >
         <DialogContent>
           <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ mb: 4 }}>

@@ -39,7 +39,7 @@ export const BidModalUseTerms = ({ setOpen, setAcceptTerms }: IModalUseTerms) =>
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: 1, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: 1, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
         }}
         onClose={() => setOpen(false)}
       >

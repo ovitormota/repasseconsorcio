@@ -1,24 +1,23 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
-import { Translate, getSortState, translate } from 'react-jhipster'
+import React, { useEffect, useRef, useState } from 'react'
+import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
-import { Spinner } from 'reactstrap'
 
-import { Add, Delete, EditOutlined } from '@mui/icons-material'
-import { Avatar, Box, Button, IconButton, List, ListItem, ListItemIcon, ListItemText, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Typography } from '@mui/material'
+import { Delete, EditOutlined } from '@mui/icons-material'
+import { Avatar, Box, CircularProgress, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
+import { SortingBox } from 'app/shared/components/SortingBox'
+import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
+import { TypographStyled } from 'app/shared/layout/table/TableComponents'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { IConsortiumAdministrator } from 'app/shared/model/consortium-administrator.model'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
+import { get } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { ConsortiumAdministratorUpdateModal } from './ConsortiumAdministratorUpdateModal'
-import { deleteEntity, getEntities, reset } from './consortium-administrator.reducer'
-import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
-import { SortingBox } from 'app/shared/components/SortingBox'
-import { get } from 'lodash'
-import { TypographStyled } from 'app/shared/layout/table/TableComponents'
+import { deleteEntity, getEntities } from './consortium-administrator.reducer'
 
 export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -86,7 +85,7 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
                 <Typography color='secondary' variant='overline'>
                   Puxe para atualizar
                 </Typography>
-                <Spinner color='warning' size='small' />
+                <CircularProgress color='secondary' size={30} />
               </Box>
             }
             releaseToRefreshContent={
@@ -94,7 +93,7 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
                 <Typography color='secondary' variant='overline'>
                   Solte para atualizar
                 </Typography>
-                <Spinner color='warning' size='small' />
+                <CircularProgress color='secondary' size={30} />
               </Box>
             }
             loader={

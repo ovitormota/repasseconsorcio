@@ -117,7 +117,7 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main },
+          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main },
         }}
         onClose={() => setOpenConsortiumHistoryModal(false)}
       >

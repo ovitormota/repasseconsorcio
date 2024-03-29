@@ -1,28 +1,26 @@
-import { ArrowOutward, Edit, FilterListRounded, SortRounded, SwapVertRounded } from '@mui/icons-material'
-import { AppBar, Avatar, Box, Button, Card, CardContent, Chip, IconButton, List, ListItem, ListItemIcon, ListItemText, MenuItem, Select, ThemeProvider, Tooltip, Typography } from '@mui/material'
+import { ArrowOutward } from '@mui/icons-material'
+import { Avatar, Box, Button, Card, CardContent, Chip, CircularProgress, List, ListItem, ListItemIcon, ListItemText, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
-import { AuctionTimer } from 'app/shared/components/AuctionTimer'
+import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
 import { Loading } from 'app/shared/components/Loading'
+import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
+import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
+import { SortingBox } from 'app/shared/components/SortingBox'
+import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
+import { defaultTheme } from 'app/shared/layout/themes'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
+import { IUser } from 'app/shared/model/user.model'
+import { getStatusColor } from 'app/shared/util/data-utils'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
-import { ASC, DESC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
+import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import { useBreakpoints } from 'app/shared/util/useBreakpoints'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
-import { defaultTheme } from 'app/shared/layout/themes'
 import { getEntities, partialUpdateEntity } from './proposals-for-approval.reducer'
-import { Spinner } from 'reactstrap'
-import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
-import { getStatusColor } from 'app/shared/util/data-utils'
-import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
-import { IUser } from 'app/shared/model/user.model'
-import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
-import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
-import { SortingBox } from 'app/shared/components/SortingBox'
 
 export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -108,7 +106,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
           width: { xs: '90vw', sm: '330px' },
           background: defaultTheme.palette.background.paper,
           boxShadow: '0px 2px 2px 1px rgba(97, 57, 173, 0.2)',
-          borderRadius: '1rem',
+          borderRadius: '10px',
         }}
       >
         <CardContent>
@@ -199,7 +197,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
                   color: defaultTheme.palette.secondary.contrastText,
                   boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                   '&:hover': {
-                    backgroundColor: defaultTheme.palette.warning.main,
+                    backgroundColor: defaultTheme.palette.secondary.light,
                   },
                 }}
                 variant='contained'
@@ -251,7 +249,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
                 <Typography color='secondary' variant='overline'>
                   Puxe para atualizar
                 </Typography>
-                <Spinner color='warning' size='small' />
+                <CircularProgress color='secondary' size={30} />
               </Box>
             }
             releaseToRefreshContent={
@@ -259,7 +257,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
                 <Typography color='secondary' variant='overline'>
                   Solte para atualizar
                 </Typography>
-                <Spinner color='warning' size='small' />
+                <CircularProgress color='secondary' size={30} />
               </Box>
             }
             loader={

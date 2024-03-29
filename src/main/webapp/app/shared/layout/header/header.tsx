@@ -1,4 +1,15 @@
-import { AccountBalance, Add, Checklist, Gavel, HomeOutlined, Login, LogoutOutlined, ManageAccounts, MoreVert, PriceCheck } from '@mui/icons-material'
+import {
+  AccountBalanceRounded,
+  AddRounded,
+  ChecklistRounded,
+  GavelRounded,
+  HomeRounded,
+  LoginRounded,
+  LogoutOutlined,
+  ManageAccountsRounded,
+  MoreVertRounded,
+  PriceCheckRounded,
+} from '@mui/icons-material'
 import { Badge, ListItemIcon, Menu, MenuItem, ThemeProvider, Tooltip, styled } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
 import Avatar from '@mui/material/Avatar'
@@ -115,7 +126,7 @@ export const Header = () => {
 
   const setIconColorByPath = (path: string[]) => {
     const matchingPath = path.find((p) => location.pathname === p)
-    return matchingPath ? defaultTheme.palette.secondary.main : defaultTheme.palette.grey[500]
+    return matchingPath ? defaultTheme.palette.secondary.main : defaultTheme.palette.grey[300]
   }
 
   const setFontWeightByPath = (path: string[]) => {
@@ -136,13 +147,14 @@ export const Header = () => {
             color: defaultTheme.palette.background.paper,
             background: defaultTheme.palette.background.paper,
             height: '70px',
+            borderRadius: '14px 14px 0 0',
           }}
         >
           <Toolbar sx={{ display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center' }}>
             <Box>
               {!isAuthenticated ? (
-                <Tooltip title='Início' style={{ cursor: 'pointer' }} onClick={() => history.replace('/')}>
-                  <img src='content/images/logo-repasse-consorcio-text.png' alt='Logo' width='110px' />
+                <Tooltip title='Repasse Consórcio' style={{ cursor: 'pointer' }} onClick={() => history.replace('/')}>
+                  <img src='content/images/logo-repasse.png' alt='Logo' width='40px' />
                 </Tooltip>
               ) : (
                 <React.Fragment>
@@ -156,14 +168,14 @@ export const Header = () => {
                             width: 50,
                             height: 50,
                             backgroundColor: defaultTheme.palette.primary.main,
-                            border: account?.image ? 'none' : '1px solid',
+                            border: account?.image ? 'none' : '2px solid',
                             color: defaultTheme.palette.secondary.main,
                             borderColor: defaultTheme.palette.secondary.main,
                           }}
                         />
                       </IconButton>
                     </Tooltip>
-                    <Box sx={{ color: defaultTheme.palette.grey[500], display: 'flex', flexDirection: 'column' }}>
+                    <Box sx={{ color: defaultTheme.palette.grey[300], display: 'flex', flexDirection: 'column' }}>
                       <small>Olá,</small>
                       <span>{!isMDScreen ? account.firstName : account.firstName + ' ' + account.lastName}</span>
                     </Box>
@@ -195,7 +207,7 @@ export const Header = () => {
                       }}
                     >
                       <ListItemIcon>
-                        <ManageAccounts fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
+                        <ManageAccountsRounded fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
                       </ListItemIcon>
                       <Typography variant='subtitle2'>Meu Perfil</Typography>
                     </MenuItem>
@@ -226,15 +238,15 @@ export const Header = () => {
               sx={{
                 background: defaultTheme.palette.primary.main,
                 color: defaultTheme.palette.secondary.main,
-                boxShadow: '0px 2px 2px #6139AD',
+                boxShadow: '0px 8px 10px rgba(0,0,0,0.2)',
                 cursor: 'pointer',
                 '&:hover': {
-                  backgroundColor: defaultTheme.palette.warning.main,
+                  backgroundColor: defaultTheme.palette.secondary.light,
                   color: defaultTheme.palette.primary.main,
                 },
               }}
             >
-              <StyledFab>{isAuthenticated ? <Add sx={{ fontSize: 40 }} /> : <Login sx={{ fontSize: 30 }} />}</StyledFab>
+              <StyledFab>{isAuthenticated ? <AddRounded sx={{ fontSize: 40 }} /> : <LoginRounded sx={{ fontSize: 30 }} />}</StyledFab>
             </Tooltip>
             <Box sx={{ flexGrow: 1 }} />
 
@@ -257,7 +269,7 @@ export const Header = () => {
                       }}
                     >
                       <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
-                        <HomeOutlined style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/']) }} />
+                        <HomeRounded style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/']) }} />
                       </IconButton>
                       <Typography variant='overline' sx={{ color: setIconColorByPath(['/']) }} fontSize={10} fontWeight={setFontWeightByPath(['/'])}>
                         Início
@@ -283,7 +295,7 @@ export const Header = () => {
                       style={showElement(!isAdmin)}
                     >
                       <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
-                        <PriceCheck style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid']) }} />
+                        <PriceCheckRounded style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid']) }} />
                       </IconButton>
                       <Typography variant='overline' sx={{ color: setIconColorByPath(['/bid']) }} fontSize={10} fontWeight={setFontWeightByPath(['/bid'])}>
                         Meus Lances
@@ -309,7 +321,7 @@ export const Header = () => {
                       style={showElement(!isAdmin)}
                     >
                       <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
-                        <Gavel style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/my-proposals']) }} />
+                        <GavelRounded style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/my-proposals']) }} />
                       </IconButton>
                       <Typography variant='overline' sx={{ color: setIconColorByPath(['/my-proposals']) }} fontSize={10} fontWeight={setFontWeightByPath(['/my-proposals'])}>
                         Minhas Propostas
@@ -335,7 +347,7 @@ export const Header = () => {
                       style={showElement(isAdmin)}
                     >
                       <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
-                        <AccountBalance style={{ fontSize: 23 }} sx={{ color: setIconColorByPath(['/consortium-administrator']) }} />
+                        <AccountBalanceRounded style={{ fontSize: 23 }} sx={{ color: setIconColorByPath(['/consortium-administrator']) }} />
                       </IconButton>
                       <Typography variant='overline' sx={{ color: setIconColorByPath(['/consortium-administrator']) }} fontSize={10} fontWeight={setFontWeightByPath(['/consortium-administrator'])}>
                         Administradoras
@@ -362,7 +374,7 @@ export const Header = () => {
                     >
                       <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
                         <Badge badgeContent={count} color='error'>
-                          <Checklist style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/proposal-approvals']) }} />
+                          <ChecklistRounded style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/proposal-approvals']) }} />
                         </Badge>
                       </IconButton>
                       <Typography variant='overline' sx={{ color: setIconColorByPath(['/proposal-approvals']) }} fontSize={10} fontWeight={setFontWeightByPath(['/proposal-approvals'])}>
@@ -389,7 +401,7 @@ export const Header = () => {
                       style={showElement(isAdmin)}
                     >
                       <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
-                        <ManageAccounts style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/users']) }} />
+                        <ManageAccountsRounded style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/users']) }} />
                       </IconButton>
                       <Typography variant='overline' sx={{ color: setIconColorByPath(['/users']) }} fontSize={10} fontWeight={setFontWeightByPath(['/users'])}>
                         Usuários
@@ -417,7 +429,7 @@ export const Header = () => {
                         sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}
                       >
                         <Badge badgeContent={anchorElNav === null ? count : 0} color='error'>
-                          <MoreVert style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator', '/users']) }} />
+                          <MoreVertRounded style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator', '/users']) }} />
                         </Badge>
                       </IconButton>
 
@@ -461,7 +473,7 @@ export const Header = () => {
                     style={showElement(isAdmin)}
                   >
                     <ListItemIcon>
-                      <AccountBalance fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
+                      <AccountBalanceRounded fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
                     </ListItemIcon>
                     <Typography variant='subtitle2'>Administradoras</Typography>
                   </MenuItem>
@@ -479,7 +491,7 @@ export const Header = () => {
                   >
                     <ListItemIcon>
                       <Badge badgeContent={count} color='error'>
-                        <Checklist fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
+                        <ChecklistRounded fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
                       </Badge>
                     </ListItemIcon>
                     <Typography variant='subtitle2'>Aprovações</Typography>
@@ -497,7 +509,7 @@ export const Header = () => {
                     }}
                   >
                     <ListItemIcon>
-                      <ManageAccounts fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
+                      <ManageAccountsRounded fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
                     </ListItemIcon>
                     <Typography variant='subtitle2'>Usuários</Typography>
                   </MenuItem>
@@ -514,7 +526,7 @@ export const Header = () => {
                     }}
                   >
                     <ListItemIcon>
-                      <PriceCheck fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
+                      <PriceCheckRounded fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
                     </ListItemIcon>
                     <Typography variant='subtitle2'>Meus Lances</Typography>
                   </MenuItem>
@@ -531,7 +543,7 @@ export const Header = () => {
                     }}
                   >
                     <ListItemIcon>
-                      <Gavel fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
+                      <GavelRounded fontSize='small' sx={{ color: defaultTheme.palette.secondary.main }} />
                     </ListItemIcon>
                     <Typography variant='subtitle2'>Minhas Propostas</Typography>
                   </MenuItem>
