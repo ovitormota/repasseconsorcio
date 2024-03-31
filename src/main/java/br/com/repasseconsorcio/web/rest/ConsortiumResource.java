@@ -162,6 +162,7 @@ public class ConsortiumResource {
     public ResponseEntity<List<Consortium>> getConsortiumsByProposalApprovals(Pageable pageable, SegmentType filterSegmentType) {
         log.debug("REST request to get a page of Consortiums by Proposal Approvals");
         Page<Consortium> page = consortiumService.findAllByProposalApprovals(pageable, filterSegmentType);
+        System.out.println("testeeeee" + page.getContent().get(0).getUser());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

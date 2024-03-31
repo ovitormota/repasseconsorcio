@@ -1,5 +1,5 @@
 import { FilterListRounded } from '@mui/icons-material'
-import { Box, Chip, FormControl, InputLabel, MenuItem, Select, Tooltip, Typography } from '@mui/material'
+import { Box, Chip, FormControl, InputLabel, MenuItem, Select, Skeleton, Tooltip, Typography } from '@mui/material'
 import React from 'react'
 import { translate } from 'react-jhipster'
 import { defaultTheme } from '../layout/themes'
@@ -12,9 +12,10 @@ import { AUTHORITIES } from 'app/config/constants'
 interface IStatusFilterProps {
   filterStatusType: string
   setFilterStatusType: (value: React.SetStateAction<ConsortiumStatusType>) => void
+  loading?: boolean
 }
 
-export const StatusFilter = ({ setFilterStatusType, filterStatusType }: IStatusFilterProps) => {
+export const StatusFilter = ({ setFilterStatusType, filterStatusType, loading }: IStatusFilterProps) => {
   const isAdmin = useAppSelector((state) => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN]))
   const getStatusType = () => {
     return [ConsortiumStatusType.ALL, ConsortiumStatusType.OPEN, ConsortiumStatusType.WON, ConsortiumStatusType.CLOSED, ConsortiumStatusType.REGISTERED]
@@ -30,32 +31,38 @@ export const StatusFilter = ({ setFilterStatusType, filterStatusType }: IStatusF
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <Typography variant='subtitle2' sx={{ color: defaultTheme.palette.text.secondary, mr: '10px', display: { xs: 'none', lg: 'block' } }}>
-        Status:
-      </Typography>
-      <FormControl fullWidth>
-        <InputLabel sx={{ display: { xs: 'block', lg: 'none' }, color: defaultTheme.palette.text.secondary, fontSize: '0.9rem', background: '#F6F6F6' }}>Status</InputLabel>
-        <Select
-          value={filterStatusType}
-          IconComponent={FilterListRounded}
-          onChange={(event) => handleStatusChange(event.target.value)}
-          color='secondary'
-          size='small'
-          sx={{
-            maxWidth: '25vw',
-            padding: '0 10px 0 0',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            fontSize: '0.9rem',
-          }}
-        >
-          {filterByAdmin(getStatusType()).map((status: ConsortiumStatusType, index: number) => (
-            <MenuItem key={index} value={status}>
-              {translate(`repasseconsorcioApp.ConsortiumStatusType.${status}`)}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      {!loading ? (
+        <>
+          <Typography variant='subtitle2' sx={{ color: defaultTheme.palette.text.secondary, mr: '10px', display: { xs: 'none', lg: 'block' } }}>
+            Status:
+          </Typography>
+          <FormControl fullWidth>
+            <InputLabel sx={{ display: { xs: 'block', lg: 'none' }, color: defaultTheme.palette.text.secondary, fontSize: '0.9rem', background: '#F6F6F6' }}>Status</InputLabel>
+            <Select
+              value={filterStatusType}
+              IconComponent={FilterListRounded}
+              onChange={(event) => handleStatusChange(event.target.value)}
+              color='secondary'
+              size='small'
+              sx={{
+                maxWidth: '25vw',
+                padding: '0 10px 0 0',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                fontSize: '0.9rem',
+              }}
+            >
+              {filterByAdmin(getStatusType()).map((status: ConsortiumStatusType, index: number) => (
+                <MenuItem key={index} value={status}>
+                  {translate(`repasseconsorcioApp.ConsortiumStatusType.${status}`)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </>
+      ) : (
+        <Skeleton variant='rectangular' height={40} sx={{ borderRadius: '10px', width: { xs: '10vw', sx: '25vw' } }} />
+      )}
     </Box>
   )
 }

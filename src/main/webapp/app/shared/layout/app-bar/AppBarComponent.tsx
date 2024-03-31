@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react'
-import { Box, Tooltip, AppBar } from '@mui/material'
+import { Box, Tooltip, AppBar, Skeleton } from '@mui/material'
 import { useAppSelector } from 'app/config/store'
 import { useBreakpoints } from 'app/shared/util/useBreakpoints'
 import { useHistory } from 'react-router-dom'
@@ -64,14 +64,14 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
         sx={{
           top: 0,
           bottom: 'auto',
-          background: 'rgba(107, 48, 190, 0.03)',
-          borderRadius: '0px 0px 1px 1px',
-          boxShadow: '10px 10px 20px rgba(107, 48, 190, 0.05)',
-          height: trigger ? '70px' : '0px',
+          background: 'rgba(247, 247, 247, 0.8)',
+          borderRadius: '0px 0px 10px 10px',
+          boxShadow: '10px 10px 20px rgba(247, 247, 247, 0.8)',
+          height: trigger ? '75px' : '0px',
           transition: 'height 0.5s ease-in-out',
         }}
       >
-        {!loading && trigger && (
+        {trigger && (
           <Box
             sx={{
               display: 'flex',
@@ -82,11 +82,12 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
               px: { xs: 3 },
             }}
           >
-            {isAuthenticated && isMDScreen && (
+            {isAuthenticated && isMDScreen && !loading && (
               <Tooltip title='Repasse Consórcio' style={{ cursor: 'pointer', position: 'absolute' }} onClick={() => history.replace('/')}>
                 <img src='content/images/logo-repasse.png' alt='Logo' width='40px' />
               </Tooltip>
             )}
+            {loading && isMDScreen && <Skeleton variant='circular' width={50} height={50} />}
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', gap: { xs: 1, md: 4 } }}>{children}</Box>
           </Box>
         )}

@@ -50,14 +50,6 @@ export const createEntity = createAsyncThunk(
   async (entity: IConsortium, thunkAPI) => {
     const result = await axios.post<IConsortium>(apiUrl, cleanEntity(entity))
     thunkAPI.dispatch(reset())
-    thunkAPI.dispatch(
-      getEntities({
-        page: 0,
-        size: 10,
-        sort: 'id,asc',
-        filterSegmentType: SegmentType.ALL,
-      })
-    )
     return result
   },
   { serializeError: serializeAxiosError }

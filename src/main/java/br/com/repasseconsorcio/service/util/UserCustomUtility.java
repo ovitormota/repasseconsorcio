@@ -20,9 +20,8 @@ public class UserCustomUtility {
     public static User getUserCustom() {
         Optional<String> login = SecurityUtils.getCurrentUserLogin();
 
-        System.out.println("Login: " + login);
         if (login.isPresent()) {
-            return userService.getUserWithAuthoritiesByLogin(login.get()).get();
+            return userService.getUserWithAuthoritiesByUserAndLogin(login.get()).get();
         }
 
         return null;

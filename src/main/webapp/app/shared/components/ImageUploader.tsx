@@ -21,19 +21,16 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [croppedImage, setCroppedImage] = useState<string | null>(null)
   const [defaultImage, setDefaultImage] = useState<string | null>(currentImage)
+  const [originalFileName, setOriginalFileName] = useState<string | null>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0]
+      setOriginalFileName(file.name) // Armazena o nome do arquivo original
       const reader = new FileReader()
-
-      reader.onload = function (readerEvent) {
-        if (readerEvent.target?.result) {
-          setSelectedImage(readerEvent.target?.result as string)
-          setCroppedImage(null)
-        }
+      reader.onload = () => {
+        setSelectedImage(reader.result as string)
       }
-
       reader.readAsDataURL(file)
     }
   }
@@ -47,16 +44,23 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
   const handleCrop = () => {
     if (cropperRef.current) {
       const cropper = cropperRef.current.cropper
-      const croppedImageBase64 = cropper.getCroppedCanvas().toDataURL()
-      setCroppedImage(croppedImageBase64)
-      onUpload({ base64Image: croppedImageBase64 })
+      if (cropper) {
+        cropper.getCroppedCanvas().toBlob((blob: Blob | null) => {
+          if (blob) {
+            const file = new File([blob], originalFileName, { type: 'image/jpeg' })
+
+            onUpload(file)
+            setCroppedImage(URL.createObjectURL(blob))
+          }
+        }, 'image/jpeg')
+      }
     }
   }
 
   const clearImage = () => {
     setDefaultImage(null)
 
-    onUpload({ base64Image: null })
+    onUpload(null)
   }
 
   return (
@@ -93,11 +97,13 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
             <input ref={fileInputRef} type='file' accept='image/*' onChange={handleFileChange} style={{ display: 'none' }} />
             <Box sx={{ position: 'relative', display: 'inline-block' }}>
               <Avatar
-                src={croppedImage ?? defaultImage ?? name}
+                src={croppedImage || defaultImage}
                 alt={name}
                 sx={{ width: isUser ? 130 : 230, height: 130, cursor: 'pointer', fontSize: '3rem', borderRadius: isUser ? '50%' : '8px' }}
                 onClick={handleAvatarClick}
-              />
+              >
+                {name ? name[0].toUpperCase() : ''}
+              </Avatar>
               {selectedImage || croppedImage || defaultImage ? (
                 <IconButton
                   sx={{

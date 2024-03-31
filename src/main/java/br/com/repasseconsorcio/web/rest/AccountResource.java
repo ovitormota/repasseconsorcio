@@ -9,17 +9,25 @@ import br.com.repasseconsorcio.service.MailService;
 import br.com.repasseconsorcio.service.UserService;
 import br.com.repasseconsorcio.service.dto.AdminUserDTO;
 import br.com.repasseconsorcio.service.dto.PasswordChangeDTO;
-import br.com.repasseconsorcio.web.rest.errors.*;
+import br.com.repasseconsorcio.web.rest.errors.EmailAlreadyUsedException;
+import br.com.repasseconsorcio.web.rest.errors.InvalidPasswordException;
+import br.com.repasseconsorcio.web.rest.errors.LoginAlreadyUsedException;
 import br.com.repasseconsorcio.web.rest.vm.KeyAndPasswordVM;
 import br.com.repasseconsorcio.web.rest.vm.ManagedUserVM;
-import java.util.*;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST controller for managing the current user's account.
@@ -62,7 +70,7 @@ public class AccountResource {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
+    public User registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
         if (isPasswordLengthInvalid(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
         }
@@ -71,6 +79,8 @@ public class AccountResource {
         if (!repasseconsorcioApp.isDevMode()) {
             mailService.sendActivationEmail(user);
         }
+
+        return user;
     }
 
     /**
@@ -107,7 +117,7 @@ public class AccountResource {
      */
     @GetMapping("/account")
     public AdminUserDTO getAccount() {
-        return userService.getUserWithAuthorities().map(AdminUserDTO::new).orElseThrow(() -> new AccountResourceException("User could not be found"));
+        return userService.getAccount();
     }
 
     /**
@@ -128,7 +138,7 @@ public class AccountResource {
         if (!user.isPresent()) {
             throw new AccountResourceException("User could not be found");
         }
-        userService.updateUser(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), Constants.DEFAULT_LANGUAGE, userDTO.getImageUrl());
+        userService.updateUser(userDTO.getFirstName(), userDTO.getLastName(), userDTO.getEmail(), Constants.DEFAULT_LANGUAGE);
     }
 
     /**

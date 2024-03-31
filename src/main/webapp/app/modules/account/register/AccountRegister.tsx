@@ -9,6 +9,7 @@ import { ImageUploader } from 'app/shared/components/ImageUploader'
 import { toast } from 'react-hot-toast'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { handleRegister, reset } from './register.reducer'
+import { uploadUserImage } from 'app/modules/administration/user-management/user-management.reducer'
 
 export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
   const dispatch = useAppDispatch()
@@ -18,11 +19,10 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
     email: '',
     password: '',
     confirmPassword: '',
-    image: null,
   })
   const [visibleFields, setVisibleFields] = useState(['firstName'])
   const [showPassword, setShowPassword] = useState(false)
-
+  const [image, setImage] = useState(null)
   const currentLocale = useAppSelector((state) => state.locale.currentLocale)
   const registrationSuccess = useAppSelector((state) => state.register.registrationSuccess)
   const successMessage = useAppSelector((state) => state.register.successMessage)
@@ -42,17 +42,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
 
   const handleValidSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    dispatch(
-      handleRegister({
-        firstName: fields.firstName,
-        lastName: fields.lastName,
-        email: fields.email,
-        password: fields.password,
-        login: fields.email,
-        langKey: currentLocale,
-        image: fields.image,
-      })
-    )
+    dispatch(handleRegister({ data: { ...fields, login: fields.email }, file: image }))
   }
 
   const updateField = (field, value) => {
@@ -81,11 +71,8 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
     return emailRegex.test(fields.email)
   }
 
-  const handleUpload = ({ base64Image }) => {
-    setFields({
-      ...fields,
-      image: base64Image,
-    })
+  const handleUpload = (imageField) => {
+    setImage(imageField)
   }
 
   return (
@@ -97,7 +84,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
       >
         <DialogContent>
           <form onSubmit={handleValidSubmit}>
-            <ImageUploader onUpload={handleUpload} currentImage={fields.image} name={null} />
+            <ImageUploader onUpload={handleUpload} currentImage={image} name={null} />
             {visibleFields.includes('firstName') && (
               <TextField
                 type='text'
@@ -209,7 +196,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
                 disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || fields.password === '' || fields.confirmPassword === '' || !isPasswordsMatch() || !isEmailValid()}
               >
                 <Translate contentKey='register.form.button'>Register</Translate>
-                {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.common.black }} />}
+                {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.primary.main }} />}
               </Button>
             </DialogActions>
           </form>

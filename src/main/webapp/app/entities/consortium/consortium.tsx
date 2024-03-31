@@ -25,6 +25,8 @@ import { RouteComponentProps } from 'react-router-dom'
 import { BidHistoryModal } from '../bid/BidHistoryModal'
 import { BidUpdateModal } from '../bid/BidUpdateModal'
 import { getEntities } from './consortium.reducer'
+import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
+import { AvatarWithSkeleton } from 'app/shared/components/AvatarWithSkeleton'
 
 export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -116,7 +118,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
           my: { xs: 1.1, sm: 1.1 },
           width: { xs: '90vw', sm: '330px' },
           background: defaultTheme.palette.background.paper,
-          boxShadow: '0px 2px 2px 1px rgba(97, 57, 173, 0.2)',
+          boxShadow: '1px 1px rgba(97, 57, 173, 0.2)',
           borderRadius: '10px',
           ':hover': {
             backgroundColor: defaultTheme.palette.primary.main,
@@ -131,7 +133,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
 
             <ListItem sx={{ mb: 1 }}>
               <ListItemIcon sx={{ mr: 1 }}>
-                <Avatar alt={name} src={name} sx={{ width: 50, height: 50 }} />
+                <AvatarWithSkeleton imageUrl={image} firstName={name} width='50px' />
               </ListItemIcon>
               <ListItemText
                 sx={{
@@ -235,9 +237,10 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
   return (
     <ThemeProvider theme={defaultTheme}>
       <AppBarComponent loading={loading} scrollableBoxRef={scrollableBoxRef}>
-        {isAdmin && <StatusFilter filterStatusType={filterStatusType} setFilterStatusType={SetFilterStatusType} />}
-        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} isAdmin={isAdmin} onMaxWidth={isAdmin} />
+        {isAdmin && <StatusFilter filterStatusType={filterStatusType} setFilterStatusType={SetFilterStatusType} loading={loading} />}
+        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} isAdmin={isAdmin} onMaxWidth={isAdmin} loading={loading} />
         <SortingBox
+          loading={loading}
           setCurrentSort={setCurrentSort}
           currentSort={currentSort}
           setOrder={setOrder}
@@ -247,40 +250,40 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
           onMaxWidth={isAdmin}
         />
       </AppBarComponent>
-      {loading ? (
-        <Loading />
-      ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', paddingTop: '60px' }} id='scrollableDiv' ref={scrollableBoxRef}>
-          <InfiniteScroll
-            dataLength={consortiumList.length}
-            next={handleLoadMore}
-            hasMore={paginationState.activePage - 1 < links.next}
-            scrollableTarget='scrollableDiv'
-            pullDownToRefresh
-            refreshFunction={getAllEntities}
-            pullDownToRefreshThreshold={50}
-            pullDownToRefreshContent={
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Typography color='secondary' variant='overline'>
-                  Puxe para atualizar
-                </Typography>
-                <CircularProgress color='secondary' size={30} />
-              </Box>
-            }
-            releaseToRefreshContent={
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Typography color='secondary' variant='overline'>
-                  Solte para atualizar
-                </Typography>
-                <CircularProgress color='secondary' size={30} />
-              </Box>
-            }
-            loader={
-              <div className='loader' key={0}>
-                Loading ...
-              </div>
-            }
-          >
+      <Box style={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingTop: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
+        <InfiniteScroll
+          dataLength={consortiumList.length}
+          next={handleLoadMore}
+          hasMore={paginationState.activePage - 1 < links.next}
+          scrollableTarget='scrollableDiv'
+          pullDownToRefresh
+          refreshFunction={getAllEntities}
+          pullDownToRefreshThreshold={50}
+          pullDownToRefreshContent={
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+              <Typography color='secondary' variant='overline'>
+                Puxe para atualizar
+              </Typography>
+              <CircularProgress color='secondary' size={30} />
+            </Box>
+          }
+          releaseToRefreshContent={
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+              <Typography color='secondary' variant='overline'>
+                Solte para atualizar
+              </Typography>
+              <CircularProgress color='secondary' size={30} />
+            </Box>
+          }
+          loader={
+            <div className='loader' key={0}>
+              Loading ...
+            </div>
+          }
+        >
+          {loading ? (
+            <ConsortiumCardSkeleton />
+          ) : (
             <List sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
               {!!consortiumList?.length &&
                 consortiumList?.map((consortium) => (
@@ -289,10 +292,10 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                   </Fragment>
                 ))}
             </List>
-          </InfiniteScroll>
-          {!consortiumList?.length && <NoDataIndicator />}
-        </Box>
-      )}
+          )}
+        </InfiniteScroll>
+        {!consortiumList?.length && !loading && <NoDataIndicator message='Nehuma proposta encontrada' />}
+      </Box>
       {openBidHistoryModal && <BidHistoryModal setOpenBidHistoryModal={setOpenBidHistoryModal} entityConsortium={entityConsortium} />}
       {openLoginModal && <HomeLogin setOpenLoginModal={setOpenLoginModal} />}
       {openBidUpdateModal && <BidUpdateModal setOpenBidUpdateModal={setOpenBidUpdateModal} entityConsortium={entityConsortium} />}

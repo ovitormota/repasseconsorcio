@@ -2,6 +2,7 @@ package br.com.repasseconsorcio.domain;
 
 import br.com.repasseconsorcio.config.Constants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
@@ -63,10 +64,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "lang_key", length = 10)
     private String langKey;
 
-    @Size(max = 256)
-    @Column(name = "image_url", length = 256)
-    private String imageUrl;
-
     @Size(max = 20)
     @Column(name = "activation_key", length = 20)
     @JsonIgnore
@@ -80,9 +77,12 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
-    @JsonIgnore
     @Column(name = "image")
     private String image;
+
+    @Transient
+    @JsonProperty("imageUrl")
+    private String imageUrl;
 
     @JsonIgnore
     @ManyToMany

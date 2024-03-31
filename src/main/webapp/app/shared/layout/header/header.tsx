@@ -28,6 +28,8 @@ import { ConsortiumUpdateModal } from 'app/modules/consortium/ConsortiumUpdateMo
 import { HomeLogin } from 'app/modules/login/HomeLogin'
 import Logout from 'app/modules/login/logout'
 import { hasAnyAuthority } from 'app/shared/auth/private-route'
+import { AvatarWithSkeleton } from 'app/shared/components/AvatarWithSkeleton'
+import { ImageWithSkeleton } from 'app/shared/components/ImageWithSkeleton'
 import { Loading } from 'app/shared/components/Loading'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { showElement } from 'app/shared/util/data-utils'
@@ -121,7 +123,7 @@ export const Header = () => {
 
   const setBorderColorByPath = (path: string[]) => {
     const matchingPath = path.find((p) => location.pathname === p)
-    return matchingPath ? defaultTheme.palette.secondary.main : defaultTheme.palette.background.paper
+    return matchingPath ? defaultTheme.palette.secondary.main : defaultTheme.palette.primary.main
   }
 
   const setIconColorByPath = (path: string[]) => {
@@ -144,35 +146,25 @@ export const Header = () => {
           sx={{
             top: 'auto',
             bottom: 0,
-            color: defaultTheme.palette.background.paper,
-            background: defaultTheme.palette.background.paper,
+            color: defaultTheme.palette.primary.main,
+            background: defaultTheme.palette.primary.main,
+            boxShadow: '1px 1px 3px rgba(107, 48, 190, 0.5)',
             height: '70px',
             borderRadius: '14px 14px 0 0',
           }}
         >
-          <Toolbar sx={{ display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center' }}>
+          <Toolbar sx={{ display: 'flex', alignItems: 'center', height: '100%', justifyContent: 'center', p: !isAuthenticated ? 2 : { xs: 0.5, sm: 1.5 } }}>
             <Box>
               {!isAuthenticated ? (
                 <Tooltip title='Repasse Consórcio' style={{ cursor: 'pointer' }} onClick={() => history.replace('/')}>
-                  <img src='content/images/logo-repasse.png' alt='Logo' width='40px' />
+                  <ImageWithSkeleton src='content/images/logo-repasse.png' alt='Logo' width='45px' />
                 </Tooltip>
               ) : (
                 <React.Fragment>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Tooltip title='Meu Perfil'>
                       <IconButton onClick={handleOpenUserMenu} aria-controls={open ? 'account-menu' : undefined} aria-haspopup='true' aria-expanded={open ? 'true' : undefined}>
-                        <Avatar
-                          src={account?.image || account?.firstName}
-                          alt={account?.firstName}
-                          sx={{
-                            width: 50,
-                            height: 50,
-                            backgroundColor: defaultTheme.palette.primary.main,
-                            border: account?.image ? 'none' : '2px solid',
-                            color: defaultTheme.palette.secondary.main,
-                            borderColor: defaultTheme.palette.secondary.main,
-                          }}
-                        />
+                        <AvatarWithSkeleton imageUrl={account?.imageUrl} firstName={account?.firstName} width={50} />
                       </IconButton>
                     </Tooltip>
                     <Box sx={{ color: defaultTheme.palette.grey[300], display: 'flex', flexDirection: 'column' }}>
@@ -428,7 +420,7 @@ export const Header = () => {
                         color='secondary'
                         sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}
                       >
-                        <Badge badgeContent={anchorElNav === null ? count : 0} color='error'>
+                        <Badge badgeContent={anchorElNav === null ? count : 0} color='error' sx={{ top: 5 }}>
                           <MoreVertRounded style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator', '/users']) }} />
                         </Badge>
                       </IconButton>

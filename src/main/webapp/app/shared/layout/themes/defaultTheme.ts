@@ -4,7 +4,7 @@ export const defaultTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#F7F7F7',
+      main: '#FFFFFF',
       light: 'rgba(255, 255, 255, 0.9)',
       contrastText: 'rgb(43,43,43)',
     },
@@ -27,7 +27,7 @@ export const defaultTheme = createTheme({
     },
     background: {
       paper: '#F7F7F7',
-      default: 'rgba(255, 255, 255, 0.9)',
+      default: 'rgba(247, 247, 247, 0.9)',
     },
     error: {
       main: '#FF5A5F',
@@ -64,6 +64,7 @@ export const defaultTheme = createTheme({
             color: '#7555D7',
             paddingLeft: '5px',
             paddingRight: '5px',
+            fontWeight: '500',
           },
         },
       },
@@ -139,8 +140,8 @@ export const defaultTheme = createTheme({
     MuiTableRow: {
       styleOverrides: {
         root: {
-          background: '#FFFFFF',
-          borderBottom: '4px solid #F6F6F6',
+          background: '#F7F7F7',
+          borderBottom: '4px solid #FFFFFF',
 
           ':hover': {
             background: 'rgba(97, 57, 173, 0.1)',
@@ -163,6 +164,8 @@ export const defaultTheme = createTheme({
           borderRadius: '10px',
           mb: '150px',
           cellSpacing: '0',
+          paddingLeft: '1em',
+          paddingRight: '1em',
         },
       },
     },
@@ -171,6 +174,13 @@ export const defaultTheme = createTheme({
         tooltip: {
           fontSize: '0.8rem',
           backgroundColor: 'rgba(117, 85, 215, 0.8)',
+        },
+      },
+    },
+    MuiAvatar: {
+      styleOverrides: {
+        root: {
+          background: '#cccccc',
         },
       },
     },

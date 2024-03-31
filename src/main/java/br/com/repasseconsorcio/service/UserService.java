@@ -8,18 +8,24 @@ import br.com.repasseconsorcio.repository.AuthorityRepository;
 import br.com.repasseconsorcio.repository.UserRepository;
 import br.com.repasseconsorcio.security.AuthoritiesConstants;
 import br.com.repasseconsorcio.security.SecurityUtils;
+import br.com.repasseconsorcio.service.cloud.S3Service;
+import br.com.repasseconsorcio.service.cloud.exceptions.FileDownloadException;
 import br.com.repasseconsorcio.service.dto.AdminUserDTO;
 import br.com.repasseconsorcio.service.dto.UserDTO;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,11 +48,14 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    private final S3Service s3Service;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager, S3Service s3Service) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.s3Service = s3Service;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -116,8 +125,6 @@ public class UserService {
         if (userDTO.getEmail() != null) {
             newUser.setEmail(userDTO.getEmail().toLowerCase());
         }
-        newUser.setImageUrl(userDTO.getImageUrl());
-        newUser.setImage(userDTO.getImage());
         newUser.setLangKey(Constants.DEFAULT_LANGUAGE);
         // new user is not active
         newUser.setActivated(false);
@@ -149,12 +156,6 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         if (userDTO.getEmail() != null) {
             user.setEmail(userDTO.getEmail().toLowerCase());
-        }
-        user.setImageUrl(userDTO.getImageUrl());
-        if (userDTO.getLangKey() == null) {
-            user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
-        } else {
-            user.setLangKey(Constants.DEFAULT_LANGUAGE);
         }
         String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
         user.setPassword(encryptedPassword);
@@ -190,8 +191,6 @@ public class UserService {
                 if (userDTO.getEmail() != null) {
                     user.setEmail(userDTO.getEmail().toLowerCase());
                 }
-                user.setImageUrl(userDTO.getImageUrl());
-                user.setImage(userDTO.getImage());
                 user.setActivated(userDTO.isActivated());
                 user.setLangKey(Constants.DEFAULT_LANGUAGE);
                 Set<Authority> managedAuthorities = user.getAuthorities();
@@ -202,6 +201,17 @@ public class UserService {
                 return user;
             })
             .map(AdminUserDTO::new);
+    }
+
+    public Optional<Long> updateImageUser(String image, Long userId) {
+        return userRepository
+            .findById(userId)
+            .map(user -> {
+                this.clearUserCaches(user);
+                user.setImage(image);
+                userRepository.save(user);
+                return user.getId();
+            });
     }
 
     public void deleteUser(String login) {
@@ -221,9 +231,8 @@ public class UserService {
      * @param lastName  last name of user.
      * @param email     email id of user.
      * @param langKey   language key.
-     * @param imageUrl  image URL of user.
      */
-    public void updateUser(String firstName, String lastName, String email, String langKey, String imageUrl) {
+    public void updateUser(String firstName, String lastName, String email, String langKey) {
         SecurityUtils
             .getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
@@ -234,7 +243,6 @@ public class UserService {
                     user.setEmail(email.toLowerCase());
                 }
                 user.setLangKey(langKey);
-                user.setImageUrl(imageUrl);
                 this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
             });
@@ -260,12 +268,12 @@ public class UserService {
     @Transactional(readOnly = true)
     public Page<AdminUserDTO> getAllManagedUsers(Pageable pageable, UserStatusType filterStatusType) {
         if (filterStatusType.equals(UserStatusType.ALL)) {
-            return userRepository.findAll(pageable).map(AdminUserDTO::new);
+            return userRepository.findAll(pageable).map(AdminUserDTO::new).map(this::updateAdminUserImageWithSignedUrl);
         }
 
         boolean activated = filterStatusType.equals(UserStatusType.ACTIVATED);
 
-        return userRepository.findAllByStatusType(activated, pageable).map(AdminUserDTO::new);
+        return userRepository.findAllByStatusType(activated, pageable).map(AdminUserDTO::new).map(this::updateAdminUserImageWithSignedUrl);
     }
 
     @Transactional(readOnly = true)
@@ -274,7 +282,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> getUserWithAuthoritiesByLogin(String login) {
+    public Optional<AdminUserDTO> getUserWithAuthoritiesByLogin(String login) {
+        return userRepository.findOneWithAuthoritiesByLogin(login).map(AdminUserDTO::new).map(this::updateAdminUserImageWithSignedUrl);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<User> getUserWithAuthoritiesByUserAndLogin(String login) {
         return userRepository.findOneWithAuthoritiesByLogin(login);
     }
 
@@ -288,7 +301,7 @@ public class UserService {
      * <p>
      * This is scheduled to get fired everyday, at 01:00 (am).
      */
-    @Scheduled(cron = "0 0 1 * * ?")
+    // @Scheduled(cron = "0 0 1 * * ?")
     public void removeNotActivatedUsers() {
         userRepository
             .findAllByActivatedIsFalseAndActivationKeyIsNotNullAndCreatedDateBefore(Instant.now().minus(3, ChronoUnit.DAYS))
@@ -313,5 +326,42 @@ public class UserService {
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
+    }
+
+    public String getImageFromUserId(Long userId) {
+        return userRepository.findById(userId).map(user -> user.getImage()).orElse(null);
+    }
+
+    // Método para obter a conta do usuário
+    public AdminUserDTO getAccount() {
+        return getUserWithAuthorities().map(AdminUserDTO::new).map(this::updateAdminUserImageWithSignedUrl).orElseThrow(() -> new ServiceException("User could not be found"));
+    }
+
+    // Método para atualizar a URL da imagem com a URL assinada do S3
+    private AdminUserDTO updateAdminUserImageWithSignedUrl(AdminUserDTO user) {
+        String imageUrl = user.getImage();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            try {
+                String imageUrlSigned = s3Service.getSignedUrlForDownload(imageUrl);
+                user.setImageUrl(imageUrlSigned);
+            } catch (FileDownloadException e) {
+                throw new ServiceException("Error while trying to get the signed URL from S3", e);
+            }
+        }
+        return user;
+    }
+
+    // Método para atualizar a URL da imagem com a URL assinada do S3
+    public User updateUserImageWithSignedUrl(User user) {
+        String imageUrl = user.getImage();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            try {
+                String imageUrlSigned = s3Service.getSignedUrlForDownload(imageUrl);
+                user.setImageUrl(imageUrlSigned);
+            } catch (FileDownloadException e) {
+                throw new ServiceException("Error while trying to get the signed URL from S3", e);
+            }
+        }
+        return user;
     }
 }

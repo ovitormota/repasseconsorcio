@@ -30,8 +30,11 @@ public class ConsortiumService {
 
     private final ConsortiumRepository consortiumRepository;
 
-    public ConsortiumService(ConsortiumRepository consortiumRepository) {
+    private final UserService userService;
+
+    public ConsortiumService(ConsortiumRepository consortiumRepository, UserService userService) {
         this.consortiumRepository = consortiumRepository;
+        this.userService = userService;
     }
 
     /**
@@ -150,11 +153,21 @@ public class ConsortiumService {
 
         statusTypes.add(ConsortiumStatusType.REGISTERED);
 
+        Page<Consortium> consortiums;
         if (filterSegmentType.equals(SegmentType.ALL)) {
-            return consortiumRepository.findAllByStatusIn(statusTypes, loggedUser, pageable);
+            consortiums = consortiumRepository.findAllByStatusIn(statusTypes, loggedUser, pageable);
+        } else {
+            consortiums = consortiumRepository.findAllByStatusInAndSegmentType(statusTypes, filterSegmentType, pageable);
         }
 
-        return consortiumRepository.findAllByStatusInAndSegmentType(statusTypes, filterSegmentType, pageable);
+        consortiums
+            .getContent()
+            .forEach(consortium -> {
+                User user = consortium.getUser();
+                user = userService.updateUserImageWithSignedUrl(user);
+                consortium.setUser(user);
+            });
+        return consortiums;
     }
 
     public Page<Consortium> findAllMyProposals(Pageable pageable, SegmentType filterSegmentType, ConsortiumStatusType filterStatusType) {

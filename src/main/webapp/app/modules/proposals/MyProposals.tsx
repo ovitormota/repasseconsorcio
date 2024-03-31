@@ -1,4 +1,4 @@
-import { Avatar, Box, Card, CardContent, Chip, CircularProgress, List, ListItem, ListItemIcon, ListItemText, ThemeProvider, Typography } from '@mui/material'
+import { Avatar, Box, Card, CardContent, Chip, CircularProgress, List, ListItem, ListItemIcon, ListItemText, Skeleton, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { BidHistoryModal } from 'app/entities/bid/BidHistoryModal'
 import { HomeLogin } from 'app/modules/login/HomeLogin'
@@ -22,6 +22,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
 import { getEntities } from './my-proposal.reducer'
+import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
 
 export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -34,7 +35,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
   const [openBidHistoryModal, setOpenBidHistoryModal] = useState(false)
   const [entityConsortium, setEntityConsortium] = useState<IConsortium>(null)
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
-  const [filterStatusType, SetFilterStatusType] = useState(ConsortiumStatusType.ALL)
+  const [filterStatusType, setFilterStatusType] = useState(ConsortiumStatusType.ALL)
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [order, setOrder] = useState(ASC)
 
@@ -103,7 +104,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
           my: { xs: 1.1, sm: 1.1 },
           width: { xs: '90vw', sm: '330px' },
           background: defaultTheme.palette.background.paper,
-          boxShadow: '0px 2px 2px 1px rgba(97, 57, 173, 0.2)',
+          boxShadow: '1px 1px rgba(97, 57, 173, 0.2)',
           borderRadius: '10px',
           ':hover': {
             backgroundColor: defaultTheme.palette.primary.main,
@@ -118,7 +119,9 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
 
             <ListItem sx={{ mb: 1 }}>
               <ListItemIcon sx={{ mr: 1 }}>
-                <Avatar alt={name} src={name} sx={{ width: 50, height: 50 }} />
+                <Avatar alt={name} src={name} sx={{ width: 50, height: 50 }}>
+                  {name.charAt(0).toUpperCase()}
+                </Avatar>
               </ListItemIcon>
               <ListItemText
                 sx={{
@@ -204,56 +207,65 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
   return (
     <ThemeProvider theme={defaultTheme}>
       <AppBarComponent loading={loading} scrollableBoxRef={scrollableBoxRef}>
-        <StatusFilter filterStatusType={filterStatusType} setFilterStatusType={SetFilterStatusType} />
-        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} onMaxWidth />
-        <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortium' onMaxWidth />
+        <StatusFilter filterStatusType={filterStatusType} setFilterStatusType={setFilterStatusType} loading={loading} />
+        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} onMaxWidth loading={loading} />
+        <SortingBox
+          loading={loading}
+          setCurrentSort={setCurrentSort}
+          currentSort={currentSort}
+          setOrder={setOrder}
+          order={order}
+          sortTypes={sortTypes}
+          translateKey='repasseconsorcioApp.consortium'
+          onMaxWidth
+        />
       </AppBarComponent>
-      {loading ? (
-        <Loading />
-      ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', paddingTop: '60px' }} id='scrollableDiv' ref={scrollableBoxRef}>
-          <InfiniteScroll
-            dataLength={consortiumList.length}
-            next={handleLoadMore}
-            hasMore={paginationState.activePage - 1 < links.next}
-            scrollableTarget='scrollableDiv'
-            pullDownToRefresh
-            refreshFunction={getAllEntities}
-            pullDownToRefreshThreshold={50}
-            pullDownToRefreshContent={
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Typography color='secondary' variant='overline'>
-                  Puxe para atualizar
-                </Typography>
-                <CircularProgress color='secondary' size={30} />
-              </Box>
-            }
-            releaseToRefreshContent={
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Typography color='secondary' variant='overline'>
-                  Solte para atualizar
-                </Typography>
-                <CircularProgress color='secondary' size={30} />
-              </Box>
-            }
-            loader={
-              <div className='loader' key={0}>
-                Loading ...
-              </div>
-            }
-          >
+      <Box style={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingTop: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
+        <InfiniteScroll
+          dataLength={consortiumList.length}
+          next={handleLoadMore}
+          hasMore={paginationState.activePage - 1 < links.next}
+          scrollableTarget='scrollableDiv'
+          pullDownToRefresh
+          refreshFunction={getAllEntities}
+          pullDownToRefreshThreshold={50}
+          pullDownToRefreshContent={
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+              <Typography color='secondary' variant='overline'>
+                Puxe para atualizar
+              </Typography>
+              <CircularProgress color='secondary' size={30} />
+            </Box>
+          }
+          releaseToRefreshContent={
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+              <Typography color='secondary' variant='overline'>
+                Solte para atualizar
+              </Typography>
+              <CircularProgress color='secondary' size={30} />
+            </Box>
+          }
+          loader={
+            <div className='loader' key={0}>
+              Loading ...
+            </div>
+          }
+        >
+          {loading ? (
+            <ConsortiumCardSkeleton />
+          ) : (
             <List sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-              {!!consortiumList?.length &&
-                consortiumList?.map((consortium) => (
-                  <Fragment key={consortium?.id}>
-                    <ConsortiumCard consortium={consortium} />
-                  </Fragment>
-                ))}
+              {consortiumList.map((consortium) => (
+                <Fragment key={consortium?.id}>
+                  <ConsortiumCard consortium={consortium} />
+                </Fragment>
+              ))}
             </List>
-          </InfiniteScroll>
-          {!consortiumList?.length && <NoDataIndicator />}
-        </Box>
-      )}
+          )}
+        </InfiniteScroll>
+        {!consortiumList?.length && !loading && <NoDataIndicator />}
+      </Box>
+
       {openBidHistoryModal && <BidHistoryModal setOpenBidHistoryModal={setOpenBidHistoryModal} entityConsortium={entityConsortium} />}
       {openLoginModal && <HomeLogin setOpenLoginModal={setOpenLoginModal} />}
     </ThemeProvider>

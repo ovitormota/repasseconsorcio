@@ -68,9 +68,13 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
         fullWidth
         onClose={() => isMDScreen && setOpenLoginModal(false)}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 5 }}>
-          <img src='content/images/logo-repasse-text-black.png' alt='Logo Repasse Consórcio' style={{ width: '100px' }} />
-        </Box>
+        <Box
+          component='img'
+          sx={{ display: 'block', margin: 'auto', mt: 4, mb: 0, width: { xs: '80px', sm: '100px' } }}
+          src='content/images/logo-repasse-text-black.png'
+          alt='Logo Repasse Consórcio'
+        />
+
         <DialogTitle color='secondary' align='center' sx={{ pt: 2 }}>
           <IconButton onClick={() => setOpenLoginModal(false)} sx={{ position: 'absolute', right: '10px', top: '10px' }}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />

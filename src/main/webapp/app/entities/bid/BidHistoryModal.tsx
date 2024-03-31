@@ -36,6 +36,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { useLocation } from 'react-router-dom'
 import { BidUpdateModal } from './BidUpdateModal'
 import { getEntitiesByConsortium, reset } from './bid.reducer'
+import { get } from 'lodash'
 
 interface IBidHistoryModalProps {
   setOpenBidHistoryModal: (open: boolean) => void
@@ -153,7 +154,9 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
                         <React.Fragment key={index}>
                           <TableRow>
                             <TableCell>
-                              <Avatar alt={bid.user?.firstName} src={bid?.user?.image ?? bid.user?.firstName} sx={{ width: { sx: 40, sm: 50 }, height: { sx: 40, sm: 50 }, m: 'auto' }} />
+                              <Avatar alt={bid.user?.firstName} src={bid.user?.imageUrl} sx={{ width: { sx: 40, sm: 50 }, height: { sx: 40, sm: 50 }, m: 'auto' }}>
+                                {get(bid, 'user.firstName')?.charAt(0).toUpperCase()}
+                              </Avatar>
                             </TableCell>
                             <TableCell>{formatCurrency(bid.value)}</TableCell>
                             <TableCell>{formatCreated(bid.created)}</TableCell>

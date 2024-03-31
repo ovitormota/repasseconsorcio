@@ -105,7 +105,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
           my: { xs: 1.1, sm: 1.1 },
           width: { xs: '90vw', sm: '330px' },
           background: defaultTheme.palette.background.paper,
-          boxShadow: '0px 2px 2px 1px rgba(97, 57, 173, 0.2)',
+          boxShadow: '1px 1px rgba(97, 57, 173, 0.2)',
           borderRadius: '10px',
         }}
       >
@@ -229,13 +229,13 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
   return (
     <ThemeProvider theme={defaultTheme}>
       <AppBarComponent loading={loading} scrollableBoxRef={scrollableBoxRef}>
-        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} />
-        <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortium' />
+        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} loading={loading} />
+        <SortingBox loading={loading} setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortium' />
       </AppBarComponent>
       {loading ? (
         <Loading />
       ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', paddingTop: '60px' }} id='scrollableDiv' ref={scrollableBoxRef}>
+        <Box style={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingTop: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
           <InfiniteScroll
             dataLength={consortiumList.length}
             next={handleLoadMore}

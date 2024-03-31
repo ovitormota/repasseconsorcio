@@ -12,6 +12,7 @@ import PrivateRoute from 'app/shared/auth/private-route'
 import { ProposalsForApproval } from 'app/entities/proposals-for-approval/ProposalsForApproval'
 import { MyProposals } from 'app/modules/proposals/MyProposals'
 import UserManagement from 'app/modules/administration/user-management/user-management'
+import { RoutesRegister } from 'app/modules/account/register/RoutesRegister'
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 const Routes = ({ match }) => (
@@ -23,6 +24,7 @@ const Routes = ({ match }) => (
       <ErrorBoundaryRoute path={`${match.url}bid`} component={Bid} />
       <PrivateRoute path={`${match.url}proposal-approvals`} component={ProposalsForApproval} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path={`${match.url}my-proposals`} component={MyProposals} hasAnyAuthorities={[AUTHORITIES.USER]} />
+      <PrivateRoute path={`${match.url}register`} component={RoutesRegister} hasAnyAuthorities={[AUTHORITIES.USER]} />
       <ErrorBoundaryRoute path={'/'} exact component={Consortium} />
       <Redirect path='*' to='/' />
 

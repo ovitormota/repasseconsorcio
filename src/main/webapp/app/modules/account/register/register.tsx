@@ -21,7 +21,7 @@ export const RegisterPage = () => {
   const currentLocale = useAppSelector((state) => state.locale.currentLocale)
 
   const handleValidSubmit = ({ username, email, firstPassword }) => {
-    dispatch(handleRegister({ login: username, email, password: firstPassword, langKey: currentLocale, image: '', firstName: '', lastName: '' }))
+    // dispatch(handleRegister({ login: username, email, password: firstPassword, langKey: currentLocale, image: null, firstName: '', lastName: '' }))
   }
 
   const updatePassword = (event) => setPassword(event.target.value)

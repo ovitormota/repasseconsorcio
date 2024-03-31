@@ -71,12 +71,20 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
   return (
     <ThemeProvider theme={defaultTheme}>
       <AppBarComponent loading={loading} onClick={() => setOpenConsortiumHistoryModal(true)} scrollableBoxRef={scrollableBoxRef}>
-        <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.bid.table.columns' />
+        <SortingBox
+          loading={loading}
+          setCurrentSort={setCurrentSort}
+          currentSort={currentSort}
+          setOrder={setOrder}
+          order={order}
+          sortTypes={sortTypes}
+          translateKey='repasseconsorcioApp.bid.table.columns'
+        />
       </AppBarComponent>
       {loading ? (
         <Loading />
       ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 60px)', paddingTop: '60px' }} id='scrollableDiv' ref={scrollableBoxRef}>
+        <Box style={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingTop: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
           <InfiniteScroll
             dataLength={bidList?.length}
             next={handleLoadMore}
@@ -154,7 +162,7 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
               </TableContainer>
             )}
           </InfiniteScroll>
-          {!bidList?.length && <NoDataIndicator />}
+          {!bidList?.length && <NoDataIndicator message='Nenhum lance encontrado' />}
         </Box>
       )}
       {openConsortiumHistoryModal && <ConsortiumHistoryModal setOpenConsortiumHistoryModal={setOpenConsortiumHistoryModal} entityConsortium={entityConsortium} />}

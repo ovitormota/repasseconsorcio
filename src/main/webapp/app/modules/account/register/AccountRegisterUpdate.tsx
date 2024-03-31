@@ -4,47 +4,43 @@ import { Translate, translate } from 'react-jhipster'
 import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, TextField, ThemeProvider, Typography } from '@mui/material'
 
 import { useAppDispatch, useAppSelector } from 'app/config/store'
-import { reset, updateUser } from 'app/modules/administration/user-management/user-management.reducer'
+import { deleteUserImage, getUser, getUsersAsAdmin, reset, updateUser, uploadUserImage } from 'app/modules/administration/user-management/user-management.reducer'
 import { ImageUploader } from 'app/shared/components/ImageUploader'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { AccountDeleteModal } from './AccountDeleteModal'
 import { IUser } from 'app/shared/model/user.model'
+import { StatusType } from 'app/shared/model/enumerations/status.model'
 
 interface IAccountRegisterUpdateProps {
   setOpenAccountRegisterUpdateModal: (open: boolean) => void
   editUser: IUser | null
+  getAllEntities?: () => void
 }
 
-export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editUser }: IAccountRegisterUpdateProps) => {
+export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editUser, getAllEntities }: IAccountRegisterUpdateProps) => {
   const dispatch = useAppDispatch()
 
   const [deleteAccountModalOpen, setDeleteAccountModalOpen] = useState(false)
+  const [image, setImage] = useState(null)
   const [fields, setFields] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    image: null,
   })
 
-  const updateSuccess = useAppSelector((state) => state.userManagement.updateSuccess)
   const loading = useAppSelector((state) => state.userManagement.loading)
+  const isAdmin = useAppSelector((state) => state.authentication.account.authorities.includes('ROLE_ADMIN'))
 
   useEffect(() => {
-    if (editUser?.id) {
+    if (editUser.id) {
+      setImage(editUser.imageUrl)
       setFields({
         firstName: editUser.firstName,
         lastName: editUser.lastName,
         email: editUser.email,
-        image: editUser.image,
       })
     }
   }, [editUser])
-
-  useEffect(() => {
-    if (updateSuccess) {
-      handleClose()
-    }
-  }, [updateSuccess])
 
   const handleClose = () => {
     setOpenAccountRegisterUpdateModal(false)
@@ -52,16 +48,54 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
 
   const handleValidSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    dispatch(
-      updateUser({
-        ...editUser,
-        firstName: fields.firstName,
-        lastName: fields.lastName,
-        email: fields.email,
-        login: fields.email,
-        image: fields.image,
-      })
-    )
+
+    const fieldsToUpdate: Partial<IUser> = {}
+    if (editUser) {
+      if (editUser.firstName !== fields.firstName) {
+        fieldsToUpdate.firstName = fields.firstName
+      }
+      if (editUser.lastName !== fields.lastName) {
+        fieldsToUpdate.lastName = fields.lastName
+      }
+      if (editUser.email !== fields.email) {
+        fieldsToUpdate.email = fields.email
+        fieldsToUpdate.login = fields.email
+      }
+    }
+
+    const imageToUpdate = image !== editUser?.imageUrl
+
+    try {
+      if (Object.keys(fieldsToUpdate).length > 0 || imageToUpdate) {
+        if (Object.keys(fieldsToUpdate).length > 0) {
+          dispatch(updateUser({ ...editUser, ...fieldsToUpdate })).then(() => {
+            if (isAdmin) {
+              getAllEntities()
+            }
+          })
+        }
+
+        if (imageToUpdate && image) {
+          dispatch(uploadUserImage({ userId: editUser.id, file: image })).then(() => {
+            if (isAdmin) {
+              getAllEntities()
+            }
+          })
+        } else {
+          if (editUser?.imageUrl && !image) {
+            dispatch(deleteUserImage(editUser.id)).then(() => {
+              if (isAdmin) {
+                getAllEntities()
+              }
+            })
+          }
+        }
+      }
+
+      !loading && handleClose()
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error)
+    }
   }
 
   const updateField = (field, value) => {
@@ -79,11 +113,8 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
     return emailRegex.test(fields.email)
   }
 
-  const handleUpload = ({ base64Image }) => {
-    setFields({
-      ...fields,
-      image: base64Image,
-    })
+  const handleUpload = (imageField) => {
+    setImage(imageField)
   }
 
   return (
@@ -97,7 +128,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
       >
         <DialogContent>
           <form onSubmit={handleValidSubmit}>
-            <ImageUploader onUpload={handleUpload} currentImage={fields.image} name={editUser?.firstName} />
+            <ImageUploader onUpload={handleUpload} currentImage={image} name={fields.firstName} />
 
             <TextField
               type='text'
@@ -153,12 +184,12 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
               onChange={(e) => updateField('email', e.target.value)}
             />
 
-            <DialogActions sx={{ p: 0, m: 0, mt: 4, justifyContent: 'space-between' }}>
-              <Button variant='text' onClick={() => setDeleteAccountModalOpen(true)}>
+            <DialogActions sx={{ p: 0, m: 0, mt: 4, justifyContent: 'flex-end' }}>
+              {/* <Button variant='text' onClick={() => setDeleteAccountModalOpen(true)}>
                 <Typography variant='overline' fontSize={10} sx={{ color: defaultTheme.palette.text.secondary }}>
                   <Translate contentKey='userManagement.delete.button'>Delete Account</Translate>
                 </Typography>
-              </Button>
+              </Button> */}
               <Box>
                 <Button variant='text' sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px', mr: 2 }} onClick={() => handleClose()}>
                   <Translate contentKey='entity.action.cancel'>Cancel</Translate>
@@ -171,7 +202,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
                   disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || !isEmailValid()}
                 >
                   <Translate contentKey='entity.action.save'>Save</Translate>
-                  {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.common.black }} />}
+                  {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.primary.main }} />}
                 </Button>
               </Box>
             </DialogActions>

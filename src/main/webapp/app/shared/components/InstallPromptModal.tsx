@@ -40,7 +40,7 @@ export const InstallPromptModal: React.FC<InstallPromptModalProps> = ({ deferred
       </DialogTitle>
       <DialogContent sx={{ px: 1 }}>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 4, mt: 2 }}>
-          <img src='content/images/logo-repasse-consorcio.png' alt='Ícone do Aplicativo' style={{ width: '100px' }} />
+          <img src='content/images/logo-repasse-text-black.png' alt='Ícone do Aplicativo' style={{ width: '100px' }} />
         </Box>
 
         <DialogActions sx={{ px: 2, justifyContent: 'center' }}>
