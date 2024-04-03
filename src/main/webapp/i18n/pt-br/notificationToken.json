@@ -1,0 +1,25 @@
+{
+  "fleetSenseApp": {
+    "notificationToken": {
+      "home": {
+        "title": "Tokens de Notificação",
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Criar novo token",
+        "createOrEditLabel": "Criar ou editar token",
+        "notFound": "Nenhum token encontrado"
+      },
+      "created": "O token foi criado",
+      "updated": "O token foi atualizado",
+      "deleted": "O token foi excluído",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir o token {{ id }}?"
+      },
+      "detail": {
+        "title": "Token de Notificação"
+      },
+      "id": "ID",
+      "token": "Token",
+      "user": "User"
+    }
+  }
+}

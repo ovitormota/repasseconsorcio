@@ -6,8 +6,10 @@ import br.com.repasseconsorcio.domain.enumeration.SegmentType;
 import br.com.repasseconsorcio.repository.ConsortiumRepository;
 import br.com.repasseconsorcio.security.AuthoritiesConstants;
 import br.com.repasseconsorcio.service.ConsortiumService;
+import br.com.repasseconsorcio.service.FirebaseMessagingService;
 import br.com.repasseconsorcio.service.MailService;
 import br.com.repasseconsorcio.web.rest.errors.BadRequestAlertException;
+import com.google.firebase.messaging.Notification;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -56,10 +58,13 @@ public class ConsortiumResource {
 
     private final MailService mailService;
 
-    public ConsortiumResource(ConsortiumService consortiumService, ConsortiumRepository consortiumRepository, MailService mailService) {
+    private final FirebaseMessagingService firebaseMessagingService;
+
+    public ConsortiumResource(ConsortiumService consortiumService, ConsortiumRepository consortiumRepository, MailService mailService, FirebaseMessagingService firebaseMessagingService) {
         this.consortiumService = consortiumService;
         this.consortiumRepository = consortiumRepository;
         this.mailService = mailService;
+        this.firebaseMessagingService = firebaseMessagingService;
     }
 
     /**
@@ -78,6 +83,9 @@ public class ConsortiumResource {
             throw new BadRequestAlertException("A new consortium cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Consortium result = consortiumService.save(consortium);
+
+        firebaseMessagingService.sendNotificationsByAdmin(Optional.of(result));
+
         return ResponseEntity
             .created(new URI("/api/consortiums/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -162,7 +170,7 @@ public class ConsortiumResource {
     public ResponseEntity<List<Consortium>> getConsortiumsByProposalApprovals(Pageable pageable, SegmentType filterSegmentType) {
         log.debug("REST request to get a page of Consortiums by Proposal Approvals");
         Page<Consortium> page = consortiumService.findAllByProposalApprovals(pageable, filterSegmentType);
-        System.out.println("testeeeee" + page.getContent().get(0).getUser());
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -172,6 +180,7 @@ public class ConsortiumResource {
     public ResponseEntity<List<Consortium>> getMyApprovals(Pageable pageable, SegmentType filterSegmentType, ConsortiumStatusType filterStatusType) {
         log.debug("REST request to get a page of Consortiums by Proposal Approvals");
         Page<Consortium> page = consortiumService.findAllMyProposals(pageable, filterSegmentType, filterStatusType);
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -211,7 +220,8 @@ public class ConsortiumResource {
 
         if (result.isPresent()) {
             if (result.get().getStatus().equals(ConsortiumStatusType.OPEN)) {
-                mailService.sendProposalStatusChanged(result.get());
+                // mailService.sendProposalStatusChanged(result.get());
+                firebaseMessagingService.sendNotifications(result);
             } else {
                 throw new BadRequestAlertException("Invalid status", ENTITY_NAME, "statusinvalid");
             }

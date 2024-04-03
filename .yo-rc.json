@@ -37,7 +37,7 @@
     "clientTheme": "none",
     "clientThemeVariant": "",
     "applicationIndex": 0,
-    "entities": ["Bid", "Consortium", "ConsortiumAdministrator"],
+    "entities": ["Bid", "Consortium", "ConsortiumAdministrator", "NotificationToken"],
     "skipCheckLengthOfIdentifier": false,
     "skipFakeData": false,
     "blueprints": [],

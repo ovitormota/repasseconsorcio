@@ -5,6 +5,10 @@ import { serializeAxiosError } from './reducer.utils'
 
 import { AppThunk } from 'app/config/store'
 import { setLocale } from 'app/shared/reducers/locale'
+import toast from 'react-hot-toast'
+import { getMessaging, getToken } from 'firebase/messaging'
+import { messaging } from 'app/FirebaseConfig'
+import { icon } from '@fortawesome/fontawesome-svg-core'
 
 const AUTH_TOKEN_KEY = 'app-authenticationToken'
 
@@ -30,7 +34,7 @@ export const getSession = (): AppThunk => async (dispatch, getState) => {
 
   const { account } = getState().authentication
   if (account && account.langKey) {
-    const langKey = Storage.session.get('locale', account.langKey)
+    const langKey = Storage.local.get('locale', account.langKey)
     dispatch(setLocale(langKey))
   }
 }
@@ -58,24 +62,26 @@ export const login: (username: string, password: string, rememberMe?: boolean) =
     if (bearerToken && bearerToken.slice(0, 7) === 'Bearer ') {
       const jwt = bearerToken.slice(7, bearerToken.length)
       if (rememberMe) {
-        Storage.session.set(AUTH_TOKEN_KEY, jwt)
+        Storage.local.set(AUTH_TOKEN_KEY, jwt)
       } else {
-        Storage.session.set(AUTH_TOKEN_KEY, jwt)
+        Storage.local.set(AUTH_TOKEN_KEY, jwt)
       }
     }
     dispatch(getSession())
+    await saveUserFCMToken()
   }
 
 export const clearAuthToken = () => {
-  if (Storage.session.get(AUTH_TOKEN_KEY)) {
-    Storage.session.remove(AUTH_TOKEN_KEY)
+  if (Storage.local.get(AUTH_TOKEN_KEY)) {
+    Storage.local.remove(AUTH_TOKEN_KEY)
   }
-  if (Storage.session.get(AUTH_TOKEN_KEY)) {
-    Storage.session.remove(AUTH_TOKEN_KEY)
+  if (Storage.local.get(AUTH_TOKEN_KEY)) {
+    Storage.local.remove(AUTH_TOKEN_KEY)
   }
 }
 
-export const logout: () => AppThunk = () => (dispatch) => {
+export const logout: () => AppThunk = () => async (dispatch) => {
+  await deleteUserFCMToken()
   clearAuthToken()
   dispatch(logoutSession())
 }
@@ -84,6 +90,63 @@ export const clearAuthentication = (messageKey) => (dispatch) => {
   clearAuthToken()
   dispatch(authError(messageKey))
   dispatch(clearAuth())
+}
+
+export const requestPermission = async () => {
+  const permission = await Notification.requestPermission()
+  if (permission === 'denied') {
+    // toast('Ativando as notificações, você receberá alertas sobre novas mensagens e atualizações.')
+
+    await Notification.requestPermission()
+
+    return
+  }
+}
+
+const saveUserFCMToken = async () => {
+  try {
+    requestPermission()
+
+    if (messaging) {
+      const newSw = await navigator.serviceWorker.register('/firebase-messaging-sw.js')
+
+      const FCMToken = await getToken(messaging, { vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY, serviceWorkerRegistration: newSw })
+
+      if (FCMToken) {
+        // Salva o token FCM no servidor
+        await axios.post('api/notification-tokens', {
+          token: FCMToken,
+        })
+        console.log('Token salvo com sucesso.')
+      } else {
+        console.log('Não foi possível obter o token FCM.')
+      }
+    }
+  } catch (error) {
+    console.log('Erro ao salvar o token:', error)
+  }
+}
+
+const deleteUserFCMToken = async () => {
+  try {
+    requestPermission()
+
+    if (messaging) {
+      const newSw = await navigator.serviceWorker.register('/firebase-messaging-sw.js')
+
+      const FCMToken = await getToken(messaging, { vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY, serviceWorkerRegistration: newSw })
+
+      if (FCMToken) {
+        // Deleta o token FCM no servidor
+        await axios.delete(`api/notification-tokens/${FCMToken}`)
+        console.log('Token deletado com sucesso.')
+      } else {
+        console.log('Não foi possível obter o token FCM.')
+      }
+    }
+  } catch (error) {
+    console.log('Erro ao deletar o token:', error)
+  }
 }
 
 export const AuthenticationSlice = createSlice({

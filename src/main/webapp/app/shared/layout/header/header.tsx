@@ -157,7 +157,7 @@ export const Header = () => {
             <Box>
               {!isAuthenticated ? (
                 <Tooltip title='Repasse Consórcio' style={{ cursor: 'pointer' }} onClick={() => history.replace('/')}>
-                  <ImageWithSkeleton src='content/images/logo-repasse.png' alt='Logo' width='45px' />
+                  <img src='content/images/logo-repasse.png' alt='Logo' width='45px' loading='eager' />
                 </Tooltip>
               ) : (
                 <React.Fragment>

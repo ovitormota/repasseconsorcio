@@ -1,7 +1,7 @@
 import { ConsortiumStatusType } from '../model/enumerations/consortium-status-type.model'
 
 // function that returns a boolean checking if an object is empty
-export function isEmptyObject(obj: any) {
+export function isNotEmptyObject(obj: any) {
   return !!Object.keys(obj).length
 }
 

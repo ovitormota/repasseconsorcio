@@ -13,6 +13,7 @@ import { ProposalsForApproval } from 'app/entities/proposals-for-approval/Propos
 import { MyProposals } from 'app/modules/proposals/MyProposals'
 import UserManagement from 'app/modules/administration/user-management/user-management'
 import { RoutesRegister } from 'app/modules/account/register/RoutesRegister'
+import NotificationToken from './notification-token/notification-token'
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 const Routes = ({ match }) => (
@@ -25,6 +26,7 @@ const Routes = ({ match }) => (
       <PrivateRoute path={`${match.url}proposal-approvals`} component={ProposalsForApproval} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
       <PrivateRoute path={`${match.url}my-proposals`} component={MyProposals} hasAnyAuthorities={[AUTHORITIES.USER]} />
       <PrivateRoute path={`${match.url}register`} component={RoutesRegister} hasAnyAuthorities={[AUTHORITIES.USER]} />
+      <ErrorBoundaryRoute path={`${match.url}notification-token`} component={NotificationToken} />
       <ErrorBoundaryRoute path={'/'} exact component={Consortium} />
       <Redirect path='*' to='/' />
 

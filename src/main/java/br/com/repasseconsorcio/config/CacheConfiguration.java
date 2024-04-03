@@ -53,6 +53,7 @@ public class CacheConfiguration {
             createCache(cm, br.com.repasseconsorcio.domain.Bid.class.getName());
             createCache(cm, br.com.repasseconsorcio.domain.Consortium.class.getName());
             createCache(cm, br.com.repasseconsorcio.domain.Consortium.class.getName() + ".bids");
+            createCache(cm, br.com.repasseconsorcio.domain.NotificationToken.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

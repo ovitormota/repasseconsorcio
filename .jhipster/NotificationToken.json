@@ -1,0 +1,27 @@
+{
+  "name": "NotificationToken",
+  "fields": [
+    {
+      "fieldName": "token",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "notificationToken",
+      "relationshipName": "user"
+    }
+  ],
+  "entityTableName": "notification_token",
+  "dto": "no",
+  "pagination": "pagination",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["FleetSense"],
+  "changelogDate": "20230327170256"
+}

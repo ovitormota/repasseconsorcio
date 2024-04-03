@@ -8,7 +8,7 @@ import { Loading } from 'app/shared/components/Loading'
 import { ModalUseTerms } from 'app/shared/components/ModalUseTerms'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { IConsortium } from 'app/shared/model/consortium.model'
-import { addPercentage, formatCurrency, isEmptyObject } from 'app/shared/util/data-utils'
+import { addPercentage, formatCurrency, isNotEmptyObject } from 'app/shared/util/data-utils'
 import { NumericFormat } from 'react-number-format'
 import { createEntity, getLatestEntity, reset } from './bid.reducer'
 import { BidModalUseTerms } from 'app/shared/components/BidModalUseTerms'
@@ -105,7 +105,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
                   <div>
                     {'O valor mínimo do lance é '}
                     <strong style={{ color: defaultTheme.palette.secondary.main, fontSize: '14px' }}>
-                      {isEmptyObject(bidEntity) ? formatCurrency(addPercentage(bidEntity?.value)) : formatCurrency(addPercentage(entityConsortium?.minimumBidValue))}
+                      {isNotEmptyObject(bidEntity) ? formatCurrency(addPercentage(bidEntity?.value)) : formatCurrency(addPercentage(entityConsortium?.minimumBidValue))}
                     </strong>
                   </div>
                 }
@@ -124,7 +124,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
                   type='submit'
                   variant='contained'
                   color='secondary'
-                  disabled={!bidValue || bidValue < (isEmptyObject(bidEntity) ? addPercentage(bidEntity?.value) : addPercentage(entityConsortium?.minimumBidValue))}
+                  disabled={!bidValue || bidValue < (isNotEmptyObject(bidEntity) ? addPercentage(bidEntity?.value) : addPercentage(entityConsortium?.minimumBidValue))}
                   sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}
                 >
                   <Translate contentKey='entity.action.register'>Register</Translate>
