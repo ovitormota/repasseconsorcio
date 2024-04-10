@@ -6,8 +6,8 @@ import { serializeAxiosError } from './reducer.utils'
 import { AppThunk } from 'app/config/store'
 import { setLocale } from 'app/shared/reducers/locale'
 import toast from 'react-hot-toast'
-// import { getMessaging, getToken } from 'firebase/messaging'
-// import { messaging } from 'app/FirebaseConfig'
+import { getMessaging, getToken } from 'firebase/messaging'
+import { messaging } from 'app/FirebaseConfig'
 import { icon } from '@fortawesome/fontawesome-svg-core'
 import { getEntities } from 'app/entities/consortium/consortium.reducer'
 import { SegmentType } from '../model/enumerations/segment-type.model'
@@ -80,7 +80,7 @@ export const login: (username: string, password: string, rememberMe?: boolean) =
         filterStatusType: ConsortiumStatusType.ALL,
       })
     )
-    // await saveUserFCMToken()
+    await saveUserFCMToken()
   }
 
 export const clearAuthToken = () => {
@@ -92,8 +92,8 @@ export const clearAuthToken = () => {
   }
 }
 
-export const logout: () => AppThunk = () => (dispatch) => {
-  // await deleteUserFCMToken()
+export const logout: () => AppThunk = () => async (dispatch) => {
+  await deleteUserFCMToken()
   clearAuthToken()
   dispatch(logoutSession())
 }
@@ -120,73 +120,73 @@ export const requestPermission = async () => {
   }
 }
 
-// const getFCMToken = async () => {
-//   try {
-//     const FCMToken = await getToken(messaging, { vapidKey: 'BCMwF_Pt6NpQr4jkFzC0d5gnozKe7qb9ZilkcquR_5SpzMnr1m8I7XLh6OmRMyBkalj6aEM_0TGcUEHWwY3M9JU' })
-//     return FCMToken
-//   } catch (error) {
-//     console.log('Erro ao obter o token FCM:', error)
-//     return null // Retorna null em caso de erro
-//   }
-// }
+const getFCMToken = async () => {
+  try {
+    const FCMToken = await getToken(messaging, { vapidKey: 'BCMwF_Pt6NpQr4jkFzC0d5gnozKe7qb9ZilkcquR_5SpzMnr1m8I7XLh6OmRMyBkalj6aEM_0TGcUEHWwY3M9JU' })
+    return FCMToken
+  } catch (error) {
+    console.log('Erro ao obter o token FCM:', error)
+    return null // Retorna null em caso de erro
+  }
+}
 
-// const saveUserFCMToken = async () => {
-//   try {
-//     const permission = await requestPermission()
+const saveUserFCMToken = async () => {
+  try {
+    const permission = await requestPermission()
 
-//     if (permission && messaging) {
-//       let FCMToken = await getFCMToken()
+    if (permission && messaging) {
+      let FCMToken = await getFCMToken()
 
-//       // Tenta obter o token novamente se a primeira chamada retornar null
-//       if (!FCMToken) {
-//         console.log('Tentando obter o token FCM novamente...')
-//         FCMToken = await getFCMToken()
-//       }
+      // Tenta obter o token novamente se a primeira chamada retornar null
+      if (!FCMToken) {
+        console.log('Tentando obter o token FCM novamente...')
+        FCMToken = await getFCMToken()
+      }
 
-//       if (FCMToken) {
-//         // Salva o token FCM no servidor
-//         await axios.post('api/notification-tokens', {
-//           token: FCMToken,
-//         })
-//         console.log('Token salvo com sucesso.')
-//       } else {
-//         console.log('Não foi possível obter o token FCM.')
-//       }
-//     } else {
-//       console.log('Permissão negada para notificações.')
-//     }
-//   } catch (error) {
-//     console.log('Erro ao salvar o token:', error)
-//   }
-// }
+      if (FCMToken) {
+        // Salva o token FCM no servidor
+        await axios.post('api/notification-tokens', {
+          token: FCMToken,
+        })
+        console.log('Token salvo com sucesso.')
+      } else {
+        console.log('Não foi possível obter o token FCM.')
+      }
+    } else {
+      console.log('Permissão negada para notificações.')
+    }
+  } catch (error) {
+    console.log('Erro ao salvar o token:', error)
+  }
+}
 
-// const deleteUserFCMToken = async () => {
-//   try {
-//     const permission = await requestPermission()
+const deleteUserFCMToken = async () => {
+  try {
+    const permission = await requestPermission()
 
-//     if (permission && messaging) {
-//       let FCMToken = await getToken(messaging, { vapidKey: 'BCMwF_Pt6NpQr4jkFzC0d5gnozKe7qb9ZilkcquR_5SpzMnr1m8I7XLh6OmRMyBkalj6aEM_0TGcUEHWwY3M9JU' })
+    if (permission && messaging) {
+      let FCMToken = await getToken(messaging, { vapidKey: 'BCMwF_Pt6NpQr4jkFzC0d5gnozKe7qb9ZilkcquR_5SpzMnr1m8I7XLh6OmRMyBkalj6aEM_0TGcUEHWwY3M9JU' })
 
-//       // Tenta obter o token novamente se a primeira chamada retornar null
-//       if (!FCMToken) {
-//         console.log('Tentando obter o token FCM novamente...')
-//         FCMToken = await getToken(messaging, { vapidKey: 'BCMwF_Pt6NpQr4jkFzC0d5gnozKe7qb9ZilkcquR_5SpzMnr1m8I7XLh6OmRMyBkalj6aEM_0TGcUEHWwY3M9JU' })
-//       }
+      // Tenta obter o token novamente se a primeira chamada retornar null
+      if (!FCMToken) {
+        console.log('Tentando obter o token FCM novamente...')
+        FCMToken = await getToken(messaging, { vapidKey: 'BCMwF_Pt6NpQr4jkFzC0d5gnozKe7qb9ZilkcquR_5SpzMnr1m8I7XLh6OmRMyBkalj6aEM_0TGcUEHWwY3M9JU' })
+      }
 
-//       if (FCMToken) {
-//         // Deleta o token FCM no servidor
-//         await axios.delete(`api/notification-tokens/${FCMToken}`)
-//         console.log('Token deletado com sucesso.')
-//       } else {
-//         console.log('Não foi possível obter o token FCM.')
-//       }
-//     } else {
-//       console.log('Permissão negada para notificações.')
-//     }
-//   } catch (error) {
-//     console.log('Erro ao deletar o token:', error)
-//   }
-// }
+      if (FCMToken) {
+        // Deleta o token FCM no servidor
+        await axios.delete(`api/notification-tokens/${FCMToken}`)
+        console.log('Token deletado com sucesso.')
+      } else {
+        console.log('Não foi possível obter o token FCM.')
+      }
+    } else {
+      console.log('Permissão negada para notificações.')
+    }
+  } catch (error) {
+    console.log('Erro ao deletar o token:', error)
+  }
+}
 
 export const AuthenticationSlice = createSlice({
   name: 'authentication',

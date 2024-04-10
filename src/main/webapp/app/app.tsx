@@ -12,10 +12,10 @@ import ErrorBoundary from 'app/shared/error/error-boundary'
 import { Header } from 'app/shared/layout/header/header'
 import { getProfile } from 'app/shared/reducers/application-profile'
 import { getSession, requestPermission } from 'app/shared/reducers/authentication'
-// import { onMessage } from 'firebase/messaging'
+import { onMessage } from 'firebase/messaging'
 import { isMobile } from 'react-device-detect'
 import toast, { ToastBar, Toaster } from 'react-hot-toast'
-// import { messaging } from './FirebaseConfig'
+import { messaging } from './FirebaseConfig'
 import { useCustomToast } from './shared/components/CustomToast'
 import { InstallPromptModal } from './shared/components/InstallPromptModal'
 import { AppThemeProvider } from './shared/context/ThemeContext'
@@ -29,9 +29,9 @@ export const App = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
 
-  // onMessage(messaging, (data) => {
-  //   showToast(data.notification.title, data.notification.body)
-  // })
+  onMessage(messaging, (data) => {
+    showToast(data.notification.title, data.notification.body)
+  })
 
   useEffect(() => {
     requestPermission()
