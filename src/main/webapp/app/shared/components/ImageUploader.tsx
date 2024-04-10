@@ -59,6 +59,11 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
 
   const clearImage = () => {
     setDefaultImage(null)
+    setSelectedImage(null)
+
+    if (croppedImage) {
+      setCroppedImage(null)
+    }
 
     onUpload(null)
   }

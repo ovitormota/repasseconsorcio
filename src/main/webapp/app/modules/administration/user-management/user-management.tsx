@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
 
-import { Box, Chip, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Tooltip, Typography } from '@mui/material'
+import { Box, Chip, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, ThemeProvider, Tooltip, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { AccountRegister } from 'app/modules/account/register/AccountRegister'
 import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
@@ -17,7 +17,7 @@ import { defaultTheme } from 'app/shared/layout/themes'
 import { StatusType } from 'app/shared/model/enumerations/status.model'
 import { IUser } from 'app/shared/model/user.model'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
-import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
+import { ASC, DESC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getUsersAsAdmin, updateUser } from './user-management.reducer'
 import { useBreakpoints } from 'app/shared/util/useBreakpoints'
@@ -33,8 +33,8 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
   const [filterStatusType, setFilterStatusType] = useState(StatusType.ALL)
   const [editUser, setEditUser] = useState<IUser | null>(null)
   const [currentSort, setCurrentSort] = useState('firstName')
-  const [order, setOrder] = useState(ASC)
-  const sortTypes = ['firstName', 'email']
+  const [sorting, setSorting] = useState(false)
+  const [order, setOrder] = useState<'desc' | 'asc'>(ASC)
 
   const users = useAppSelector((state) => state.userManagement.users)
   const totalItems = useAppSelector((state) => state.userManagement.totalItems)
@@ -77,11 +77,24 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
     })
   }
 
+  useEffect(() => {
+    if (sorting) {
+      getAllEntities()
+      setSorting(false)
+    }
+  }, [sorting])
+
+  const createHandleSort = (field: string) => () => {
+    const isDesc = currentSort === field && order === DESC
+    setCurrentSort(field)
+    setOrder(isDesc ? 'asc' : 'desc')
+    setSorting(true)
+  }
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <AppBarComponent loading={loading} onClick={() => setOpenAccountRegisterModal(true)} scrollableBoxRef={scrollableBoxRef}>
         <UserFilterChip filterStatusType={filterStatusType} setFilterStatusType={setFilterStatusType} loading={loading} />
-        <SortingBox loading={loading} setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='userManagement' />
       </AppBarComponent>
       {loading ? (
         <Loading />
@@ -123,16 +136,21 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
                   <TableRow>
                     <TableCell />
                     <TableCell>
-                      <TypographStyled>{translate('userManagement.firstName')}</TypographStyled>
+                      <TableSortLabel active={currentSort === 'firstName'} direction={order} onClick={createHandleSort('firstName')}>
+                        <TypographStyled>{translate('userManagement.firstName')}</TypographStyled>
+                      </TableSortLabel>
                     </TableCell>
                     <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
-                      <TypographStyled>{translate('userManagement.email')}</TypographStyled>
+                      <TableSortLabel active={currentSort === 'email'} direction={order} onClick={createHandleSort('email')}>
+                        <TypographStyled>{translate('userManagement.email')}</TypographStyled>
+                      </TableSortLabel>
                     </TableCell>
                     <TableCell>
-                      <TypographStyled>{translate('userManagement.status')}</TypographStyled>
+                      <TableSortLabel active={currentSort === 'activated'} direction={order} onClick={createHandleSort('activated')}>
+                        <TypographStyled>{translate('userManagement.status')}</TypographStyled>
+                      </TableSortLabel>
                     </TableCell>
                   </TableRow>
-                  <hr className='hr-text' data-content='' style={{ position: 'absolute', width: '100%', top: '40px' }} />
                 </TableHead>
 
                 <TableBody>

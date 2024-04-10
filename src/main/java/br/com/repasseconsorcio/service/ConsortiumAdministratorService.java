@@ -3,6 +3,7 @@ package br.com.repasseconsorcio.service;
 import br.com.repasseconsorcio.domain.ConsortiumAdministrator;
 import br.com.repasseconsorcio.repository.ConsortiumAdministratorRepository;
 import java.util.Optional;
+import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -91,6 +92,15 @@ public class ConsortiumAdministratorService {
      */
     public void delete(Long id) {
         log.debug("Request to delete ConsortiumAdministrator : {}", id);
-        consortiumAdministratorRepository.deleteById(id);
+
+        try {
+            consortiumAdministratorRepository.deleteById(id);
+        } catch (Exception e) {
+            if (e instanceof org.springframework.dao.DataIntegrityViolationException) {
+                throw new ServiceException("Não é possível excluir um administrador de consórcio que está associado a um consórcio.");
+            } else {
+                throw e;
+            }
+        }
     }
 }

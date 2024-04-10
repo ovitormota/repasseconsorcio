@@ -2,11 +2,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
 
-import { Box, Chip, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Typography } from '@mui/material'
+import { Box, Chip, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
-import { SortingBox } from 'app/shared/components/SortingBox'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { TypographStyled } from 'app/shared/layout/table/TableComponents'
 import { defaultTheme } from 'app/shared/layout/themes'
@@ -30,15 +29,11 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
   const [openConsortiumHistoryModal, setOpenConsortiumHistoryModal] = useState<boolean>(false)
   const [entityConsortium, setEntityConsortium] = useState<IConsortium | null>(null)
 
-  const isAuthenticated = useAppSelector((state) => state.authentication.isAuthenticated)
-  const updateSuccess = useAppSelector((state) => state.bid.updateSuccess)
-  const totalItems = useAppSelector((state) => state.bid.totalItems)
   const bidList = useAppSelector((state) => state.bid.entities)
   const loading = useAppSelector((state) => state.bid.loading)
   const links = useAppSelector((state) => state.bid.links)
-  const [order, setOrder] = useState(DESC)
+  const [order, setOrder] = useState<'desc' | 'asc'>(DESC)
   const [currentSort, setCurrentSort] = useState('value')
-  const sortTypes = isMDScreen ? ['consortium.consortiumAdministrator.name', 'created', 'value', 'consortium.id', 'consortium.segmentType'] : ['created', 'value', 'consortium.id']
 
   const getAllEntities = () => {
     dispatch(
@@ -68,18 +63,21 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
     }
   }, [sorting])
 
+  const createHandleSort = (field: string) => () => {
+    const isDesc = currentSort === field && order === DESC
+    setCurrentSort(field)
+    setOrder(isDesc ? 'asc' : 'desc')
+    setSorting(true)
+  }
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <AppBarComponent loading={loading} onClick={() => setOpenConsortiumHistoryModal(true)} scrollableBoxRef={scrollableBoxRef}>
-        <SortingBox
-          loading={loading}
-          setCurrentSort={setCurrentSort}
-          currentSort={currentSort}
-          setOrder={setOrder}
-          order={order}
-          sortTypes={sortTypes}
-          translateKey='repasseconsorcioApp.bid.table.columns'
-        />
+        <Box display='flex' alignItems='center' sx={{ width: '100%', justifyContent: { xs: 'flex-start', sm: 'center' } }}>
+          <Typography color='secondary' fontWeight={'600'} fontSize={'18px'}>
+            {translate('repasseconsorcioApp.bid.home.myBids')}
+          </Typography>
+        </Box>
       </AppBarComponent>
       {loading ? (
         <Loading />
@@ -112,33 +110,42 @@ export const Bid = (props: RouteComponentProps<{ url: string }>) => {
             }
           >
             {!!bidList?.length && (
-              <TableContainer sx={{ px: { xs: 0, sm: 2 } }}>
+              <TableContainer>
                 <Table>
                   <TableHead style={{ position: 'relative' }}>
                     <TableRow>
                       <TableCell>
-                        <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.id')}</TypographStyled>
+                        <TableSortLabel onClick={createHandleSort('consortium.id')} active={currentSort === 'consortium.id'} direction={order}>
+                          <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.id')}</TypographStyled>
+                        </TableSortLabel>
                       </TableCell>
 
                       {isMDScreen && (
                         <>
                           <TableCell>
-                            <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.consortiumAdministrator.name')}</TypographStyled>
+                            <TableSortLabel onClick={createHandleSort('consortium.consortiumAdministrator.name')} active={currentSort === 'consortium.consortiumAdministrator.name'} direction={order}>
+                              <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.consortiumAdministrator.name')}</TypographStyled>
+                            </TableSortLabel>
                           </TableCell>
                           <TableCell>
-                            <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.segmentType')}</TypographStyled>
+                            <TableSortLabel onClick={createHandleSort('consortium.segmentType')} active={currentSort === 'consortium.segmentType'} direction={order}>
+                              <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.segmentType')}</TypographStyled>
+                            </TableSortLabel>
                           </TableCell>
                         </>
                       )}
 
                       <TableCell>
-                        <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.value')}</TypographStyled>
+                        <TableSortLabel onClick={createHandleSort('value')} active={currentSort === 'value'} direction={order}>
+                          <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.value')}</TypographStyled>
+                        </TableSortLabel>
                       </TableCell>
                       <TableCell>
-                        <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.created')}</TypographStyled>
+                        <TableSortLabel onClick={createHandleSort('created')} active={currentSort === 'created'} direction={order}>
+                          <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.created')}</TypographStyled>
+                        </TableSortLabel>
                       </TableCell>
                     </TableRow>
-                    <hr className='hr-text' data-content='' style={{ position: 'absolute', width: '100%', top: '40px' }} />
                   </TableHead>
 
                   <TableBody>

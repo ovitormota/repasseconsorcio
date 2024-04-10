@@ -1,10 +1,11 @@
-import { Avatar, Box, Button, Card, CardContent, Chip, CircularProgress, List, ListItem, ListItemIcon, ListItemText, ThemeProvider, Typography } from '@mui/material'
+import { DirectionsCarRounded, HomeRounded, MoreRounded } from '@mui/icons-material'
+import { Box, Button, Card, CardContent, Chip, CircularProgress, IconButton, List, ListItem, ListItemText, ThemeProvider, Typography } from '@mui/material'
 import { AUTHORITIES } from 'app/config/constants'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { HomeLogin } from 'app/modules/login/HomeLogin'
 import { hasAnyAuthority } from 'app/shared/auth/private-route'
 import { AuctionTimer } from 'app/shared/components/AuctionTimer'
-import { Loading } from 'app/shared/components/Loading'
+import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
 import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
 import { SortingBox } from 'app/shared/components/SortingBox'
@@ -15,7 +16,7 @@ import { IBid } from 'app/shared/model/bid.model'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
-import { formatCurrency, getStatusColor } from 'app/shared/util/data-utils'
+import { formatCurrency, getStatusColor, showElement } from 'app/shared/util/data-utils'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
@@ -25,8 +26,6 @@ import { RouteComponentProps } from 'react-router-dom'
 import { BidHistoryModal } from '../bid/BidHistoryModal'
 import { BidUpdateModal } from '../bid/BidUpdateModal'
 import { getEntities } from './consortium.reducer'
-import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
-import { AvatarWithSkeleton } from 'app/shared/components/AvatarWithSkeleton'
 
 export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -118,52 +117,71 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
           my: { xs: 1.1, sm: 1.1 },
           width: { xs: '90vw', sm: '330px' },
           background: defaultTheme.palette.background.paper,
-          boxShadow: '1px 1px rgba(97, 57, 173, 0.2)',
-          borderRadius: '10px',
+          border: '1px solid rgba(72, 86, 150, 0.05)',
+          borderRadius: '1rem',
           ':hover': {
-            backgroundColor: defaultTheme.palette.primary.main,
+            backgroundColor: defaultTheme.palette.secondary['A400'],
             cursor: 'pointer',
           },
+          position: 'relative',
         }}
+        elevation={2}
         onClick={() => isAuthenticated && handleBidHistory(consortium)}
       >
+        <Box
+          sx={{
+            borderRadius: '0% 0% 50% 50% / 21% 55% 30% 30%',
+            background: defaultTheme.palette.secondary['A400'],
+            overflow: 'hidden',
+            width: { xs: '90vw', sm: '330px' },
+            height: '55px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mb: 1,
+          }}
+        >
+          <IconButton
+            sx={{
+              background: defaultTheme.palette.background.paper,
+              position: 'absolute',
+              top: 30,
+              ':hover': {
+                background: defaultTheme.palette.background.paper,
+              },
+            }}
+          >
+            {segmentType === SegmentType.AUTOMOBILE ? (
+              <DirectionsCarRounded sx={{ fontSize: '30px', color: defaultTheme.palette.secondary.light }} />
+            ) : segmentType === SegmentType.REAL_ESTATE ? (
+              <HomeRounded sx={{ fontSize: '30px', color: defaultTheme.palette.secondary.light }} />
+            ) : (
+              <MoreRounded sx={{ fontSize: '25px', color: defaultTheme.palette.secondary.light }} />
+            )}
+          </IconButton>
+        </Box>
+        <Chip
+          label={consortium?.bids?.length ? `${consortium?.bids?.length} lances` : 'Sem lances'}
+          color={getStatusColor(status)}
+          variant='outlined'
+          size='small'
+          style={showElement(!!consortium?.bids?.length)}
+          sx={{
+            position: 'absolute',
+            top: 10,
+            right: 10,
+            cursor: 'pointer',
+          }}
+        />
+        {contemplationStatus && renderStatusRibbon()}
         <CardContent sx={{ p: 1.5 }}>
           <List>
-            {contemplationStatus && renderStatusRibbon()}
-
-            <ListItem sx={{ mb: 1 }}>
-              <ListItemIcon sx={{ mr: 1 }}>
-                <AvatarWithSkeleton imageUrl={image} firstName={name} width='50px' />
-              </ListItemIcon>
-              <ListItemText
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'right',
-                  alignItems: 'flex-start',
-                  flexDirection: 'column-reverse',
-                  background: 'none !important',
-                  padding: '0 !important',
-                }}
-                primaryTypographyProps={{
-                  fontSize: '12px !important',
-                  sx: {
-                    justifyContent: 'space-between',
-                    display: 'flex',
-                    width: '100%',
-                  },
-                }}
-                primary={
-                  <>
-                    <span>
-                      {translate('repasseconsorcioApp.consortium.segmentType')}: {translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}
-                    </span>
-                    {isAdmin && <strong style={{ color: defaultTheme.palette.secondary.main }}>#{consortium?.id}</strong>}
-                  </>
-                }
-                secondary={name}
-              />
-            </ListItem>
-
+            <ListItemText
+              primaryTypographyProps={{ fontSize: '12px !important' }}
+              sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
+              primary={`${translate('repasseconsorcioApp.consortium.consortiumAdministrator')} `}
+              secondary={name}
+            />
             <ListItemText
               primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
@@ -172,39 +190,37 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
             />
             <ListItemText
               primaryTypographyProps={{ fontSize: '12px !important' }}
+              secondaryTypographyProps={{ fontWeight: '600 !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `}
               secondary={formatCurrency(installmentValue)}
             />
+            <hr className='hr-text' data-content='' style={{ height: 0 }} />
 
-            <ListItem sx={{ mt: 1, mb: -2 }}>
+            <ListItem sx={{ m: 0, p: 0 }}>
               <ListItemText
                 primaryTypographyProps={{ fontSize: '12px !important' }}
                 primary={`${translate('repasseconsorcioApp.consortium.consortiumValue')} `}
                 secondary={formatCurrency(consortiumValue)}
                 secondaryTypographyProps={{
-                  fontSize: '22px !important',
-                  fontWeight: '600',
+                  fontSize: '25px !important',
+                  fontWeight: '600 !important',
                 }}
               />
             </ListItem>
-
-            <ListItem>
+            <hr className='hr-text' data-content='' style={{ height: 0 }} />
+            <ListItem sx={{ m: 0, p: 0 }}>
               <AuctionTimer created={created} />
             </ListItem>
 
             <ListItem>
               <Button
                 sx={{
-                  mb: -3,
-                  background: defaultTheme.palette.secondary.main,
-                  color: defaultTheme.palette.secondary.contrastText,
-                  boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                  '&:hover': {
-                    backgroundColor: defaultTheme.palette.secondary.light,
-                  },
+                  mb: -3.3,
+                  borderRadius: '12px',
                 }}
                 variant='contained'
+                color='secondary'
                 fullWidth
                 disabled={isAdmin}
                 onClick={(event) => {
@@ -215,19 +231,6 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                 Dar um lance
               </Button>
             </ListItem>
-            <Chip
-              label={translate(`repasseconsorcioApp.ConsortiumStatusType.${status}`)}
-              color={getStatusColor(status)}
-              variant='filled'
-              size='small'
-              sx={{
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                cursor: 'pointer',
-                color: 'white',
-              }}
-            />
           </List>
         </CardContent>
       </Card>
@@ -252,7 +255,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
       </AppBarComponent>
       <Box style={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingTop: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
         <InfiniteScroll
-          dataLength={consortiumList.length}
+          dataLength={consortiumList.length * paginationState.itemsPerPage}
           next={handleLoadMore}
           hasMore={paginationState.activePage - 1 < links.next}
           scrollableTarget='scrollableDiv'

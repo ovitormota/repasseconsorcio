@@ -6,9 +6,12 @@ import { serializeAxiosError } from './reducer.utils'
 import { AppThunk } from 'app/config/store'
 import { setLocale } from 'app/shared/reducers/locale'
 import toast from 'react-hot-toast'
-import { getMessaging, getToken } from 'firebase/messaging'
-import { messaging } from 'app/FirebaseConfig'
+// import { getMessaging, getToken } from 'firebase/messaging'
+// import { messaging } from 'app/FirebaseConfig'
 import { icon } from '@fortawesome/fontawesome-svg-core'
+import { getEntities } from 'app/entities/consortium/consortium.reducer'
+import { SegmentType } from '../model/enumerations/segment-type.model'
+import { ConsortiumStatusType } from '../model/enumerations/consortium-status-type.model'
 
 const AUTH_TOKEN_KEY = 'app-authenticationToken'
 
@@ -68,7 +71,16 @@ export const login: (username: string, password: string, rememberMe?: boolean) =
       }
     }
     dispatch(getSession())
-    await saveUserFCMToken()
+    dispatch(
+      getEntities({
+        page: 0,
+        size: 20,
+        sort: 'id,asc',
+        filterSegmentType: SegmentType.ALL,
+        filterStatusType: ConsortiumStatusType.ALL,
+      })
+    )
+    // await saveUserFCMToken()
   }
 
 export const clearAuthToken = () => {
@@ -80,8 +92,8 @@ export const clearAuthToken = () => {
   }
 }
 
-export const logout: () => AppThunk = () => async (dispatch) => {
-  await deleteUserFCMToken()
+export const logout: () => AppThunk = () => (dispatch) => {
+  // await deleteUserFCMToken()
   clearAuthToken()
   dispatch(logoutSession())
 }
@@ -92,62 +104,89 @@ export const clearAuthentication = (messageKey) => (dispatch) => {
   dispatch(clearAuth())
 }
 
+const isPWA = () => {
+  return 'serviceWorker' in navigator && window.matchMedia('(display-mode: standalone)').matches
+}
+
 export const requestPermission = async () => {
+  if (!isPWA()) {
+    return false
+  }
   const permission = await Notification.requestPermission()
   if (permission === 'denied') {
-    // toast('Ativando as notificações, você receberá alertas sobre novas mensagens e atualizações.')
-
-    await Notification.requestPermission()
-
-    return
+    return false
+  } else if (permission === 'granted') {
+    return true
   }
 }
 
-const saveUserFCMToken = async () => {
-  try {
-    requestPermission()
+// const getFCMToken = async () => {
+//   try {
+//     const FCMToken = await getToken(messaging, { vapidKey: 'BCMwF_Pt6NpQr4jkFzC0d5gnozKe7qb9ZilkcquR_5SpzMnr1m8I7XLh6OmRMyBkalj6aEM_0TGcUEHWwY3M9JU' })
+//     return FCMToken
+//   } catch (error) {
+//     console.log('Erro ao obter o token FCM:', error)
+//     return null // Retorna null em caso de erro
+//   }
+// }
 
-    if (messaging) {
-      const newSw = await navigator.serviceWorker.register('/firebase-messaging-sw.js')
+// const saveUserFCMToken = async () => {
+//   try {
+//     const permission = await requestPermission()
 
-      const FCMToken = await getToken(messaging, { vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY, serviceWorkerRegistration: newSw })
+//     if (permission && messaging) {
+//       let FCMToken = await getFCMToken()
 
-      if (FCMToken) {
-        // Salva o token FCM no servidor
-        await axios.post('api/notification-tokens', {
-          token: FCMToken,
-        })
-        console.log('Token salvo com sucesso.')
-      } else {
-        console.log('Não foi possível obter o token FCM.')
-      }
-    }
-  } catch (error) {
-    console.log('Erro ao salvar o token:', error)
-  }
-}
+//       // Tenta obter o token novamente se a primeira chamada retornar null
+//       if (!FCMToken) {
+//         console.log('Tentando obter o token FCM novamente...')
+//         FCMToken = await getFCMToken()
+//       }
 
-const deleteUserFCMToken = async () => {
-  try {
-    requestPermission()
+//       if (FCMToken) {
+//         // Salva o token FCM no servidor
+//         await axios.post('api/notification-tokens', {
+//           token: FCMToken,
+//         })
+//         console.log('Token salvo com sucesso.')
+//       } else {
+//         console.log('Não foi possível obter o token FCM.')
+//       }
+//     } else {
+//       console.log('Permissão negada para notificações.')
+//     }
+//   } catch (error) {
+//     console.log('Erro ao salvar o token:', error)
+//   }
+// }
 
-    if (messaging) {
-      const newSw = await navigator.serviceWorker.register('/firebase-messaging-sw.js')
+// const deleteUserFCMToken = async () => {
+//   try {
+//     const permission = await requestPermission()
 
-      const FCMToken = await getToken(messaging, { vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY, serviceWorkerRegistration: newSw })
+//     if (permission && messaging) {
+//       let FCMToken = await getToken(messaging, { vapidKey: 'BCMwF_Pt6NpQr4jkFzC0d5gnozKe7qb9ZilkcquR_5SpzMnr1m8I7XLh6OmRMyBkalj6aEM_0TGcUEHWwY3M9JU' })
 
-      if (FCMToken) {
-        // Deleta o token FCM no servidor
-        await axios.delete(`api/notification-tokens/${FCMToken}`)
-        console.log('Token deletado com sucesso.')
-      } else {
-        console.log('Não foi possível obter o token FCM.')
-      }
-    }
-  } catch (error) {
-    console.log('Erro ao deletar o token:', error)
-  }
-}
+//       // Tenta obter o token novamente se a primeira chamada retornar null
+//       if (!FCMToken) {
+//         console.log('Tentando obter o token FCM novamente...')
+//         FCMToken = await getToken(messaging, { vapidKey: 'BCMwF_Pt6NpQr4jkFzC0d5gnozKe7qb9ZilkcquR_5SpzMnr1m8I7XLh6OmRMyBkalj6aEM_0TGcUEHWwY3M9JU' })
+//       }
+
+//       if (FCMToken) {
+//         // Deleta o token FCM no servidor
+//         await axios.delete(`api/notification-tokens/${FCMToken}`)
+//         console.log('Token deletado com sucesso.')
+//       } else {
+//         console.log('Não foi possível obter o token FCM.')
+//       }
+//     } else {
+//       console.log('Permissão negada para notificações.')
+//     }
+//   } catch (error) {
+//     console.log('Erro ao deletar o token:', error)
+//   }
+// }
 
 export const AuthenticationSlice = createSlice({
   name: 'authentication',

@@ -15,7 +15,7 @@ export const AuctionTimer = ({ created, status }: IAuctionTimer) => {
     <ListItem>
       <ListItemText
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', background: 'none !important' }}
-        primary={`Esse leilão termina em:`}
+        primary={`Esse leilão se encerra em:`}
         primaryTypographyProps={{ fontSize: '12px !important' }}
         secondary={
           status === ConsortiumStatusType.REGISTERED ? (

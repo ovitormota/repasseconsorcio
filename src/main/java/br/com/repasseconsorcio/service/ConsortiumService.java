@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,19 +108,22 @@ public class ConsortiumService {
 
         Boolean isAuthenticated = SecurityUtils.hasCurrentUserNoneOfAuthorities(AuthoritiesConstants.ANONYMOUS);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Boolean isAdmin = SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN);
 
         filterSegmentType = filterSegmentType.equals(SegmentType.ALL) ? null : filterSegmentType;
+
         filterStatusType = filterStatusType.equals(ConsortiumStatusType.ALL) ? null : filterStatusType;
+        System.out.println("isAuthenticated: " + authentication);
 
         if (isAuthenticated && !isAdmin) {
             filterStatusType = ConsortiumStatusType.OPEN;
             return consortiumRepository.findAllByStatusNotInAndSegmentTypeAndUser(filterStatusType, filterSegmentType, pageable);
         }
-
         if (!isAdmin) {
             filterStatusType = ConsortiumStatusType.OPEN;
         }
+
         return consortiumRepository.findAllByAdminAndSegmentType(filterStatusType, filterSegmentType, pageable);
     }
 

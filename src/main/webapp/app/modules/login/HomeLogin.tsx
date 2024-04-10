@@ -1,17 +1,14 @@
 import { CloseOutlined, Visibility, VisibilityOff } from '@mui/icons-material'
 import { Alert, Box, Button, Dialog, DialogContent, DialogTitle, IconButton, InputAdornment, TextField, ThemeProvider, Typography } from '@mui/material'
 import { useAppSelector } from 'app/config/store'
+import { defaultTheme } from 'app/shared/layout/themes'
 import { login } from 'app/shared/reducers/authentication'
 import { useBreakpoints } from 'app/shared/util/useBreakpoints'
 import React, { useEffect, useState } from 'react'
 import { Translate, translate } from 'react-jhipster'
 import { useDispatch } from 'react-redux'
-import { defaultTheme } from 'app/shared/layout/themes'
 import { AccountRegister } from '../account/register/AccountRegister'
 import { RequestPassword } from './RequestPassword'
-import { getEntities, reset } from 'app/entities/consortium/consortium.reducer'
-import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
-import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 
 interface IHomeLoginProps {
   setOpenLoginModal: (open: boolean) => void
@@ -35,16 +32,6 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
   useEffect(() => {
     if (loginSuccess) {
       setOpenLoginModal(false)
-      dispatch(reset())
-      dispatch(
-        getEntities({
-          page: 0,
-          size: 10,
-          sort: 'id,asc',
-          filterSegmentType: SegmentType.ALL,
-          filterStatusType: ConsortiumStatusType.ALL,
-        })
-      )
     }
   }, [loginSuccess])
 
@@ -61,26 +48,35 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
     <ThemeProvider theme={defaultTheme}>
       <Dialog
         open={true}
-        sx={{ backgroundColor: defaultTheme.palette.background.default }}
+        sx={{ backgroundColor: defaultTheme.palette.primary.main }}
         PaperProps={{
-          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
         }}
         fullWidth
         onClose={() => isMDScreen && setOpenLoginModal(false)}
       >
         <Box
-          component='img'
-          sx={{ display: 'block', margin: 'auto', mt: 4, mb: 0, width: { xs: '80px', sm: '100px' } }}
-          src='content/images/logo-repasse-text-black.png'
-          alt='Logo Repasse Consórcio'
-        />
+          sx={{
+            borderRadius: '0% 0% 50% 50% / 21% 55% 30% 30%',
+            background: defaultTheme.palette.secondary.main,
+            overflow: 'hidden',
+            width: '100%',
+            height: { xs: '100px', sm: '110px' },
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mb: 1,
+          }}
+        >
+          <Box component='img' sx={{ position: 'absolute', top: 20, width: { xs: '100px', sm: '110px' } }} src='content/images/logo-repasse-text-white.png' alt='Logo Repasse Consórcio' />
+        </Box>
 
-        <DialogTitle color='secondary' align='center' sx={{ pt: 2 }}>
+        <DialogTitle color='secondary' align='center' sx={{ pt: 0 }}>
           <IconButton onClick={() => setOpenLoginModal(false)} sx={{ position: 'absolute', right: '10px', top: '10px' }}>
-            <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
+            <CloseOutlined sx={{ color: defaultTheme.palette.secondary.contrastText }} fontSize='small' />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ p: 4 }}>
           <form onSubmit={handleSubmit}>
             <TextField
               name='username'

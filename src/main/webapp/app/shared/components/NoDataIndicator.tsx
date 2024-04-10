@@ -7,7 +7,7 @@ export const NoDataIndicator = ({ message = 'Nenhum dado encontrado' }) => {
   return (
     <Box
       sx={{
-        color: defaultTheme.palette.secondary.light,
+        color: defaultTheme.palette.secondary.main,
         position: 'absolute',
         top: '50%',
         left: '50%',
@@ -30,7 +30,7 @@ export const NoDataIndicatorRelative = ({ message = 'Nenhum dado encontrado' }) 
   return (
     <Box
       sx={{
-        color: defaultTheme.palette.secondary.light,
+        color: defaultTheme.palette.secondary.main,
         textAlign: 'center',
         display: 'flex',
         flexDirection: 'column',

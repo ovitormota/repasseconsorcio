@@ -6,7 +6,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, 
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { IConsortiumAdministrator } from 'app/shared/model/consortium-administrator.model'
-import { createEntity, updateEntity } from './consortium-administrator.reducer'
+import { createEntity, getEntities, updateEntity } from './consortium-administrator.reducer'
 
 interface IConsortiumAdministratorUpdateModalProps {
   setOpenConsorciumAdministratorUpdateModal: (open: boolean) => void
@@ -36,7 +36,7 @@ export const ConsortiumAdministratorUpdateModal = ({ setOpenConsorciumAdministra
 
   useEffect(() => {
     if (updateSuccess) {
-      handleClose()
+      // handleClose()
     }
   }, [updateSuccess])
 
@@ -49,9 +49,15 @@ export const ConsortiumAdministratorUpdateModal = ({ setOpenConsorciumAdministra
     }
 
     if (consortiumAdministrator?.id) {
-      dispatch(updateEntity(entity))
+      dispatch(updateEntity(entity)).then(() => {
+        handleClose()
+        getEntities({})
+      })
     } else {
-      dispatch(createEntity(entity))
+      dispatch(createEntity(entity)).then(() => {
+        handleClose()
+        getEntities({})
+      })
     }
   }
 

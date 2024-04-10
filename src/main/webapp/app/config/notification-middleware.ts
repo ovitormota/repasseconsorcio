@@ -103,7 +103,7 @@ const handleAxiosError = (error: any): void => {
         break
 
       case 500:
-        addErrorAlert('An unexpected error occurred', 'error.http.500')
+        handleDefaultError(data)
         break
 
       default:

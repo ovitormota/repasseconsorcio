@@ -55,7 +55,7 @@ export const createEntity = createAsyncThunk(
   'bid/create_entity',
   async (entity: IBid, thunkAPI) => {
     const result = await axios.post<IBid>(apiUrl, cleanEntity(entity))
-    thunkAPI.dispatch(getEntitiesConsortium({ page: 0, size: 20, sort: 'consortiumValue,asc', filterSegmentType: SegmentType.ALL }))
+    // thunkAPI.dispatch(getEntitiesConsortium({ page: 0, size: 20, sort: 'consortiumValue,asc', filterSegmentType: SegmentType.ALL }))
     thunkAPI.dispatch(getEntitiesByConsortium({ consortiumId: entity.consortium.id, page: 0, size: 10, sort: 'id,desc' }))
     return result
   },

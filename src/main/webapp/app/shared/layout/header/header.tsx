@@ -80,7 +80,7 @@ export const Header = () => {
   }
 
   const handleDisplayFab = () => {
-    if (location.pathname === '/' && !isAdmin) {
+    if ((location.pathname === '/' || location.pathname === '/my-proposals') && !isAdmin) {
       return true
     }
     if (location.pathname === '/users' && isAdmin) {
@@ -96,6 +96,9 @@ export const Header = () => {
     switch (location.pathname) {
       case '/':
         isAuthenticated ? setOpenConsortiumUpdateModal(true) : setOpenLoginModal(true)
+        break
+      case '/my-proposals':
+        setOpenConsortiumUpdateModal(true)
         break
       case '/users':
         setOpenAccountRegisterModal(true)
@@ -148,7 +151,7 @@ export const Header = () => {
             bottom: 0,
             color: defaultTheme.palette.primary.main,
             background: defaultTheme.palette.primary.main,
-            boxShadow: '1px 1px 3px rgba(107, 48, 190, 0.5)',
+            boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.15)',
             height: '70px',
             borderRadius: '14px 14px 0 0',
           }}
@@ -233,7 +236,7 @@ export const Header = () => {
                 boxShadow: '0px 8px 10px rgba(0,0,0,0.2)',
                 cursor: 'pointer',
                 '&:hover': {
-                  backgroundColor: defaultTheme.palette.secondary.light,
+                  backgroundColor: defaultTheme.palette.secondary.main,
                   color: defaultTheme.palette.primary.main,
                 },
               }}

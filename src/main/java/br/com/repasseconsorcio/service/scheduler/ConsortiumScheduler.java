@@ -41,7 +41,7 @@ public class ConsortiumScheduler {
                 return;
             }
 
-            consortium.setStatus(ConsortiumStatusType.CLOSED);
+            consortium.setStatus(ConsortiumStatusType.WON);
             Optional<Consortium> result = consortiumService.partialUpdate(consortium);
 
             if (result.isPresent()) {

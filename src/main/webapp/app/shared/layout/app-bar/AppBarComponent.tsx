@@ -64,10 +64,10 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
         sx={{
           top: 0,
           bottom: 'auto',
-          background: 'rgba(247, 247, 247, 0.8)',
           borderRadius: '0px 0px 10px 10px',
-          boxShadow: '10px 10px 20px rgba(247, 247, 247, 0.8)',
-          height: trigger ? '75px' : '0px',
+          background: defaultTheme.palette.primary.main,
+          boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.15)',
+          height: trigger ? '70px' : '0px',
           transition: 'height 0.5s ease-in-out',
         }}
       >
@@ -80,6 +80,7 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
               height: '100%',
               gap: { xs: 1, sm: 10 },
               px: { xs: 3 },
+              pt: 0.5,
             }}
           >
             {isAuthenticated && isMDScreen && !loading && (

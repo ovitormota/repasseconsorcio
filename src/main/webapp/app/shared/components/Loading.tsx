@@ -14,7 +14,7 @@ export const Loading: React.FC<LoadingProps> = ({ message = 'Aguarde, carregando
       <Box sx={{ width: '60%' }}>
         <LinearProgress color='secondary' />
       </Box>
-      <Typography variant='body2' mt={2} color={defaultTheme.palette.secondary.light}>
+      <Typography variant='body2' mt={2} color={defaultTheme.palette.secondary.main}>
         {message}
       </Typography>
     </Box>

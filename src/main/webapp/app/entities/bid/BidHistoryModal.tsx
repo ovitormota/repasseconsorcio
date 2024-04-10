@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Translate, getSortState } from 'react-jhipster'
 
-import { CloseOutlined } from '@mui/icons-material'
+import { CloseOutlined, StarRounded, StarsRounded } from '@mui/icons-material'
 import {
   Avatar,
   Box,
@@ -37,6 +37,8 @@ import { useLocation } from 'react-router-dom'
 import { BidUpdateModal } from './BidUpdateModal'
 import { getEntitiesByConsortium, reset } from './bid.reducer'
 import { get } from 'lodash'
+import { IUser } from 'app/shared/model/user.model'
+import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 
 interface IBidHistoryModalProps {
   setOpenBidHistoryModal: (open: boolean) => void
@@ -62,7 +64,10 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
   }
 
   useEffect(() => {
-    getAllEntities()
+    dispatch(reset())
+    if (entityConsortium?.id) {
+      getAllEntities()
+    }
   }, [paginationState.activePage, order, entityConsortium?.id])
 
   const handleLoadMore = () => {
@@ -83,6 +88,28 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
     setOpenBidHistoryModal(false)
   }
 
+  const setUser = (user: IUser) => {
+    if (account.id === user.id) {
+      return 'Você'
+    }
+    return `${user.firstName} ${user.lastName}`
+  }
+
+  const renderWinner = () => {
+    return <StarsRounded sx={{ color: defaultTheme.palette.secondary.light, position: 'absolute', top: 10, fontSize: '1em' }} />
+  }
+
+  const renderWinnerLegend = () => {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, mb: -2 }}>
+        <StarsRounded sx={{ color: defaultTheme.palette.secondary.light, fontSize: '1.3em' }} />
+        <Typography color='secondary' variant='overline'>
+          {entityConsortium.status === ConsortiumStatusType.CLOSED ? 'Vencedor' : 'Vencedor até o momento'}
+        </Typography>
+      </Box>
+    )
+  }
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Dialog
@@ -93,12 +120,13 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
         }}
         onClose={handleClose}
       >
-        <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ mt: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Translate contentKey='repasseconsorcioApp.bid.home.title'>Bid</Translate>
           <IconButton onClick={handleClose}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
         </DialogTitle>
+        {!!bids?.length && renderWinnerLegend()}
         <DialogContent sx={{ px: 1 }}>
           <Box>
             <InfiniteScroll
@@ -146,19 +174,17 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
                           <TypographStyled>Data</TypographStyled>
                         </TableCell>
                       </TableRow>
-                      <hr className='hr-text' data-content='' style={{ position: 'absolute', width: '100%', top: '40px' }} />
+                      {/* <hr className='hr-text' data-content='' style={{ position: 'absolute', width: '100%', top: '40px' }} /> */}
                     </TableHead>
 
                     <TableBody>
                       {bids?.map((bid, index) => (
                         <React.Fragment key={index}>
                           <TableRow>
-                            <TableCell>
-                              <Avatar alt={bid.user?.firstName} src={bid.user?.imageUrl} sx={{ width: { sx: 40, sm: 50 }, height: { sx: 40, sm: 50 }, m: 'auto' }}>
-                                {get(bid, 'user.firstName')?.charAt(0).toUpperCase()}
-                              </Avatar>
+                            <TableCell>{setUser(bid.user)}</TableCell>
+                            <TableCell sx={{ position: 'relative' }}>
+                              {formatCurrency(bid.value)} {index === 0 && renderWinner()}
                             </TableCell>
-                            <TableCell>{formatCurrency(bid.value)}</TableCell>
                             <TableCell>{formatCreated(bid.created)}</TableCell>
                           </TableRow>
                         </React.Fragment>
@@ -169,7 +195,7 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
               ) : (
                 !loading && <NoDataIndicatorRelative message='Nenhum lance encontrado' />
               )}
-              {loading && <Loading />}
+              {loading && <Loading height='20vh' />}
             </InfiniteScroll>
           </Box>
           <DialogActions sx={{ mt: 2, px: 2 }}>
@@ -182,7 +208,7 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
                 color: defaultTheme.palette.secondary.contrastText,
                 boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
                 '&:hover': {
-                  backgroundColor: defaultTheme.palette.secondary.light,
+                  backgroundColor: defaultTheme.palette.secondary.main,
                 },
               }}
               disabled={isAdmin || isUser}

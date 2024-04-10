@@ -22,7 +22,7 @@ export const Logout = ({ setOpenLogoutModal }) => {
       dispatch(
         getEntities({
           page: 0,
-          size: 10,
+          size: 20,
           sort: 'id,asc',
           filterSegmentType: SegmentType.ALL,
           filterStatusType: ConsortiumStatusType.ALL,

@@ -62,7 +62,7 @@ const SelectPaginate: React.FC<Props> = ({ value, apiUrl, placeholder = '', onCh
     control: (provided, state) => ({
       ...provided,
       border: `${state.isFocused ? '2px' : '1px'} solid ${state.isFocused ? defaultTheme.palette.secondary.main : 'rgba(184, 186, 185, 1)'}`,
-      backgroundColor: defaultTheme.palette.background.paper,
+      backgroundColor: defaultTheme.palette.primary.main,
       padding: '8px 5px',
       borderRadius: '10px',
       marginTop: '24px',
@@ -78,19 +78,19 @@ const SelectPaginate: React.FC<Props> = ({ value, apiUrl, placeholder = '', onCh
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isFocused ? defaultTheme.palette.action.selected : '#F4F4F4',
+      backgroundColor: state.isFocused ? defaultTheme.palette.action.selected : defaultTheme.palette.primary.main,
       color: state.isSelected || state.isFocused ? defaultTheme.palette.text.primary : defaultTheme.palette.text.primary,
       cursor: 'pointer',
 
       '&:hover': {
-        backgroundColor: state.isSelected ? '#F4F4F4' : defaultTheme.palette.action.hover,
+        backgroundColor: state.isSelected ? defaultTheme.palette.primary.main : defaultTheme.palette.action.hover,
       },
     }),
 
     menu: (provided) => ({
       ...provided,
       zIndex: 9999,
-      backgroundColor: '#F4F4F4',
+      backgroundColor: defaultTheme.palette.primary.main,
     }),
     placeholder: (provided) => ({
       ...provided,
@@ -114,7 +114,7 @@ const SelectPaginate: React.FC<Props> = ({ value, apiUrl, placeholder = '', onCh
             id='consortium-segmentType-label'
             sx={{
               transform: 'translate(10px, 16px) scale(0.75)',
-              background: defaultTheme.palette.background.paper,
+              background: defaultTheme.palette.primary.main,
               px: '5px',
               color: defaultTheme.palette.secondary.main,
             }}

@@ -3,17 +3,16 @@ import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
 
 import { Delete, EditOutlined } from '@mui/icons-material'
-import { Avatar, Box, CircularProgress, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Typography } from '@mui/material'
+import { Avatar, Box, CircularProgress, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
-import { SortingBox } from 'app/shared/components/SortingBox'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { TypographStyled } from 'app/shared/layout/table/TableComponents'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { IConsortiumAdministrator } from 'app/shared/model/consortium-administrator.model'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
-import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
+import { ASC, DESC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import { get } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { ConsortiumAdministratorUpdateModal } from './ConsortiumAdministratorUpdateModal'
@@ -28,7 +27,7 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
   const [openConsorciumAdministratorUpdateModal, setOpenConsorciumAdministratorUpdateModal] = useState<boolean>(false)
   const [consortiumAdministrator, setConsortiumAdministrator] = useState<IConsortiumAdministrator>(null)
   const [currentSort, setCurrentSort] = useState('name')
-  const [order, setOrder] = useState(ASC)
+  const [order, setOrder] = useState<'desc' | 'asc'>(ASC)
   const sortTypes = ['name']
 
   const consortiumAdministratorList = useAppSelector((state) => state.consortiumAdministrator.entities)
@@ -63,18 +62,28 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
     })
   }
 
+  useEffect(() => {
+    if (sorting) {
+      getAllEntities()
+      setSorting(false)
+    }
+  }, [sorting])
+
+  const createHandleSort = (field: string) => () => {
+    const isDesc = currentSort === field && order === DESC
+    setCurrentSort(field)
+    setOrder(isDesc ? 'asc' : 'desc')
+    setSorting(true)
+  }
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <AppBarComponent loading={loading} onClick={() => setOpenConsorciumAdministratorUpdateModal(true)} scrollableBoxRef={scrollableBoxRef}>
-        <SortingBox
-          loading={loading}
-          setCurrentSort={setCurrentSort}
-          currentSort={currentSort}
-          setOrder={setOrder}
-          order={order}
-          sortTypes={sortTypes}
-          translateKey='repasseconsorcioApp.consortiumAdministrator'
-        />
+        <Box display='flex' alignItems='center' sx={{ width: '100%', justifyContent: { xs: 'flex-start', sm: 'center' } }}>
+          <Typography color='secondary' fontWeight={'600'} fontSize={'18px'}>
+            {translate('repasseconsorcioApp.consortiumAdministrator.detail.title')}
+          </Typography>
+        </Box>
       </AppBarComponent>
       {loading ? (
         <Loading />
@@ -110,44 +119,47 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
               </div>
             }
           >
-            <TableContainer>
-              <Table>
-                <TableHead style={{ position: 'relative' }}>
-                  <TableRow>
-                    <TableCell>{/* <TypographStyled>{translate('repasseconsorcioApp.consortiumAdministrator.image')}</TypographStyled> */}</TableCell>
-                    <TableCell>
-                      <TypographStyled>{translate('repasseconsorcioApp.consortiumAdministrator.name')}</TypographStyled>
-                    </TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                  <hr className='hr-text' data-content='' style={{ position: 'absolute', width: '100%', top: '40px' }} />
-                </TableHead>
+            {!!consortiumAdministratorList?.length && (
+              <TableContainer>
+                <Table>
+                  <TableHead style={{ position: 'relative' }}>
+                    <TableRow>
+                      <TableCell />
+                      <TableCell>
+                        <TableSortLabel active={currentSort === 'name'} direction={order} onClick={createHandleSort('name')}>
+                          <TypographStyled>{translate('repasseconsorcioApp.consortiumAdministrator.name')}</TypographStyled>
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </TableHead>
 
-                <TableBody>
-                  {!!consortiumAdministratorList?.length &&
-                    consortiumAdministratorList?.map((consortium, index) => (
-                      <TableRow key={index} onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(consortium)]}>
-                        <TableCell>
-                          <Avatar alt={consortium?.name} src={get(consortium, 'name')} sx={{ margin: 'auto' }} />
-                        </TableCell>
-                        <TableCell>{consortium?.name}</TableCell>
-                        <TableCell>
-                          <IconButton onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(consortium)]}>
-                            <EditOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
-                          </IconButton>
-                          <IconButton
-                            onClick={(event) => {
-                              event.stopPropagation(), deleteConsortiumAdministrator(consortium.id)
-                            }}
-                          >
-                            <Delete sx={{ color: defaultTheme.palette.error.main }} fontSize='small' />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  <TableBody>
+                    {!!consortiumAdministratorList?.length &&
+                      consortiumAdministratorList?.map((consortium, index) => (
+                        <TableRow key={index} onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(consortium)]}>
+                          <TableCell>
+                            <Avatar alt={consortium?.name} src={get(consortium, 'name')} sx={{ margin: 'auto' }} />
+                          </TableCell>
+                          <TableCell>{consortium?.name}</TableCell>
+                          <TableCell>
+                            <IconButton onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(consortium)]}>
+                              <EditOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
+                            </IconButton>
+                            <IconButton
+                              onClick={(event) => {
+                                event.stopPropagation(), deleteConsortiumAdministrator(consortium.id)
+                              }}
+                            >
+                              <Delete sx={{ color: defaultTheme.palette.error.main }} fontSize='small' />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
           </InfiniteScroll>
           {!consortiumAdministratorList?.length && <NoDataIndicator />}
           {openConsorciumAdministratorUpdateModal && (

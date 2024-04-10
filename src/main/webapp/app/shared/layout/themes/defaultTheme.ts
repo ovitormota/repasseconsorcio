@@ -4,14 +4,15 @@ export const defaultTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#FFFFFF',
-      light: 'rgba(255, 255, 255, 0.9)',
+      main: '#f5f5f5',
+      light: 'rgba(247, 247, 247, 1)',
       contrastText: 'rgb(43,43,43)',
     },
     secondary: {
-      main: '#7555D7',
-      light: '#6B30BE',
-      A100: 'rgba(117, 85, 215, 0.1)',
+      main: '#5b61dc',
+      // light: 'rgba(91, 97, 220, 1)',
+      A400: 'rgba(91, 97, 220, 0.05)',
+      A100: 'rgba(222,223,248)',
     },
     grey: {
       50: '#F6F6F6',
@@ -26,23 +27,23 @@ export const defaultTheme = createTheme({
       900: '#1A1A1A',
     },
     background: {
-      paper: '#F7F7F7',
+      paper: '#FFFFFF',
       default: 'rgba(247, 247, 247, 0.9)',
     },
     error: {
-      main: '#FF5A5F',
-      light: 'rgba(255, 90, 95, 0.9)',
+      main: '#FF8080',
     },
     success: {
-      main: '#00C48C',
-      light: 'rgba(0, 196, 140, 0.9)',
+      main: '#009688',
     },
     info: {
-      main: '#00B8D9',
-      light: 'rgba(0, 184, 217, 0.9)',
+      main: '#ADD8E6',
+    },
+    warning: {
+      main: '#FFB779',
     },
     text: {
-      primary: 'rgb(43,43,43)',
+      primary: '#363636',
       secondary: 'rgba(43,43,43, 0.7)',
     },
   },
@@ -50,7 +51,7 @@ export const defaultTheme = createTheme({
     MuiSelect: {
       styleOverrides: {
         icon: {
-          color: '#7555D7',
+          color: '#515DE0',
         },
         root: {
           borderRadius: '10px',
@@ -61,7 +62,8 @@ export const defaultTheme = createTheme({
       styleOverrides: {
         outlined: {
           '&.MuiInputLabel-shrink': {
-            color: '#7555D7',
+            background: '#f5f5f5',
+            color: '#515DE0',
             paddingLeft: '5px',
             paddingRight: '5px',
             fontWeight: '500',
@@ -86,8 +88,8 @@ export const defaultTheme = createTheme({
           fontSize: 'clamp(0.85rem, 1.8vw, 0.95rem)',
         },
         secondary: {
-          color: 'rgb(43,43,43)',
-          fontSize: '14px',
+          color: 'rgb(43,43,43, 0.7)',
+          fontSize: '13.5px',
           fontWeight: '500',
         },
       },
@@ -106,6 +108,7 @@ export const defaultTheme = createTheme({
       styleOverrides: {
         root: {
           ':hover': {
+            background: '#FFFFFF !important',
             scale: '1.03',
             transition: 'all 0.3s ease',
           },
@@ -116,9 +119,6 @@ export const defaultTheme = createTheme({
       styleOverrides: {
         root: {
           textAlign: 'center',
-          border: 'none !important',
-          marginTop: '10px !important',
-          padding: '1rem !important',
           fontSize: 'clamp(0.8rem, 1.8vw, 0.95em) !important',
 
           '&:first-child': {
@@ -132,24 +132,29 @@ export const defaultTheme = createTheme({
           },
         },
 
+        head: {
+          fontWeight: '500',
+          fontSize: 'clamp(0.8rem, 1.8vw, 0.95em) !important',
+          padding: '8px',
+          border: 'none !important',
+        },
+
         body: {
-          color: 'rgba(43, 43, 43, 0.7)',
+          color: 'rgba(43, 43, 43)',
         },
       },
     },
     MuiTableRow: {
       styleOverrides: {
         root: {
-          background: '#F7F7F7',
-          borderBottom: '4px solid #FFFFFF',
+          background: '#FFFFFF',
 
           ':hover': {
-            background: 'rgba(97, 57, 173, 0.1)',
+            background: 'rgba(91, 97, 220, 0.1) !important',
             cursor: 'pointer',
           },
         },
         head: {
-          borderBottom: 'none !important',
           background: 'transparent',
           cursor: 'default !important',
           ':hover': {
@@ -158,29 +163,43 @@ export const defaultTheme = createTheme({
         },
       },
     },
-    MuiTableContainer: {
-      styleOverrides: {
-        root: {
-          borderRadius: '10px',
-          mb: '150px',
-          cellSpacing: '0',
-          paddingLeft: '1em',
-          paddingRight: '1em',
-        },
-      },
-    },
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
           fontSize: '0.8rem',
-          backgroundColor: 'rgba(117, 85, 215, 0.8)',
+          backgroundColor: '#515DE0',
         },
       },
     },
     MuiAvatar: {
       styleOverrides: {
         root: {
-          background: '#cccccc',
+          background: 'rgba(91, 97, 220, 0.05)',
+          color: '#5b61dc',
+          border: '1px solid rgba(91, 97, 220, 0.5)',
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '10px',
+        },
+      },
+    },
+    MuiTableSortLabel: {
+      styleOverrides: {
+        root: {
+          color: 'rgba(43, 43, 43, 0.5)',
+          fontWeight: '500',
+        },
+      },
+    },
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          paddingLeft: '1em',
+          paddingRight: '1em',
         },
       },
     },
