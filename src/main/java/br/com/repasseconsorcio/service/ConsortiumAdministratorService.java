@@ -2,7 +2,6 @@ package br.com.repasseconsorcio.service;
 
 import br.com.repasseconsorcio.domain.ConsortiumAdministrator;
 import br.com.repasseconsorcio.repository.ConsortiumAdministratorRepository;
-import br.com.repasseconsorcio.web.rest.errors.ServiceException;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

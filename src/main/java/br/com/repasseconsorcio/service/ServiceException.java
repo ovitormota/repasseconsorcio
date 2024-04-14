@@ -1,4 +1,4 @@
-package br.com.repasseconsorcio.web.rest.errors;
+package br.com.repasseconsorcio.service;
 
 public class ServiceException extends RuntimeException {
 

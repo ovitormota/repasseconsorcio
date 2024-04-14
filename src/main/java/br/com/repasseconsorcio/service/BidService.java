@@ -4,7 +4,6 @@ import br.com.repasseconsorcio.domain.Bid;
 import br.com.repasseconsorcio.domain.User;
 import br.com.repasseconsorcio.repository.BidRepository;
 import br.com.repasseconsorcio.service.util.UserCustomUtility;
-import br.com.repasseconsorcio.web.rest.errors.ServiceException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;

@@ -12,7 +12,6 @@ import br.com.repasseconsorcio.service.cloud.S3Service;
 import br.com.repasseconsorcio.service.cloud.exceptions.FileDownloadException;
 import br.com.repasseconsorcio.service.dto.AdminUserDTO;
 import br.com.repasseconsorcio.service.dto.UserDTO;
-import br.com.repasseconsorcio.web.rest.errors.ServiceException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
