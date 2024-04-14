@@ -1,4 +1,4 @@
-import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
+import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import React from 'react'
 import { defaultTheme } from '../layout/themes'
@@ -29,26 +29,29 @@ export const InstallPromptModal: React.FC<InstallPromptModalProps> = ({ deferred
       open={isOpen}
       sx={{ backgroundColor: defaultTheme.palette.background.default }}
       PaperProps={{
-        sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { xs: 0, sm: 1 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+        sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { xs: 0, sm: 1 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
       }}
       onClose={onClose}
     >
       <DialogTitle align='center'>
-        <DialogContentText sx={{ color: defaultTheme.palette.secondary.main, fontSize: '18px', fontWeight: '600', textAlign: 'center', mt: 2 }}>
-          Que tal adicionar nosso aplicativo à sua tela inicial?
-        </DialogContentText>
-      </DialogTitle>
-      <DialogContent sx={{ px: 1 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 4, mt: 2 }}>
-          <img src='content/images/logo-repasse-text-black.png' alt='Ícone do Aplicativo' style={{ width: '100px' }} />
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2, gap: 2 }}>
+          <img src='content/images/512x512.png' alt='Ícone do Aplicativo' style={{ width: '60px' }} />
+          <Typography sx={{ color: defaultTheme.palette.secondary.main, fontSize: '16px', fontWeight: '600', textAlign: 'center' }}>
+            Deseja adicionar o aplicativo Repasse Consórcio à tela inicial?
+          </Typography>
         </Box>
+      </DialogTitle>
+      <DialogContent sx={{ px: 1, p: 0 }}>
+        <DialogContentText sx={{ color: defaultTheme.palette.text.secondary, textAlign: 'center', m: 2 }}>
+          Acesse de forma mais rápida, com menos cliques e receba notificações importantes.
+        </DialogContentText>
 
-        <DialogActions sx={{ px: 2, justifyContent: 'center' }}>
-          <Button sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }} onClick={onClose} fullWidth>
-            Cancelar
-          </Button>
+        <DialogActions sx={{ px: 2, gap: 2, justifyContent: 'center', flexDirection: 'column' }}>
           <Button variant='contained' onClick={handleInstallClick} color='secondary' fullWidth>
             Adicionar
+          </Button>
+          <Button sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }} onClick={onClose} fullWidth>
+            Agora não
           </Button>
         </DialogActions>
       </DialogContent>

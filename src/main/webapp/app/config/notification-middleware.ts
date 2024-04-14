@@ -103,7 +103,11 @@ const handleAxiosError = (error: any): void => {
         break
 
       case 500:
-        handleDefaultError(data)
+        if (typeof data === 'string' && data !== '') {
+          addErrorAlert(data)
+        } else {
+          toast.error(data?.detail || data?.message || data?.title || 'Unknown error!')
+        }
         break
 
       default:

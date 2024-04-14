@@ -1,17 +1,15 @@
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios, { AxiosResponse } from 'axios'
 import { Storage } from 'react-jhipster'
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { serializeAxiosError } from './reducer.utils'
 
-import { AppThunk } from 'app/config/store'
-import { setLocale } from 'app/shared/reducers/locale'
-import toast from 'react-hot-toast'
-import { getMessaging, getToken } from 'firebase/messaging'
 import { messaging } from 'app/FirebaseConfig'
-import { icon } from '@fortawesome/fontawesome-svg-core'
+import { AppThunk } from 'app/config/store'
 import { getEntities } from 'app/entities/consortium/consortium.reducer'
-import { SegmentType } from '../model/enumerations/segment-type.model'
+import { setLocale } from 'app/shared/reducers/locale'
+import { getToken } from 'firebase/messaging'
 import { ConsortiumStatusType } from '../model/enumerations/consortium-status-type.model'
+import { SegmentType } from '../model/enumerations/segment-type.model'
 
 const AUTH_TOKEN_KEY = 'app-authenticationToken'
 

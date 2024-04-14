@@ -1,11 +1,12 @@
 import { DirectionsCarRounded, HomeRounded, MoreRounded } from '@mui/icons-material'
-import { Box, Button, Card, CardContent, Chip, CircularProgress, IconButton, List, ListItem, ListItemText, ThemeProvider, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, Chip, IconButton, List, ListItem, ListItemText, ThemeProvider, Typography } from '@mui/material'
 import { AUTHORITIES } from 'app/config/constants'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { HomeLogin } from 'app/modules/login/HomeLogin'
 import { hasAnyAuthority } from 'app/shared/auth/private-route'
 import { AuctionTimer } from 'app/shared/components/AuctionTimer'
 import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
+import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
 import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
 import { SortingBox } from 'app/shared/components/SortingBox'
@@ -113,39 +114,38 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
     return (
       <Card
         sx={{
-          mx: { xs: 1.1, sm: 1.1 },
-          my: { xs: 1.1, sm: 1.1 },
+          m: { xs: 1.1, sm: 1.1 },
           width: { xs: '90vw', sm: '330px' },
-          background: defaultTheme.palette.background.paper,
-          border: '1px solid rgba(72, 86, 150, 0.05)',
           borderRadius: '1rem',
-          ':hover': {
-            backgroundColor: defaultTheme.palette.secondary['A400'],
-            cursor: 'pointer',
-          },
           position: 'relative',
+
+          ':hover': {
+            md: {
+              scale: '1.03',
+              transition: 'all 0.3s ease',
+            },
+          },
         }}
         elevation={2}
-        onClick={() => isAuthenticated && handleBidHistory(consortium)}
+        onClick={() => (isAuthenticated ? handleBidHistory(consortium) : setOpenLoginModal(true))}
       >
         <Box
           sx={{
-            borderRadius: '0% 0% 50% 50% / 21% 55% 30% 30%',
-            background: defaultTheme.palette.secondary['A400'],
             overflow: 'hidden',
             width: { xs: '90vw', sm: '330px' },
-            height: '55px',
+            height: isAdmin ? '55px' : '35px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             mb: 1,
+            background: defaultTheme.palette.secondary['A100'],
           }}
         >
           <IconButton
             sx={{
               background: defaultTheme.palette.background.paper,
               position: 'absolute',
-              top: 30,
+              top: 45,
               ':hover': {
                 background: defaultTheme.palette.background.paper,
               },
@@ -160,21 +160,31 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
             )}
           </IconButton>
         </Box>
-        <Chip
-          label={consortium?.bids?.length ? `${consortium?.bids?.length} lances` : 'Sem lances'}
-          color={getStatusColor(status)}
-          variant='outlined'
-          size='small'
-          style={showElement(!!consortium?.bids?.length)}
-          sx={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-            cursor: 'pointer',
-          }}
-        />
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, position: 'absolute', top: 10, right: 10 }}>
+          <Chip
+            label={consortium.bids?.length ? `${consortium.bids.length} ${consortium.bids.length > 1 ? 'lances' : 'lance'}` : 'Sem lances'}
+            variant='filled'
+            size='small'
+            style={showElement(!!consortium?.bids?.length)}
+            sx={{
+              cursor: 'pointer',
+              background: defaultTheme.palette.background.paper,
+              color: defaultTheme.palette.secondary.main,
+            }}
+          />
+          <Chip
+            label={translate(`repasseconsorcioApp.ConsortiumStatusType.${status}`)}
+            color={getStatusColor(status)}
+            size='small'
+            style={showElement(isAdmin)}
+            sx={{
+              cursor: 'pointer',
+              color: defaultTheme.palette.secondary.contrastText,
+            }}
+          />
+        </Box>
         {contemplationStatus && renderStatusRibbon()}
-        <CardContent sx={{ p: 1.5 }}>
+        <CardContent>
           <List>
             <ListItemText
               primaryTypographyProps={{ fontSize: '12px !important' }}
@@ -210,25 +220,31 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
             </ListItem>
             <hr className='hr-text' data-content='' style={{ height: 0 }} />
             <ListItem sx={{ m: 0, p: 0 }}>
-              <AuctionTimer created={created} />
+              <AuctionTimer created={created} consortium={consortium} />
             </ListItem>
 
             <ListItem>
               <Button
                 sx={{
-                  mb: -3.3,
-                  borderRadius: '12px',
+                  borderRadius: '1em',
+                  marginX: '0.4em',
+                  background: defaultTheme.palette.secondary['A400'],
+
+                  ':hover': {
+                    background: defaultTheme.palette.secondary.light,
+                    color: defaultTheme.palette.secondary.contrastText,
+                  },
                 }}
-                variant='contained'
+                variant='outlined'
                 color='secondary'
                 fullWidth
-                disabled={isAdmin}
+                style={showElement(!isAdmin)}
                 onClick={(event) => {
                   event.stopPropagation()
                   handleBid(consortium)
                 }}
               >
-                Dar um lance
+                <Typography variant='button'>Participar</Typography>
               </Button>
             </ListItem>
           </List>
@@ -240,10 +256,9 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
   return (
     <ThemeProvider theme={defaultTheme}>
       <AppBarComponent loading={loading} scrollableBoxRef={scrollableBoxRef}>
-        {isAdmin && <StatusFilter filterStatusType={filterStatusType} setFilterStatusType={SetFilterStatusType} loading={loading} />}
-        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} isAdmin={isAdmin} onMaxWidth={isAdmin} loading={loading} />
+        {isAdmin && <StatusFilter filterStatusType={filterStatusType} setFilterStatusType={SetFilterStatusType} />}
+        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} isAdmin={isAdmin} onMaxWidth={isAdmin} />
         <SortingBox
-          loading={loading}
           setCurrentSort={setCurrentSort}
           currentSort={currentSort}
           setOrder={setOrder}
@@ -253,40 +268,15 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
           onMaxWidth={isAdmin}
         />
       </AppBarComponent>
-      <Box style={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingTop: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
+      <Box sx={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingY: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
         <InfiniteScroll
-          dataLength={consortiumList.length * paginationState.itemsPerPage}
+          dataLength={consortiumList?.length}
           next={handleLoadMore}
           hasMore={paginationState.activePage - 1 < links.next}
           scrollableTarget='scrollableDiv'
-          pullDownToRefresh
-          refreshFunction={getAllEntities}
-          pullDownToRefreshThreshold={50}
-          pullDownToRefreshContent={
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-              <Typography color='secondary' variant='overline'>
-                Puxe para atualizar
-              </Typography>
-              <CircularProgress color='secondary' size={30} />
-            </Box>
-          }
-          releaseToRefreshContent={
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-              <Typography color='secondary' variant='overline'>
-                Solte para atualizar
-              </Typography>
-              <CircularProgress color='secondary' size={30} />
-            </Box>
-          }
-          loader={
-            <div className='loader' key={0}>
-              Loading ...
-            </div>
-          }
+          loader={loading && <Loading height='150px' />}
         >
-          {loading ? (
-            <ConsortiumCardSkeleton />
-          ) : (
+          {consortiumList?.length ? (
             <List sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
               {!!consortiumList?.length &&
                 consortiumList?.map((consortium) => (
@@ -295,9 +285,12 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                   </Fragment>
                 ))}
             </List>
+          ) : !loading ? (
+            <NoDataIndicator message='Nehuma proposta encontrada' />
+          ) : (
+            <ConsortiumCardSkeleton items={ITEMS_PER_PAGE} />
           )}
         </InfiniteScroll>
-        {!consortiumList?.length && !loading && <NoDataIndicator message='Nehuma proposta encontrada' />}
       </Box>
       {openBidHistoryModal && <BidHistoryModal setOpenBidHistoryModal={setOpenBidHistoryModal} entityConsortium={entityConsortium} />}
       {openLoginModal && <HomeLogin setOpenLoginModal={setOpenLoginModal} />}

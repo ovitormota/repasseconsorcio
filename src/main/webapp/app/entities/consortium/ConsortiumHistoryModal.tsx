@@ -1,14 +1,33 @@
 import React from 'react'
-import { translate } from 'react-jhipster'
+import { Translate, translate } from 'react-jhipster'
 
-import { Box, Card, CardContent, Chip, Dialog, IconButton, List, ListItem, ListItemIcon, ListItemText, ThemeProvider } from '@mui/material'
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ThemeProvider,
+  Typography,
+} from '@mui/material'
 import { AuctionTimer } from 'app/shared/components/AuctionTimer'
 import { AvatarWithSkeleton } from 'app/shared/components/AvatarWithSkeleton'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { formatCurrency, getStatusColor, showElement } from 'app/shared/util/data-utils'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
-import { DirectionsCarRounded, HomeRounded, MoreRounded } from '@mui/icons-material'
+import { CloseOutlined, DirectionsCarRounded, HomeRounded, MoreRounded } from '@mui/icons-material'
+import { BidHistoryModal } from '../bid/BidHistoryModal'
+import { StatusRibbon } from 'app/shared/components/StatusRibbon'
 
 interface IConsortiumHistoryModalProps {
   setOpenConsortiumHistoryModal: (open: boolean) => void
@@ -16,11 +35,7 @@ interface IConsortiumHistoryModalProps {
 }
 
 export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityConsortium }: IConsortiumHistoryModalProps) => {
-  const renderStatusRibbon = () => (
-    <div className='ribbon'>
-      <a href=''>{translate('repasseconsorcioApp.consortium.contemplationTypeStatus.approved')}</a>
-    </div>
-  )
+  const [openBidHistoryModal, setOpenBidHistoryModal] = React.useState(false)
 
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
     const {
@@ -37,23 +52,20 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
     return (
       <Card
         sx={{
-          background: defaultTheme.palette.background.paper,
-          border: '1px solid rgba(72, 86, 150, 0.05)',
           borderRadius: '1rem',
+          mt: 2,
+          position: 'relative',
           ':hover': {
             scale: '1 !important',
           },
-          position: 'relative',
         }}
-        elevation={2}
+        elevation={0}
+        onClick={() => setOpenBidHistoryModal(true)}
       >
         <Box
           sx={{
-            borderRadius: '0% 0% 50% 50% / 21% 55% 30% 30%',
-            background: defaultTheme.palette.primary.light,
             overflow: 'hidden',
-            width: { xs: '90vw', sm: '330px' },
-            height: '55px',
+            height: '45px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -62,11 +74,11 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
         >
           <IconButton
             sx={{
-              background: defaultTheme.palette.primary.main,
+              background: defaultTheme.palette.background.paper,
               position: 'absolute',
               top: 30,
               ':hover': {
-                background: defaultTheme.palette.primary.main,
+                background: defaultTheme.palette.background.paper,
               },
             }}
           >
@@ -81,8 +93,7 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
         </Box>
         <Chip
           label={consortium?.bids?.length ? `${consortium?.bids?.length} lances` : 'Sem lances'}
-          color={getStatusColor(status)}
-          variant='outlined'
+          variant='filled'
           size='small'
           style={showElement(!!consortium?.bids?.length)}
           sx={{
@@ -90,9 +101,12 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
             top: 10,
             right: 10,
             cursor: 'pointer',
+            background: defaultTheme.palette.background.paper,
+            color: defaultTheme.palette.secondary.main,
+            border: `1px solid ${defaultTheme.palette.secondary['A100']}`,
           }}
         />
-        {contemplationStatus && renderStatusRibbon()}
+        {contemplationStatus && StatusRibbon()}
         <CardContent sx={{ p: 1.5 }}>
           <List>
             <ListItemText
@@ -129,7 +143,7 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
             </ListItem>
             <hr className='hr-text' data-content='' style={{ height: 0 }} />
             <ListItem sx={{ m: 0, p: 0 }}>
-              <AuctionTimer created={created} />
+              <AuctionTimer created={created} consortium={consortium} />
             </ListItem>
           </List>
         </CardContent>
@@ -143,12 +157,28 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, width: { xs: '90vw', sm: '330px' } },
+          sx: { borderRadius: '1em', background: defaultTheme.palette.secondary['A100'], minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
         }}
         onClose={() => setOpenConsortiumHistoryModal(false)}
       >
-        <ConsortiumCard consortium={entityConsortium} />
+        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography color='secondary' fontWeight={'600'} fontSize={'18px'}>
+            <Translate contentKey='repasseconsorcioApp.consortium.home.title'>Consortium</Translate> #{entityConsortium.id}
+          </Typography>
+          <IconButton onClick={() => setOpenConsortiumHistoryModal(false)}>
+            <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ p: { xs: 1, sm: 2 } }}>
+          <ConsortiumCard consortium={entityConsortium} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenConsortiumHistoryModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
+            <Translate contentKey='entity.action.back'>Back</Translate>
+          </Button>
+        </DialogActions>
       </Dialog>
+      {openBidHistoryModal && <BidHistoryModal setOpenBidHistoryModal={setOpenBidHistoryModal} entityConsortium={entityConsortium} />}
     </ThemeProvider>
   )
 }

@@ -2,7 +2,7 @@
 // Import Bootstrap source files from node_modules
 @import 'node_modules/bootstrap/scss/bootstrap';
 body {
-  background: #f5f5f5;
+  background: rgb(246, 246, 246);
   // background: linear-gradient(0deg, rgba(72, 86, 150, 0.03405112044817926) 0%, rgba(247, 247, 247, 1) 100%);
   margin: 0;
 }
@@ -323,10 +323,10 @@ http://stackoverflow.com/questions/23436430/bootstrap-3-input-group-100-width */
   overflow: hidden;
   position: absolute;
   white-space: nowrap;
-  z-index: 1;
+  z-index: 0;
   pointer-events: none;
   a {
-    color: #fff;
+    color: #ffffff;
     font-size: 12px;
     display: block;
     margin: 1px 0;
@@ -350,7 +350,7 @@ http://stackoverflow.com/questions/23436430/bootstrap-3-input-group-100-width */
   margin: 8px;
   &:before {
     content: '';
-    background: linear-gradient(to right, transparent, #cccccc, transparent);
+    background: linear-gradient(to right, transparent, #ccc, transparent);
     position: absolute;
     left: 0;
     top: 50%;
@@ -366,7 +366,7 @@ http://stackoverflow.com/questions/23436430/bootstrap-3-input-group-100-width */
     padding: 0 0.5em;
     line-height: 1em;
     color: black;
-    background-color: #f7f7f7;
+    background-color: #ffffff;
   }
 }
 
@@ -383,5 +383,5 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px #f5f5f5 inset !important;
+  -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
 }

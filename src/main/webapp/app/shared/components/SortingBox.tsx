@@ -1,6 +1,6 @@
 import { SortRounded, SwapVertRounded } from '@mui/icons-material'
 import { Box, FormControl, IconButton, InputLabel, MenuItem, Select, Skeleton, Tooltip, Typography } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useLayoutEffect } from 'react'
 import { translate } from 'react-jhipster'
 import { defaultTheme } from '../layout/themes'
 import { ASC, DESC } from '../util/pagination.constants'
@@ -13,10 +13,18 @@ interface ISortingBoxProps {
   sortTypes: string[]
   translateKey?: string
   onMaxWidth?: boolean
-  loading: boolean
+  loading?: boolean
 }
 
-export const SortingBox = ({ setCurrentSort, currentSort, setOrder, order, sortTypes, translateKey, onMaxWidth, loading }: ISortingBoxProps) => {
+export const SortingBox = ({ setCurrentSort, currentSort, setOrder, order, sortTypes, translateKey, onMaxWidth }: ISortingBoxProps) => {
+  const [loading, setLoading] = React.useState(true)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 100)
+  }, [])
+
   const handleSortChange = (event) => {
     const selectedSortType = event.target.value
     setCurrentSort(selectedSortType)
@@ -60,8 +68,8 @@ export const SortingBox = ({ setCurrentSort, currentSort, setOrder, order, sortT
         </>
       ) : (
         <>
-          <Skeleton variant='rectangular' width={onMaxWidth ? '10vw' : '25vw'} height={40} sx={{ borderRadius: '10px' }} />
-          <Skeleton variant='circular' width={40} height={40} sx={{ borderRadius: '50%', ml: 1 }} />
+          <Skeleton animation='wave' variant='rectangular' width={onMaxWidth ? '10vw' : '25vw'} height={40} sx={{ borderRadius: '10px' }} />
+          <Skeleton animation='wave' variant='circular' width={40} height={40} sx={{ borderRadius: '50%', ml: 1 }} />
         </>
       )}
     </Box>

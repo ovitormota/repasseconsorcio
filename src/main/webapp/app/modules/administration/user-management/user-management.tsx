@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from 'react'
 import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
 
-import { Box, Chip, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, ThemeProvider, Tooltip, Typography } from '@mui/material'
+import { Box, Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, ThemeProvider, Tooltip } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { AccountRegister } from 'app/modules/account/register/AccountRegister'
 import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
 import { AvatarWithSkeleton } from 'app/shared/components/AvatarWithSkeleton'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
-import { SortingBox } from 'app/shared/components/SortingBox'
 import { UserFilterChip } from 'app/shared/components/UserFilterChip'
+import { SkeletonTable } from 'app/shared/components/skeleton/SkeletonTable'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { TypographStyled } from 'app/shared/layout/table/TableComponents'
 import { defaultTheme } from 'app/shared/layout/themes'
@@ -18,9 +18,9 @@ import { StatusType } from 'app/shared/model/enumerations/status.model'
 import { IUser } from 'app/shared/model/user.model'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { ASC, DESC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
+import { useBreakpoints } from 'app/shared/util/useBreakpoints'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getUsersAsAdmin, updateUser } from './user-management.reducer'
-import { useBreakpoints } from 'app/shared/util/useBreakpoints'
 
 export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -37,10 +37,8 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
   const [order, setOrder] = useState<'desc' | 'asc'>(ASC)
 
   const users = useAppSelector((state) => state.userManagement.users)
-  const totalItems = useAppSelector((state) => state.userManagement.totalItems)
   const loading = useAppSelector((state) => state.userManagement.loading)
   const links = useAppSelector((state) => state.userManagement.links)
-  const updateSuccess = useAppSelector((state) => state.userManagement.updateSuccess)
 
   const getAllEntities = () => {
     dispatch(
@@ -79,7 +77,6 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
 
   useEffect(() => {
     if (sorting) {
-      getAllEntities()
       setSorting(false)
     }
   }, [sorting])
@@ -96,40 +93,16 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
       <AppBarComponent loading={loading} onClick={() => setOpenAccountRegisterModal(true)} scrollableBoxRef={scrollableBoxRef}>
         <UserFilterChip filterStatusType={filterStatusType} setFilterStatusType={setFilterStatusType} loading={loading} />
       </AppBarComponent>
-      {loading ? (
-        <Loading />
-      ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingTop: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
-          <InfiniteScroll
-            dataLength={users.length}
-            next={handleLoadMore}
-            hasMore={paginationState.activePage - 1 < links.next}
-            scrollableTarget='scrollableDiv'
-            pullDownToRefresh
-            refreshFunction={getAllEntities}
-            pullDownToRefreshThreshold={50}
-            pullDownToRefreshContent={
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Typography color='secondary' variant='overline'>
-                  Puxe para atualizar
-                </Typography>
-                <CircularProgress color='secondary' size={30} />
-              </Box>
-            }
-            releaseToRefreshContent={
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Typography color='secondary' variant='overline'>
-                  Solte para atualizar
-                </Typography>
-                <CircularProgress color='secondary' size={30} />
-              </Box>
-            }
-            loader={
-              <div className='loader' key={0}>
-                Loading ...
-              </div>
-            }
-          >
+
+      <Box style={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingTop: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
+        <InfiniteScroll
+          dataLength={users?.length}
+          next={handleLoadMore}
+          hasMore={paginationState.activePage - 1 < links.next}
+          scrollableTarget='scrollableDiv'
+          loader={loading && <Loading height='150px' />}
+        >
+          {users?.length ? (
             <TableContainer sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
               <Table>
                 <TableHead style={{ position: 'relative' }}>
@@ -172,14 +145,15 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
                 </TableBody>
               </Table>
             </TableContainer>
-          </InfiniteScroll>
-          {!users?.length && <NoDataIndicator />}
-          {openAccountRegisterModal && <AccountRegister setOpenAccountRegisterModal={setOpenAccountRegisterModal} />}
-          {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} editUser={editUser} getAllEntities={getAllEntities} />}
-        </Box>
-      )}
+          ) : !loading ? (
+            <NoDataIndicator message='Nenhum usuário encontrado' />
+          ) : (
+            <SkeletonTable rowCount={15} columnCount={1} />
+          )}
+        </InfiniteScroll>
+      </Box>
+      {openAccountRegisterModal && <AccountRegister setOpenAccountRegisterModal={setOpenAccountRegisterModal} />}
+      {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} editUser={editUser} getAllEntities={getAllEntities} />}
     </ThemeProvider>
   )
 }
-
-export default UserManagement

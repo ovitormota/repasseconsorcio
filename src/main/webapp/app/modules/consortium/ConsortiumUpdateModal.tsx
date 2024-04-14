@@ -97,11 +97,11 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
-          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { md: 1 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+          sx: { borderRadius: '1em', background: defaultTheme.palette.secondary['A100'], minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
         }}
         onClose={() => setOpenConsortiumUpdateModal(false)}
       >
-        <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Translate contentKey='repasseconsorcioApp.consortium.home.createLabel'>Reset your password</Translate>
           <IconButton onClick={() => setOpenConsortiumUpdateModal(false)}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
@@ -112,7 +112,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
             <p>Loading...</p>
           ) : (
             <form>
-              <FormControl fullWidth sx={{ mb: -1, mt: 1 }}>
+              <FormControl fullWidth sx={{ mb: -1, mt: 3 }}>
                 <InputLabel id='consortium-segmentType-label'>{translate('repasseconsorcioApp.consortium.segmentType') + ' *'}</InputLabel>
                 <Select
                   required
@@ -247,7 +247,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
           )}
         </DialogContent>
         <form onSubmit={openModalUseTerms}>
-          <DialogActions sx={{ p: 3 }}>
+          <DialogActions>
             <Button onClick={() => setOpenConsortiumUpdateModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
               <Translate contentKey='entity.action.cancel'>Cancel</Translate>
             </Button>

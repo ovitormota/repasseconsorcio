@@ -1,14 +1,11 @@
-import { Avatar, Button, Card, CardContent, List, ListItem, ListItemIcon, ListItemText, Skeleton } from '@mui/material'
+import { Card, CardContent, List, ListItem, ListItemIcon, ListItemText, Skeleton } from '@mui/material'
 import React from 'react'
 import { defaultTheme } from '../layout/themes'
-import { useBreakpoints } from '../util/useBreakpoints'
 
-export const ConsortiumCardSkeleton = () => {
-  const { isSMScreen } = useBreakpoints()
-
+export const ConsortiumCardSkeleton = ({ items }) => {
   return (
     <List sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-      {[...Array(isSMScreen ? 10 : 2)].map((_, index) => (
+      {[...Array(items)].map((_, index) => (
         <Card
           key={index}
           sx={{
@@ -17,13 +14,13 @@ export const ConsortiumCardSkeleton = () => {
             width: { xs: '90vw', sm: '330px' },
             background: defaultTheme.palette.background.paper,
             boxShadow: '1px 1px rgba(97, 57, 173, 0.2)',
-            borderRadius: '10px',
+            borderRadius: '1em',
           }}
         >
           <CardContent sx={{ p: 1.5 }}>
             <ListItem sx={{ mb: 1 }}>
               <ListItemIcon sx={{ mr: 1 }}>
-                <Skeleton variant='circular' width={50} height={50} />
+                <Skeleton animation='wave' variant='circular' width={50} height={50} />
               </ListItemIcon>
               <ListItemText
                 sx={{
@@ -44,41 +41,41 @@ export const ConsortiumCardSkeleton = () => {
                 primary={
                   <>
                     <span>
-                      <Skeleton width={100} />
+                      <Skeleton animation='wave' width={100} />
                     </span>
                     <strong style={{ color: defaultTheme.palette.secondary.main }}>
-                      <Skeleton width={30} />
+                      <Skeleton animation='wave' width={30} />
                     </strong>
                   </>
                 }
-                secondary={<Skeleton width={120} />}
+                secondary={<Skeleton animation='wave' width={120} />}
               />
             </ListItem>
 
             <ListItemText
               primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-              primary={<Skeleton width={100} />}
-              secondary={<Skeleton width={50} />}
+              primary={<Skeleton animation='wave' width={100} />}
+              secondary={<Skeleton animation='wave' width={50} />}
             />
             <ListItemText
               primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-              primary={<Skeleton width={100} />}
-              secondary={<Skeleton width={50} />}
+              primary={<Skeleton animation='wave' width={100} />}
+              secondary={<Skeleton animation='wave' width={50} />}
             />
             <ListItemText
               primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-              primary={<Skeleton width={100} />}
-              secondary={<Skeleton width={50} />}
+              primary={<Skeleton animation='wave' width={100} />}
+              secondary={<Skeleton animation='wave' width={50} />}
             />
 
             <ListItem sx={{ mt: 1 }}>
               <ListItemText
                 primaryTypographyProps={{ fontSize: '12px !important' }}
-                primary={<Skeleton width={150} />}
-                secondary={<Skeleton width={100} />}
+                primary={<Skeleton animation='wave' width={150} />}
+                secondary={<Skeleton animation='wave' width={100} />}
                 secondaryTypographyProps={{
                   fontSize: '22px !important',
                   fontWeight: '600',
@@ -86,8 +83,8 @@ export const ConsortiumCardSkeleton = () => {
               />
             </ListItem>
 
-            <ListItem sx={{ p: 0 }}>
-              <Skeleton variant='rectangular' width='100%' height={35} sx={{ borderRadius: '8px' }} />
+            <ListItem sx={{ p: 2 }}>
+              <Skeleton animation='wave' variant='rectangular' width='100%' height={35} sx={{ borderRadius: '8px' }} />
             </ListItem>
           </CardContent>
         </Card>

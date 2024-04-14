@@ -3,10 +3,11 @@ import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
 
 import { Delete, EditOutlined } from '@mui/icons-material'
-import { Avatar, Box, CircularProgress, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, ThemeProvider, Typography } from '@mui/material'
+import { Avatar, Box, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
+import { SkeletonTable } from 'app/shared/components/skeleton/SkeletonTable'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { TypographStyled } from 'app/shared/layout/table/TableComponents'
 import { defaultTheme } from 'app/shared/layout/themes'
@@ -64,7 +65,6 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
 
   useEffect(() => {
     if (sorting) {
-      getAllEntities()
       setSorting(false)
     }
   }, [sorting])
@@ -85,87 +85,63 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
           </Typography>
         </Box>
       </AppBarComponent>
-      {loading ? (
-        <Loading />
-      ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingTop: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
-          <InfiniteScroll
-            dataLength={consortiumAdministratorList.length}
-            next={handleLoadMore}
-            hasMore={paginationState.activePage - 1 < links.next}
-            scrollableTarget='scrollableDiv'
-            pullDownToRefresh
-            refreshFunction={getAllEntities}
-            pullDownToRefreshThreshold={50}
-            pullDownToRefreshContent={
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Typography color='secondary' variant='overline'>
-                  Puxe para atualizar
-                </Typography>
-                <CircularProgress color='secondary' size={30} />
-              </Box>
-            }
-            releaseToRefreshContent={
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Typography color='secondary' variant='overline'>
-                  Solte para atualizar
-                </Typography>
-                <CircularProgress color='secondary' size={30} />
-              </Box>
-            }
-            loader={
-              <div className='loader' key={0}>
-                Loading ...
-              </div>
-            }
-          >
-            {!!consortiumAdministratorList?.length && (
-              <TableContainer>
-                <Table>
-                  <TableHead style={{ position: 'relative' }}>
-                    <TableRow>
-                      <TableCell />
-                      <TableCell>
-                        <TableSortLabel active={currentSort === 'name'} direction={order} onClick={createHandleSort('name')}>
-                          <TypographStyled>{translate('repasseconsorcioApp.consortiumAdministrator.name')}</TypographStyled>
-                        </TableSortLabel>
-                      </TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                  </TableHead>
+      <Box style={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingTop: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
+        <InfiniteScroll
+          dataLength={consortiumAdministratorList?.length}
+          next={handleLoadMore}
+          hasMore={paginationState.activePage - 1 < links.next}
+          scrollableTarget='scrollableDiv'
+          loader={loading && <Loading height='150px' />}
+        >
+          {consortiumAdministratorList?.length ? (
+            <TableContainer>
+              <Table>
+                <TableHead style={{ position: 'relative' }}>
+                  <TableRow>
+                    <TableCell />
+                    <TableCell>
+                      <TableSortLabel active={currentSort === 'name'} direction={order} onClick={createHandleSort('name')}>
+                        <TypographStyled>{translate('repasseconsorcioApp.consortiumAdministrator.name')}</TypographStyled>
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead>
 
-                  <TableBody>
-                    {!!consortiumAdministratorList?.length &&
-                      consortiumAdministratorList?.map((consortium, index) => (
-                        <TableRow key={index} onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(consortium)]}>
-                          <TableCell>
-                            <Avatar alt={consortium?.name} src={get(consortium, 'name')} sx={{ margin: 'auto' }} />
-                          </TableCell>
-                          <TableCell>{consortium?.name}</TableCell>
-                          <TableCell>
-                            <IconButton onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(consortium)]}>
-                              <EditOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
-                            </IconButton>
-                            <IconButton
-                              onClick={(event) => {
-                                event.stopPropagation(), deleteConsortiumAdministrator(consortium.id)
-                              }}
-                            >
-                              <Delete sx={{ color: defaultTheme.palette.error.main }} fontSize='small' />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
-          </InfiniteScroll>
-          {!consortiumAdministratorList?.length && <NoDataIndicator />}
-          {openConsorciumAdministratorUpdateModal && (
-            <ConsortiumAdministratorUpdateModal setOpenConsorciumAdministratorUpdateModal={setOpenConsorciumAdministratorUpdateModal} consortiumAdministrator={consortiumAdministrator} />
+                <TableBody>
+                  {!!consortiumAdministratorList?.length &&
+                    consortiumAdministratorList?.map((consortium, index) => (
+                      <TableRow key={index} onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(consortium)]}>
+                        <TableCell>
+                          <Avatar alt={consortium?.name} src={get(consortium, 'name')} sx={{ margin: 'auto' }} />
+                        </TableCell>
+                        <TableCell>{consortium?.name}</TableCell>
+                        <TableCell>
+                          <IconButton onClick={() => [setOpenConsorciumAdministratorUpdateModal(true), setConsortiumAdministrator(consortium)]}>
+                            <EditOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
+                          </IconButton>
+                          <IconButton
+                            onClick={(event) => {
+                              event.stopPropagation(), deleteConsortiumAdministrator(consortium.id)
+                            }}
+                          >
+                            <Delete sx={{ color: defaultTheme.palette.error.main }} fontSize='small' />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : !loading ? (
+            <NoDataIndicator message='Nenhum registro encontrado' />
+          ) : (
+            <SkeletonTable rowCount={15} columnCount={1} />
           )}
-        </Box>
+        </InfiniteScroll>
+      </Box>
+      {openConsorciumAdministratorUpdateModal && (
+        <ConsortiumAdministratorUpdateModal setOpenConsorciumAdministratorUpdateModal={setOpenConsorciumAdministratorUpdateModal} consortiumAdministrator={consortiumAdministrator} />
       )}
     </ThemeProvider>
   )

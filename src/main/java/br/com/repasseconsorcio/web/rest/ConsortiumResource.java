@@ -84,7 +84,7 @@ public class ConsortiumResource {
         }
         Consortium result = consortiumService.save(consortium);
 
-        firebaseMessagingService.sendNotificationsByAdmin(Optional.of(result));
+        firebaseMessagingService.sendNotificationsCreateConsortium(Optional.of(result));
 
         return ResponseEntity
             .created(new URI("/api/consortiums/" + result.getId()))
@@ -221,7 +221,7 @@ public class ConsortiumResource {
         if (result.isPresent()) {
             if (result.get().getStatus().equals(ConsortiumStatusType.OPEN)) {
                 // mailService.sendProposalStatusChanged(result.get());
-                firebaseMessagingService.sendNotifications(result);
+                firebaseMessagingService.sendNotificationProposalStatusChanged(result);
             } else {
                 throw new BadRequestAlertException("Invalid status", ENTITY_NAME, "statusinvalid");
             }

@@ -51,47 +51,47 @@ export const RequestPassword = ({ setOpenRequestModal }) => {
       <Dialog
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
-        PaperProps={{ sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
+        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.secondary['A100'], minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
       >
-        <DialogTitle width='100%' color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <DialogTitle width='100%' color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Translate contentKey='reset.request.title'>Reset your password</Translate>
           <IconButton onClick={() => setOpenRequestModal(false)}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
+          <DialogContentText sx={{ mt: 4 }}>
             <Translate contentKey='reset.request.messages.info'>Enter the email address you used to register</Translate>
           </DialogContentText>
-          <form onSubmit={isEmailValid() ? handleValidSubmit : null}>
-            <TextField
-              autoFocus
-              required
-              id='email'
-              name='email'
-              label={translate('global.form.email.placeholder')}
-              type='email'
-              fullWidth
-              color='secondary'
-              value={email}
-              error={!isEmailValid()}
-              helperText={!isEmailValid() && 'Seu e-mail é inválido'}
-              onChange={(e) => setEmail(e.target.value)}
-              sx={{ my: 4 }}
-              InputProps={{
-                style: { borderRadius: '10px' },
-              }}
-            />
-            <DialogActions sx={{ px: 0 }}>
-              <Button onClick={() => handleClose()} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
-                <Translate contentKey='entity.action.cancel'>Cancel</Translate>
-              </Button>
-              <Button type='submit' variant='contained' color='secondary' disabled={!isEmailValid() || email.trim() === ''} sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}>
-                <Translate contentKey='reset.request.form.button'>Reset password</Translate>
-              </Button>
-            </DialogActions>
-          </form>
+          <TextField
+            autoFocus
+            required
+            id='email'
+            name='email'
+            label={translate('global.form.email.placeholder')}
+            type='email'
+            fullWidth
+            color='secondary'
+            value={email}
+            error={!isEmailValid()}
+            helperText={!isEmailValid() && 'Seu e-mail é inválido'}
+            onChange={(e) => setEmail(e.target.value)}
+            sx={{ mt: 4 }}
+            InputProps={{
+              style: { borderRadius: '10px' },
+            }}
+          />
         </DialogContent>
+        <form onSubmit={isEmailValid() ? handleValidSubmit : null}>
+          <DialogActions>
+            <Button onClick={() => handleClose()} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
+              <Translate contentKey='entity.action.cancel'>Cancel</Translate>
+            </Button>
+            <Button type='submit' variant='contained' color='secondary' disabled={!isEmailValid() || email.trim() === ''} sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}>
+              <Translate contentKey='reset.request.form.button'>Reset password</Translate>
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </React.Fragment>
   )

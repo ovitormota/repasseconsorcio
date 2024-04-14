@@ -10,7 +10,7 @@ export const ImageWithSkeleton = ({ src, alt, width }) => {
 
   return (
     <>
-      {imageLoaded ? <img src={src} alt={alt} width={width} loading='lazy' /> : <Skeleton variant='circular' width={width} height={width} />}
+      {imageLoaded ? <img src={src} alt={alt} width={width} loading='lazy' /> : <Skeleton animation='wave' variant='circular' width={width} height={width} />}
       <img src={src} alt={alt} width={width} loading='lazy' onLoad={handleImageLoad} style={{ display: 'none' }} />
     </>
   )

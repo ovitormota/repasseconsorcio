@@ -2,7 +2,7 @@
   "repasseconsorcioApp": {
     "consortium": {
       "home": {
-        "title": "Consórcios",
+        "title": "Proposta",
         "refreshListLabel": "Atualizar lista",
         "createLabel": "Cadastre uma nova proposta",
         "createOrEditLabel": "Criar ou editar Consórcio",

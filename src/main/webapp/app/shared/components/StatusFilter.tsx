@@ -1,13 +1,12 @@
 import { FilterListRounded } from '@mui/icons-material'
-import { Box, Chip, FormControl, InputLabel, MenuItem, Select, Skeleton, Tooltip, Typography } from '@mui/material'
-import React from 'react'
+import { Box, FormControl, InputLabel, MenuItem, Select, Skeleton, Typography } from '@mui/material'
+import { AUTHORITIES } from 'app/config/constants'
+import { useAppSelector } from 'app/config/store'
+import React, { useEffect } from 'react'
 import { translate } from 'react-jhipster'
+import { hasAnyAuthority } from '../auth/private-route'
 import { defaultTheme } from '../layout/themes'
 import { ConsortiumStatusType } from '../model/enumerations/consortium-status-type.model'
-import { useBreakpoints } from '../util/useBreakpoints'
-import { useAppSelector } from 'app/config/store'
-import { hasAnyAuthority } from '../auth/private-route'
-import { AUTHORITIES } from 'app/config/constants'
 
 interface IStatusFilterProps {
   filterStatusType: string
@@ -15,7 +14,15 @@ interface IStatusFilterProps {
   loading?: boolean
 }
 
-export const StatusFilter = ({ setFilterStatusType, filterStatusType, loading }: IStatusFilterProps) => {
+export const StatusFilter = ({ setFilterStatusType, filterStatusType }: IStatusFilterProps) => {
+  const [loading, setLoading] = React.useState(true)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 100)
+  }, [])
+
   const isAdmin = useAppSelector((state) => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN]))
   const getStatusType = () => {
     return [ConsortiumStatusType.ALL, ConsortiumStatusType.OPEN, ConsortiumStatusType.WON, ConsortiumStatusType.CLOSED, ConsortiumStatusType.REGISTERED]
@@ -61,7 +68,7 @@ export const StatusFilter = ({ setFilterStatusType, filterStatusType, loading }:
           </FormControl>
         </>
       ) : (
-        <Skeleton variant='rectangular' height={40} sx={{ borderRadius: '10px', width: { xs: '10vw', sx: '25vw' } }} />
+        <Skeleton animation='wave' variant='rectangular' height={40} sx={{ borderRadius: '1em', width: { xs: '10vw', sx: '25vw' } }} />
       )}
     </Box>
   )

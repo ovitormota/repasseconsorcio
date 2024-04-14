@@ -59,7 +59,7 @@ export const getStatusColor = (status: ConsortiumStatusType) => {
     case 'REGISTERED':
       return 'warning'
     case 'WON':
-      return 'primary'
+      return 'info'
     default:
       return 'default'
   }

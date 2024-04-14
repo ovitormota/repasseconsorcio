@@ -1,7 +1,8 @@
 import { ArrowOutward, DirectionsCarRounded, HomeRounded, MoreRounded } from '@mui/icons-material'
-import { Avatar, Box, Button, Card, CardContent, Chip, CircularProgress, IconButton, List, ListItem, ListItemIcon, ListItemText, ThemeProvider, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, Chip, IconButton, List, ListItem, ListItemText, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
+import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
 import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
@@ -103,27 +104,18 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
     return (
       <Card
         sx={{
-          mx: { xs: 1.1, sm: 1.1 },
-          my: { xs: 1.1, sm: 1.1 },
+          m: { xs: 1.1, sm: 1.1 },
           width: { xs: '90vw', sm: '330px' },
-          background: defaultTheme.palette.background.paper,
-          border: '1px solid rgba(72, 86, 150, 0.05)',
           borderRadius: '1rem',
-          ':hover': {
-            backgroundColor: defaultTheme.palette.secondary['A400'],
-            cursor: 'pointer',
-          },
           position: 'relative',
         }}
         elevation={2}
       >
         <Box
           sx={{
-            borderRadius: '0% 0% 50% 50% / 21% 55% 30% 30%',
-            background: defaultTheme.palette.secondary['A400'],
             overflow: 'hidden',
             width: { xs: '90vw', sm: '330px' },
-            height: '55px',
+            height: '45px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -163,10 +155,10 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
           }}
         />
         {contemplationStatus && renderStatusRibbon()}
-        <CardContent sx={{ p: 1.5 }}>
+        <CardContent sx={{ p: 1 }}>
           <List>
             <ListItem sx={{ position: 'relative' }}>
-              <Box sx={{ position: 'absolute', top: -20, right: 4 }}>
+              <Box sx={{ position: 'absolute', top: -15, right: 4 }}>
                 <strong style={{ color: defaultTheme.palette.secondary.main, fontSize: '14px' }}>#{consortium?.id}</strong>
               </Box>
             </ListItem>
@@ -201,9 +193,16 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
               primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `}
               secondary={formatCurrency(installmentValue)}
             />
+            <ListItemText
+              primaryTypographyProps={{ fontSize: '12px !important' }}
+              sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
+              primary={`${translate('repasseconsorcioApp.consortium.minimumBidValue')} `}
+              secondary={formatCurrency(minimumBidValue)}
+            />
+
             <hr className='hr-text' data-content='' style={{ height: 0 }} />
 
-            <ListItem sx={{ m: 0, p: 0 }}>
+            <ListItem sx={{ m: 0, p: 0, py: 0.5 }}>
               <ListItemText
                 primaryTypographyProps={{ fontSize: '12px !important' }}
                 primary={`${translate('repasseconsorcioApp.consortium.consortiumValue')} `}
@@ -217,16 +216,21 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
             <ListItem>
               <Button
                 sx={{
-                  mb: -3.3,
-                  borderRadius: '12px',
-                  boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                  borderRadius: '1em',
+                  marginX: '0.6em',
+                  background: defaultTheme.palette.secondary['A400'],
+
+                  ':hover': {
+                    background: defaultTheme.palette.secondary.light,
+                    color: defaultTheme.palette.secondary.contrastText,
+                  },
                 }}
-                variant='contained'
+                variant='outlined'
                 color='secondary'
                 fullWidth
                 onClick={() => setApproved(consortium)}
               >
-                {translate('repasseconsorcioApp.consortium.approve')}
+                <Typography variant='button'>{translate('repasseconsorcioApp.consortium.approve')}</Typography>
               </Button>
             </ListItem>
           </List>
@@ -239,42 +243,17 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
     <ThemeProvider theme={defaultTheme}>
       <AppBarComponent loading={loading} scrollableBoxRef={scrollableBoxRef}>
         <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} loading={loading} />
-        <SortingBox loading={loading} setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortium' />
+        <SortingBox setCurrentSort={setCurrentSort} currentSort={currentSort} setOrder={setOrder} order={order} sortTypes={sortTypes} translateKey='repasseconsorcioApp.consortium' />
       </AppBarComponent>
-      {loading ? (
-        <Loading />
-      ) : (
-        <Box style={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingTop: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
-          <InfiniteScroll
-            dataLength={consortiumList.length}
-            next={handleLoadMore}
-            hasMore={paginationState.activePage - 1 < links.next}
-            scrollableTarget='scrollableDiv'
-            pullDownToRefresh
-            refreshFunction={getAllEntities}
-            pullDownToRefreshThreshold={50}
-            pullDownToRefreshContent={
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Typography color='secondary' variant='overline'>
-                  Puxe para atualizar
-                </Typography>
-                <CircularProgress color='secondary' size={30} />
-              </Box>
-            }
-            releaseToRefreshContent={
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Typography color='secondary' variant='overline'>
-                  Solte para atualizar
-                </Typography>
-                <CircularProgress color='secondary' size={30} />
-              </Box>
-            }
-            loader={
-              <div className='loader' key={0}>
-                Loading ...
-              </div>
-            }
-          >
+      <Box sx={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingY: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
+        <InfiniteScroll
+          dataLength={consortiumList?.length}
+          next={handleLoadMore}
+          hasMore={paginationState.activePage - 1 < links.next}
+          scrollableTarget='scrollableDiv'
+          loader={loading && <Loading height='150px' />}
+        >
+          {consortiumList?.length ? (
             <List sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
               {!!consortiumList?.length &&
                 consortiumList?.map((consortium) => (
@@ -283,11 +262,14 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
                   </Fragment>
                 ))}
             </List>
-          </InfiniteScroll>
-          {!consortiumList?.length && <NoDataIndicator />}
-          {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} editUser={editUser} />}
-        </Box>
-      )}
+          ) : !loading ? (
+            <NoDataIndicator message='Nehuma proposta encontrada' />
+          ) : (
+            <ConsortiumCardSkeleton items={ITEMS_PER_PAGE} />
+          )}
+        </InfiniteScroll>
+      </Box>
+      {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} editUser={editUser} />}
     </ThemeProvider>
   )
 }

@@ -35,6 +35,7 @@ export const NoDataIndicatorRelative = ({ message = 'Nenhum dado encontrado' }) 
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        mt: 2,
       }}
     >
       <SentimentDissatisfiedIcon sx={{ fontSize: 90, color: defaultTheme.palette.grey[200], mx: 'auto' }} />

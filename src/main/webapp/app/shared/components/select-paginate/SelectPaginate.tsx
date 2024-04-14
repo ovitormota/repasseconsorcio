@@ -64,7 +64,7 @@ const SelectPaginate: React.FC<Props> = ({ value, apiUrl, placeholder = '', onCh
       border: `${state.isFocused ? '2px' : '1px'} solid ${state.isFocused ? defaultTheme.palette.secondary.main : 'rgba(184, 186, 185, 1)'}`,
       backgroundColor: defaultTheme.palette.primary.main,
       padding: '8px 5px',
-      borderRadius: '10px',
+      borderRadius: '1em',
       marginTop: '24px',
       color: defaultTheme.palette.text.primary,
       boxShadow: 'none',

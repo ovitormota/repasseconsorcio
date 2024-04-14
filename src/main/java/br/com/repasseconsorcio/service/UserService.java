@@ -12,6 +12,7 @@ import br.com.repasseconsorcio.service.cloud.S3Service;
 import br.com.repasseconsorcio.service.cloud.exceptions.FileDownloadException;
 import br.com.repasseconsorcio.service.dto.AdminUserDTO;
 import br.com.repasseconsorcio.service.dto.UserDTO;
+import br.com.repasseconsorcio.web.rest.errors.ServiceException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
@@ -20,7 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -345,7 +345,7 @@ public class UserService {
                 String imageUrlSigned = s3Service.getSignedUrlForDownload(imageUrl);
                 user.setImageUrl(imageUrlSigned);
             } catch (FileDownloadException e) {
-                throw new ServiceException("Error while trying to get the signed URL from S3", e);
+                throw new ServiceException("Error while trying to get the signed URL from S3");
             }
         }
         return user;
@@ -359,7 +359,7 @@ public class UserService {
                 String imageUrlSigned = s3Service.getSignedUrlForDownload(imageUrl);
                 user.setImageUrl(imageUrlSigned);
             } catch (FileDownloadException e) {
-                throw new ServiceException("Error while trying to get the signed URL from S3", e);
+                throw new ServiceException("Error while trying to get the signed URL from S3");
             }
         }
         return user;

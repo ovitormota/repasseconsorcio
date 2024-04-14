@@ -1,9 +1,10 @@
-import { Avatar, Box, Card, CardContent, Chip, CircularProgress, IconButton, List, ListItem, ListItemIcon, ListItemText, Skeleton, ThemeProvider, Typography } from '@mui/material'
+import { DirectionsCarRounded, HomeRounded, MoreRounded } from '@mui/icons-material'
+import { Box, Card, CardContent, Chip, CircularProgress, IconButton, List, ListItem, ListItemText, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { BidHistoryModal } from 'app/entities/bid/BidHistoryModal'
 import { HomeLogin } from 'app/modules/login/HomeLogin'
 import { AuctionTimer } from 'app/shared/components/AuctionTimer'
-import { Loading } from 'app/shared/components/Loading'
+import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
 import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
 import { SortingBox } from 'app/shared/components/SortingBox'
@@ -22,8 +23,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
 import { getEntities } from './my-proposal.reducer'
-import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
-import { DirectionsCarRounded, HomeRounded, MoreRounded } from '@mui/icons-material'
+import { Loading } from 'app/shared/components/Loading'
 
 export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch()
@@ -101,25 +101,23 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
     return (
       <Card
         sx={{
-          mx: { xs: 1.1, sm: 1.1 },
-          my: { xs: 1.1, sm: 1.1 },
+          m: { xs: 1.1, sm: 1.1 },
           width: { xs: '90vw', sm: '330px' },
-          background: defaultTheme.palette.background.paper,
-          border: '1px solid rgba(72, 86, 150, 0.05)',
           borderRadius: '1rem',
-          ':hover': {
-            backgroundColor: defaultTheme.palette.secondary['A400'],
-            cursor: 'pointer',
-          },
           position: 'relative',
+
+          ':hover': {
+            md: {
+              scale: '1.03',
+              transition: 'all 0.3s ease',
+            },
+          },
         }}
         elevation={2}
         onClick={() => isAuthenticated && handleBidHistory(consortium)}
       >
         <Box
           sx={{
-            borderRadius: '0% 0% 50% 50% / 21% 55% 30% 30%',
-            background: defaultTheme.palette.secondary['A400'],
             overflow: 'hidden',
             width: { xs: '90vw', sm: '330px' },
             height: '55px',
@@ -133,7 +131,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
             sx={{
               background: defaultTheme.palette.background.paper,
               position: 'absolute',
-              top: 30,
+              top: 45,
               ':hover': {
                 background: defaultTheme.palette.background.paper,
               },
@@ -151,22 +149,22 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, position: 'absolute', top: 10, right: 10 }}>
           <Chip
             label={consortium?.bids?.length ? `${consortium?.bids?.length} lances` : 'Sem lances'}
-            color={getStatusColor(status)}
-            variant='outlined'
+            variant='filled'
             size='small'
             style={showElement(!!consortium?.bids?.length)}
             sx={{
               cursor: 'pointer',
+              background: defaultTheme.palette.background.paper,
+              color: defaultTheme.palette.secondary.main,
             }}
           />
           <Chip
             label={translate(`repasseconsorcioApp.ConsortiumStatusType.${status}`)}
             color={getStatusColor(status)}
-            variant='filled'
             size='small'
             sx={{
               cursor: 'pointer',
-              color: 'white',
+              color: defaultTheme.palette.secondary.contrastText,
             }}
           />
         </Box>
@@ -174,7 +172,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
         <CardContent sx={{ p: 1.5 }}>
           <List>
             <ListItem sx={{ position: 'relative' }}>
-              <Box sx={{ position: 'absolute', top: -20, right: 4 }}>
+              <Box sx={{ position: 'absolute', top: -15, right: 4 }}>
                 <strong style={{ color: defaultTheme.palette.secondary.main, fontSize: '14px' }}>#{consortium?.id}</strong>
               </Box>
             </ListItem>
@@ -211,8 +209,8 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
               />
             </ListItem>
             <hr className='hr-text' data-content='' style={{ height: 0 }} />
-            <ListItem sx={{ mb: -3, p: 0 }}>
-              <AuctionTimer created={created} />
+            <ListItem sx={{ p: 0 }}>
+              <AuctionTimer created={created} consortium={consortium} />
             </ListItem>
           </List>
         </CardContent>
@@ -236,50 +234,29 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
           onMaxWidth
         />
       </AppBarComponent>
-      <Box style={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingTop: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
+      <Box sx={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingY: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
         <InfiniteScroll
-          dataLength={consortiumList.length}
+          dataLength={consortiumList?.length}
           next={handleLoadMore}
           hasMore={paginationState.activePage - 1 < links.next}
           scrollableTarget='scrollableDiv'
-          pullDownToRefresh
-          refreshFunction={getAllEntities}
-          pullDownToRefreshThreshold={50}
-          pullDownToRefreshContent={
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-              <Typography color='secondary' variant='overline'>
-                Puxe para atualizar
-              </Typography>
-              <CircularProgress color='secondary' size={30} />
-            </Box>
-          }
-          releaseToRefreshContent={
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-              <Typography color='secondary' variant='overline'>
-                Solte para atualizar
-              </Typography>
-              <CircularProgress color='secondary' size={30} />
-            </Box>
-          }
-          loader={
-            <div className='loader' key={0}>
-              Loading ...
-            </div>
-          }
+          loader={loading && <Loading height='150px' />}
         >
-          {loading ? (
-            <ConsortiumCardSkeleton />
-          ) : (
+          {consortiumList?.length ? (
             <List sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-              {consortiumList.map((consortium) => (
-                <Fragment key={consortium?.id}>
-                  <ConsortiumCard consortium={consortium} />
-                </Fragment>
-              ))}
+              {!!consortiumList?.length &&
+                consortiumList?.map((consortium) => (
+                  <Fragment key={consortium?.id}>
+                    <ConsortiumCard consortium={consortium} />
+                  </Fragment>
+                ))}
             </List>
+          ) : !loading ? (
+            <NoDataIndicator message='Nehuma proposta encontrada' />
+          ) : (
+            <ConsortiumCardSkeleton items={ITEMS_PER_PAGE} />
           )}
         </InfiniteScroll>
-        {!consortiumList?.length && !loading && <NoDataIndicator />}
       </Box>
 
       {openBidHistoryModal && <BidHistoryModal setOpenBidHistoryModal={setOpenBidHistoryModal} entityConsortium={entityConsortium} />}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Translate, translate } from 'react-jhipster'
 
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, IconButton, InputAdornment, TextField } from '@mui/material'
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, IconButton, InputAdornment, TextField } from '@mui/material'
 
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
@@ -79,128 +79,142 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
     <React.Fragment>
       <Dialog
         open={true}
-        sx={{ backgroundColor: defaultTheme.palette.background.default }}
-        PaperProps={{ sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
+        sx={{ backgroundColor: defaultTheme.palette.primary.main }}
+        PaperProps={{
+          sx: { borderRadius: '1em', background: defaultTheme.palette.secondary['A100'], minWidth: { xs: '92vw', sm: '80vw', md: '550px' }, maxWidth: '550px' },
+        }}
       >
+        <Box
+          sx={{
+            overflow: 'hidden',
+            width: '100%',
+            height: '90px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        />
         <DialogContent>
-          <form onSubmit={handleValidSubmit}>
+          <Box sx={{ position: 'absolute', inset: 0, top: 20 }}>
             <ImageUploader onUpload={handleUpload} currentImage={image} name={null} />
-            {visibleFields.includes('firstName') && (
-              <TextField
-                type='text'
-                name='firstName'
-                label={translate('userManagement.firstName')}
-                variant='outlined'
-                required
-                fullWidth
-                color='secondary'
-                data-cy='firstName'
-                InputProps={{
-                  style: { borderRadius: '10px' },
-                }}
-                sx={{ mt: 2, mb: 1 }}
-                onChange={(e) => updateField('firstName', e.target.value)}
-              />
-            )}
-            {visibleFields.includes('firstName') && (
-              <TextField
-                type='text'
-                name='lastName'
-                label={translate('userManagement.lastName')}
-                variant='outlined'
-                required
-                fullWidth
-                color='secondary'
-                data-cy='lastName'
-                InputProps={{
-                  style: { borderRadius: '10px' },
-                }}
-                sx={{ mt: 2, mb: 1 }}
-                onChange={(e) => updateField('lastName', e.target.value)}
-              />
-            )}
-            {visibleFields.includes('lastName') && (
-              <TextField
-                name='email'
-                label={translate('global.form.email.label')}
-                placeholder={translate('global.form.email.placeholder')}
-                type='email'
-                variant='outlined'
-                required
-                fullWidth
-                color='secondary'
-                data-cy='email'
-                error={!isEmailValid()}
-                helperText={!isEmailValid() && 'Seu e-mail é inválido'}
-                InputProps={{
-                  style: { borderRadius: '10px' },
-                }}
-                sx={{ mt: 2, mb: 1 }}
-                onChange={(e) => updateField('email', e.target.value)}
-              />
-            )}
-            {visibleFields.includes('email') && (
-              <TextField
-                name='password'
-                label={translate('global.form.password.label')}
-                placeholder={translate('global.form.password.label')}
-                type={showPassword ? 'text' : 'password'}
-                variant='outlined'
-                required
-                fullWidth
-                color='secondary'
-                data-cy='password'
-                InputProps={{
-                  style: { borderRadius: '10px' },
-                }}
-                sx={{ mt: 2, mb: 1 }}
-                onChange={(e) => updateField('password', e.target.value)}
-              />
-            )}
-            {visibleFields.includes('password') && (
-              <TextField
-                name='confirmPassword'
-                label={translate('global.form.confirmpassword.label')}
-                placeholder={translate('global.form.confirmpassword.label')}
-                type={showPassword ? 'text' : 'password'}
-                variant='outlined'
-                required
-                fullWidth
-                color='secondary'
-                data-cy='confirmPassword'
-                error={!isPasswordsMatch()}
-                helperText={!isPasswordsMatch() && 'As senhas não conferem'}
-                InputProps={{
-                  style: { borderRadius: '10px' },
-                  endAdornment: (
-                    <InputAdornment position='end' style={{ marginRight: '5px' }}>
-                      <IconButton edge='end' onClick={() => setShowPassword(!showPassword)} color='secondary'>
-                        {showPassword ? <VisibilityOff fontSize='small' /> : <Visibility fontSize='small' />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{ mt: 2, mb: 1 }}
-                onChange={(e) => updateField('confirmPassword', e.target.value)}
-              />
-            )}
-            <DialogActions sx={{ mt: 3, px: 0 }}>
-              <Button variant='text' sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }} onClick={() => handleClose()}>
-                <Translate contentKey='entity.action.cancel'>Cancel</Translate>
-              </Button>
-              <Button
-                type='submit'
-                color='secondary'
-                variant='contained'
-                sx={{ fontWeight: '600' }}
-                disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || fields.password === '' || fields.confirmPassword === '' || !isPasswordsMatch() || !isEmailValid()}
-              >
-                <Translate contentKey='register.form.button'>Register</Translate>
-                {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.primary.main }} />}
-              </Button>
-            </DialogActions>
-          </form>
+          </Box>
+          {visibleFields.includes('firstName') && (
+            <TextField
+              type='text'
+              name='firstName'
+              label={translate('userManagement.firstName')}
+              variant='outlined'
+              required
+              fullWidth
+              color='secondary'
+              data-cy='firstName'
+              InputProps={{
+                style: { borderRadius: '10px' },
+              }}
+              sx={{ mt: 8, mb: 1 }}
+              onChange={(e) => updateField('firstName', e.target.value)}
+            />
+          )}
+          {visibleFields.includes('firstName') && (
+            <TextField
+              type='text'
+              name='lastName'
+              label={translate('userManagement.lastName')}
+              variant='outlined'
+              required
+              fullWidth
+              color='secondary'
+              data-cy='lastName'
+              InputProps={{
+                style: { borderRadius: '10px' },
+              }}
+              sx={{ mt: 2, mb: 1 }}
+              onChange={(e) => updateField('lastName', e.target.value)}
+            />
+          )}
+          {visibleFields.includes('lastName') && (
+            <TextField
+              name='email'
+              label={translate('global.form.email.label')}
+              placeholder={translate('global.form.email.placeholder')}
+              type='email'
+              variant='outlined'
+              required
+              fullWidth
+              color='secondary'
+              data-cy='email'
+              error={!isEmailValid()}
+              helperText={!isEmailValid() && 'Seu e-mail é inválido'}
+              InputProps={{
+                style: { borderRadius: '10px' },
+              }}
+              sx={{ mt: 2, mb: 1 }}
+              onChange={(e) => updateField('email', e.target.value)}
+            />
+          )}
+          {visibleFields.includes('email') && (
+            <TextField
+              name='password'
+              label={translate('global.form.password.label')}
+              placeholder={translate('global.form.password.label')}
+              type={showPassword ? 'text' : 'password'}
+              variant='outlined'
+              required
+              fullWidth
+              color='secondary'
+              data-cy='password'
+              InputProps={{
+                style: { borderRadius: '10px' },
+              }}
+              sx={{ mt: 2, mb: 1 }}
+              onChange={(e) => updateField('password', e.target.value)}
+            />
+          )}
+          {visibleFields.includes('password') && (
+            <TextField
+              name='confirmPassword'
+              label={translate('global.form.confirmpassword.label')}
+              placeholder={translate('global.form.confirmpassword.label')}
+              type={showPassword ? 'text' : 'password'}
+              variant='outlined'
+              required
+              fullWidth
+              color='secondary'
+              data-cy='confirmPassword'
+              error={!isPasswordsMatch()}
+              helperText={!isPasswordsMatch() && 'As senhas não conferem'}
+              InputProps={{
+                style: { borderRadius: '10px' },
+                endAdornment: (
+                  <InputAdornment position='end' style={{ marginRight: '5px' }}>
+                    <IconButton edge='end' onClick={() => setShowPassword(!showPassword)} color='secondary'>
+                      {showPassword ? <VisibilityOff fontSize='small' /> : <Visibility fontSize='small' />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ mt: 2, mb: 1 }}
+              onChange={(e) => updateField('confirmPassword', e.target.value)}
+            />
+          )}
         </DialogContent>
+        <form onSubmit={handleValidSubmit}>
+          <DialogActions>
+            <Button variant='text' sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }} onClick={() => handleClose()}>
+              <Translate contentKey='entity.action.back'>Back</Translate>
+            </Button>
+            <Button
+              type='submit'
+              color='secondary'
+              variant='contained'
+              sx={{ fontWeight: '600' }}
+              disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || fields.password === '' || fields.confirmPassword === '' || !isPasswordsMatch() || !isEmailValid()}
+            >
+              <Translate contentKey='register.form.button'>Register</Translate>
+              {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.primary.main }} />}
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </React.Fragment>
   )

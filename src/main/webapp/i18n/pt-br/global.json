@@ -107,7 +107,8 @@
       "add": "Adicionar",
       "accept": "Aceitar",
       "confirm": "Confirmar",
-      "sorting": "Ordenar"
+      "sorting": "Ordenar",
+      "continue": "Continuar"
     },
     "detail": {
       "field": "Campo",

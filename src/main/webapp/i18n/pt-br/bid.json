@@ -21,7 +21,7 @@
       "id": "ID",
       "value": "Digite o valor do lance",
       "user": "User",
-      "consortium": "Consortium",
+      "consortium": "Consórcio",
       "table": {
         "columns": {
           "consortium.id": "Proposta",

@@ -1,5 +1,5 @@
 import { Box, Chip, Skeleton, Typography } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { translate } from 'react-jhipster'
 import { defaultTheme } from '../layout/themes'
 import { StatusType } from '../model/enumerations/status.model'
@@ -7,10 +7,18 @@ import { StatusType } from '../model/enumerations/status.model'
 interface IUserFilterChipProps {
   filterStatusType: string
   setFilterStatusType: (value: React.SetStateAction<StatusType>) => void
-  loading: boolean
+  loading?: boolean
 }
 
-export const UserFilterChip = ({ setFilterStatusType, filterStatusType, loading }: IUserFilterChipProps) => {
+export const UserFilterChip = ({ setFilterStatusType, filterStatusType }: IUserFilterChipProps) => {
+  const [loading, setLoading] = React.useState(true)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 100)
+  }, [])
+
   const getStatusType = () => {
     return [StatusType.ALL, StatusType.ACTIVATED, StatusType.INACTIVED]
   }
@@ -44,7 +52,7 @@ export const UserFilterChip = ({ setFilterStatusType, filterStatusType, loading 
           ))}
         </>
       ) : (
-        <Skeleton variant='rectangular' width='25vw' height={40} sx={{ borderRadius: '10px' }} />
+        <Skeleton animation='wave' variant='rectangular' width='25vw' height={40} sx={{ borderRadius: '10px' }} />
       )}
     </Box>
   )

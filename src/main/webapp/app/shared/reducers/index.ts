@@ -13,6 +13,7 @@ import settings from 'app/modules/account/settings/settings.reducer'
 import passwordReset from 'app/modules/account/password-reset/password-reset.reducer'
 import consortiumAdministrator from 'app/entities/consortium-administrator/consortium-administrator.reducer'
 import bid from 'app/entities/bid/bid.reducer'
+import bidByConsortium from 'app/entities/bid/bid-by-consortium.reducer'
 import consortium from 'app/entities/consortium/consortium.reducer'
 import proposalsForApproval from 'app/entities/proposals-for-approval/proposals-for-approval.reducer'
 import myProposals from 'app/modules/proposals/my-proposal.reducer'
@@ -31,6 +32,7 @@ const rootReducer = {
   settings,
   consortiumAdministrator,
   bid,
+  bidByConsortium,
   consortium,
   proposalsForApproval,
   myProposals,

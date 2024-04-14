@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { Translate, translate } from 'react-jhipster'
 
-import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, TextField, ThemeProvider, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, TextField, ThemeProvider } from '@mui/material'
 
 import { useAppDispatch, useAppSelector } from 'app/config/store'
-import { deleteUserImage, getUser, getUsersAsAdmin, reset, updateUser, uploadUserImage } from 'app/modules/administration/user-management/user-management.reducer'
+import { deleteUserImage, updateUser, uploadUserImage } from 'app/modules/administration/user-management/user-management.reducer'
 import { ImageUploader } from 'app/shared/components/ImageUploader'
 import { defaultTheme } from 'app/shared/layout/themes'
-import { AccountDeleteModal } from './AccountDeleteModal'
 import { IUser } from 'app/shared/model/user.model'
-import { StatusType } from 'app/shared/model/enumerations/status.model'
+import { AccountDeleteModal } from './AccountDeleteModal'
 
 interface IAccountRegisterUpdateProps {
   setOpenAccountRegisterUpdateModal: (open: boolean) => void
@@ -69,7 +68,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
       if (Object.keys(fieldsToUpdate).length > 0 || imageToUpdate) {
         if (Object.keys(fieldsToUpdate).length > 0) {
           dispatch(updateUser({ ...editUser, ...fieldsToUpdate })).then(() => {
-            if (isAdmin) {
+            if (isAdmin && getAllEntities) {
               getAllEntities()
             }
           })
@@ -77,14 +76,14 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
 
         if (imageToUpdate && image) {
           dispatch(uploadUserImage({ userId: editUser.id, file: image })).then(() => {
-            if (isAdmin) {
+            if (isAdmin && getAllEntities) {
               getAllEntities()
             }
           })
         } else {
           if (editUser?.imageUrl && !image) {
             dispatch(deleteUserImage(editUser.id)).then(() => {
-              if (isAdmin) {
+              if (isAdmin && getAllEntities) {
                 getAllEntities()
               }
             })
@@ -121,93 +120,103 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
     <ThemeProvider theme={defaultTheme}>
       <Dialog
         open={true}
-        sx={{ backgroundColor: defaultTheme.palette.background.default }}
+        sx={{ backgroundColor: defaultTheme.palette.primary.main }}
         PaperProps={{
-          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: { sm: 2 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+          sx: { borderRadius: '1em', background: defaultTheme.palette.secondary['A100'], minWidth: { xs: '92vw', sm: '80vw', md: '550px' }, maxWidth: '550px' },
         }}
       >
+        <Box
+          sx={{
+            overflow: 'hidden',
+            width: '100%',
+            height: '90px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        />
         <DialogContent>
-          <form onSubmit={handleValidSubmit}>
-            <ImageUploader onUpload={handleUpload} currentImage={image} name={fields.firstName} />
+          <Box sx={{ position: 'absolute', inset: 0, top: 20 }}>
+            <ImageUploader onUpload={handleUpload} currentImage={image} name={null} />
+          </Box>
+          <TextField
+            type='text'
+            name='firstName'
+            label={translate('userManagement.firstName')}
+            variant='outlined'
+            required
+            fullWidth
+            color='secondary'
+            value={fields.firstName}
+            data-cy='firstName'
+            InputProps={{
+              style: { borderRadius: '10px' },
+            }}
+            sx={{ mt: 8, mb: 1 }}
+            onChange={(e) => updateField('firstName', e.target.value)}
+          />
 
-            <TextField
-              type='text'
-              name='firstName'
-              label={translate('userManagement.firstName')}
-              variant='outlined'
-              required
-              fullWidth
-              color='secondary'
-              value={fields.firstName}
-              data-cy='firstName'
-              InputProps={{
-                style: { borderRadius: '10px' },
-              }}
-              sx={{ mt: 2, mb: 1 }}
-              onChange={(e) => updateField('firstName', e.target.value)}
-            />
+          <TextField
+            type='text'
+            name='lastName'
+            label={translate('userManagement.lastName')}
+            variant='outlined'
+            required
+            fullWidth
+            color='secondary'
+            value={fields.lastName}
+            data-cy='lastName'
+            InputProps={{
+              style: { borderRadius: '10px' },
+            }}
+            sx={{ mt: 2, mb: 1 }}
+            onChange={(e) => updateField('lastName', e.target.value)}
+          />
 
-            <TextField
-              type='text'
-              name='lastName'
-              label={translate('userManagement.lastName')}
-              variant='outlined'
-              required
-              fullWidth
-              color='secondary'
-              value={fields.lastName}
-              data-cy='lastName'
-              InputProps={{
-                style: { borderRadius: '10px' },
-              }}
-              sx={{ mt: 2, mb: 1 }}
-              onChange={(e) => updateField('lastName', e.target.value)}
-            />
-
-            <TextField
-              name='email'
-              label={translate('global.form.email.label')}
-              placeholder={translate('global.form.email.placeholder')}
-              type='email'
-              variant='outlined'
-              required
-              fullWidth
-              color='secondary'
-              data-cy='email'
-              disabled
-              value={fields.email}
-              helperText={'Para alterar o email, entre em contato com o suporte.'}
-              InputProps={{
-                style: { borderRadius: '10px' },
-              }}
-              sx={{ mt: 2, mb: 1 }}
-              onChange={(e) => updateField('email', e.target.value)}
-            />
-
-            <DialogActions sx={{ p: 0, m: 0, mt: 4, justifyContent: 'flex-end' }}>
-              {/* <Button variant='text' onClick={() => setDeleteAccountModalOpen(true)}>
+          <TextField
+            name='email'
+            label={translate('global.form.email.label')}
+            placeholder={translate('global.form.email.placeholder')}
+            type='email'
+            variant='outlined'
+            required
+            fullWidth
+            color='secondary'
+            data-cy='email'
+            disabled
+            value={fields.email}
+            helperText={'Para alterar o email, entre em contato com o suporte.'}
+            InputProps={{
+              style: { borderRadius: '10px' },
+            }}
+            sx={{ mt: 2, mb: 1 }}
+            onChange={(e) => updateField('email', e.target.value)}
+          />
+        </DialogContent>
+        <form onSubmit={handleValidSubmit}>
+          <DialogActions>
+            {/* <Button variant='text' onClick={() => setDeleteAccountModalOpen(true)}>
                 <Typography variant='overline' fontSize={10} sx={{ color: defaultTheme.palette.text.secondary }}>
                   <Translate contentKey='userManagement.delete.button'>Delete Account</Translate>
                 </Typography>
               </Button> */}
-              <Box>
-                <Button variant='text' sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px', mr: 2 }} onClick={() => handleClose()}>
-                  <Translate contentKey='entity.action.cancel'>Cancel</Translate>
-                </Button>
-                <Button
-                  type='submit'
-                  color='secondary'
-                  variant='contained'
-                  sx={{ fontWeight: '600', gap: 1 }}
-                  disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || !isEmailValid()}
-                >
-                  <Translate contentKey='entity.action.save'>Save</Translate>
-                  {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.primary.main }} />}
-                </Button>
-              </Box>
-            </DialogActions>
-          </form>
-        </DialogContent>
+            <Box>
+              <Button variant='text' sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px', mr: 2 }} onClick={() => handleClose()}>
+                <Translate contentKey='entity.action.back'>Back</Translate>
+              </Button>
+              <Button
+                type='submit'
+                color='secondary'
+                variant='contained'
+                sx={{ fontWeight: '600', gap: 1 }}
+                disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || !isEmailValid()}
+              >
+                <Translate contentKey='entity.action.save'>Save</Translate>
+                {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.primary.main }} />}
+              </Button>
+            </Box>
+          </DialogActions>
+        </form>
       </Dialog>
       {deleteAccountModalOpen && <AccountDeleteModal setDeleteAccountModalOpen={setDeleteAccountModalOpen} />}
     </ThemeProvider>

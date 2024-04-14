@@ -50,34 +50,31 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.primary.main }}
         PaperProps={{
-          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+          sx: { borderRadius: '1em', background: defaultTheme.palette.secondary['A100'], minWidth: { xs: '92vw', sm: '80vw', md: '550px' }, maxWidth: '550px' },
         }}
         fullWidth
         onClose={() => isMDScreen && setOpenLoginModal(false)}
       >
         <Box
           sx={{
-            borderRadius: '0% 0% 50% 50% / 21% 55% 30% 30%',
-            background: defaultTheme.palette.secondary.main,
             overflow: 'hidden',
             width: '100%',
-            height: { xs: '100px', sm: '110px' },
+            height: '90px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            mb: 1,
           }}
         >
-          <Box component='img' sx={{ position: 'absolute', top: 20, width: { xs: '100px', sm: '110px' } }} src='content/images/logo-repasse-text-white.png' alt='Logo Repasse Consórcio' />
+          <Box component='img' sx={{ width: { xs: '100px', sm: '110px' } }} src='content/images/logo-repasse-text-dark.png' alt='Logo Repasse Consórcio' />
         </Box>
 
-        <DialogTitle color='secondary' align='center' sx={{ pt: 0 }}>
+        <DialogTitle color='secondary' align='center' sx={{ p: 0, m: 0 }}>
           <IconButton onClick={() => setOpenLoginModal(false)} sx={{ position: 'absolute', right: '10px', top: '10px' }}>
-            <CloseOutlined sx={{ color: defaultTheme.palette.secondary.contrastText }} fontSize='small' />
+            <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ p: 4 }}>
-          <form onSubmit={handleSubmit}>
+        <DialogContent sx={{ py: 4, px: { xs: 3, sm: 4 }, background: defaultTheme.palette.primary.main, borderRadius: '1em' }}>
+          <form onSubmit={handleSubmit} style={{ marginTop: '1em' }}>
             <TextField
               name='username'
               type='text'
@@ -90,7 +87,7 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
               value={username}
               onChange={(event) => setUsername(event.target.value)}
               InputProps={{
-                style: { borderRadius: '10px' },
+                style: { borderRadius: '1em' },
               }}
               sx={{ mt: 2 }}
             />
@@ -107,7 +104,7 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               InputProps={{
-                style: { borderRadius: '10px', marginRight: '8px' },
+                style: { borderRadius: '1em', marginRight: '8px' },
                 endAdornment: (
                   <InputAdornment position='end' style={{ marginRight: '5px' }}>
                     <IconButton edge='end' onClick={() => setShowPassword(!showPassword)} color='secondary'>
@@ -138,20 +135,13 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
               />
             </Typography>
 
-            <Button type='submit' fullWidth variant={username && password ? 'contained' : 'outlined'} size='large' color='secondary' sx={{ mt: 4, mb: 2, fontWeight: '600' }}>
+            <Button type='submit' fullWidth variant='contained' size='large' color='secondary' sx={{ mt: 4, mb: 2, fontWeight: '600' }}>
               <Translate contentKey='login.form.button.login'>Sign in</Translate>
             </Button>
 
             <hr className='hr-text' data-content='ou' />
 
-            <Button
-              onClick={() => setOpenAccountRegisterModal(true)}
-              fullWidth
-              variant={username && password ? 'outlined' : 'contained'}
-              size='large'
-              color='secondary'
-              sx={{ fontWeight: '600', mt: 2 }}
-            >
+            <Button onClick={() => setOpenAccountRegisterModal(true)} fullWidth variant='outlined' size='large' color='secondary' sx={{ fontWeight: '600', mt: 2 }}>
               <Translate contentKey='login.register.create'>Create an account</Translate>
             </Button>
           </form>

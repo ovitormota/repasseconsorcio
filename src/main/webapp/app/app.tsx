@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 import { Close } from '@mui/icons-material'
-import { IconButton } from '@mui/material'
+import { Box, IconButton, Typography } from '@mui/material'
 import { useAppDispatch } from 'app/config/store'
 import AppRoutes from 'app/routes'
 import ErrorBoundary from 'app/shared/error/error-boundary'
@@ -16,7 +16,6 @@ import { onMessage } from 'firebase/messaging'
 import { isMobile } from 'react-device-detect'
 import toast, { ToastBar, Toaster } from 'react-hot-toast'
 import { messaging } from './FirebaseConfig'
-import { useCustomToast } from './shared/components/CustomToast'
 import { InstallPromptModal } from './shared/components/InstallPromptModal'
 import { AppThemeProvider } from './shared/context/ThemeContext'
 
@@ -24,14 +23,29 @@ const baseHref = document.querySelector('base').getAttribute('href').replace(/\/
 
 export const App = () => {
   const dispatch = useAppDispatch()
-  const { CustomToastComponent, showToast } = useCustomToast()
-
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
 
   onMessage(messaging, (data) => {
-    showToast(data.notification.title, data.notification.body)
+    toast(
+      () => (
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+          <Typography variant='subtitle2' color='secondary' fontWeight={600}>
+            {data.notification.title} 👏
+          </Typography>
+          <Typography variant='body2' color='text.secondary' dangerouslySetInnerHTML={{ __html: data.notification.body }} />
+        </Box>
+      ),
+      {
+        duration: 999999,
+      }
+    )
   })
+
+  useEffect(() => {
+    dispatch(getSession())
+    dispatch(getProfile())
+  }, [])
 
   useEffect(() => {
     requestPermission()
@@ -46,7 +60,7 @@ export const App = () => {
         if (isMobile) {
           setModalOpen(true)
         }
-      }, 15000)
+      }, 5000)
 
       return () => clearTimeout(timeout)
     }
@@ -57,11 +71,6 @@ export const App = () => {
       window.removeEventListener('beforeinstallprompt', handler)
     }
   }, [isMobile])
-
-  useEffect(() => {
-    dispatch(getSession())
-    dispatch(getProfile())
-  }, [])
 
   return (
     <Router basename={baseHref}>
@@ -83,7 +92,6 @@ export const App = () => {
             </ToastBar>
           )}
         </Toaster>
-        <CustomToastComponent />
         <ErrorBoundary>
           <AppRoutes />
           <Header />

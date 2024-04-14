@@ -1,9 +1,10 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react'
-import { Box, Tooltip, AppBar, Skeleton } from '@mui/material'
+import { Box, Tooltip, AppBar, Skeleton, Button, IconButton } from '@mui/material'
 import { useAppSelector } from 'app/config/store'
 import { useBreakpoints } from 'app/shared/util/useBreakpoints'
 import { useHistory } from 'react-router-dom'
 import { defaultTheme } from '../themes'
+import { ArrowDropUpTwoTone, ArrowUpwardRounded } from '@mui/icons-material'
 
 interface ScrollHandlerProps {
   scrollableBoxRef: React.RefObject<HTMLDivElement>
@@ -16,8 +17,8 @@ const ScrollHandler: React.FC<ScrollHandlerProps> = ({ scrollableBoxRef, onScrol
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPosition = scrollableBoxRef?.current?.scrollTop || 0
-      setPrevScrollPosition(currentScrollPosition)
-      const trigger = currentScrollPosition < prevScrollPosition || currentScrollPosition === 0
+      const trigger = currentScrollPosition < 20
+
       onScroll(trigger)
     }
 
@@ -32,7 +33,7 @@ const ScrollHandler: React.FC<ScrollHandlerProps> = ({ scrollableBoxRef, onScrol
         boxRef.removeEventListener('scroll', handleScroll)
       }
     }
-  }, [scrollableBoxRef, onScroll, prevScrollPosition, setPrevScrollPosition])
+  }, [scrollableBoxRef])
 
   return null
 }
@@ -68,7 +69,7 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
           background: defaultTheme.palette.primary.main,
           boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.15)',
           height: trigger ? '70px' : '0px',
-          transition: 'height 0.5s ease-in-out',
+          transition: 'height 0.2s ease-in-out',
         }}
       >
         {trigger && (
@@ -83,16 +84,32 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
               pt: 0.5,
             }}
           >
-            {isAuthenticated && isMDScreen && !loading && (
+            {isAuthenticated && isMDScreen && (
               <Tooltip title='Repasse Consórcio' style={{ cursor: 'pointer', position: 'absolute' }} onClick={() => history.replace('/')}>
                 <img src='content/images/logo-repasse.png' alt='Logo' width='40px' />
               </Tooltip>
             )}
-            {loading && isMDScreen && <Skeleton variant='circular' width={50} height={50} />}
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', gap: { xs: 1, md: 4 } }}>{children}</Box>
           </Box>
         )}
       </AppBar>
+      {!trigger && (
+        <IconButton
+          onClick={() => scrollableBoxRef?.current?.scrollTo({ top: 0, behavior: 'smooth' })}
+          sx={{
+            position: 'absolute',
+            zIndex: 9999,
+            right: { xs: 15, sm: 30 },
+            bottom: 90,
+            background: defaultTheme.palette.secondary.main,
+            ':hover': {
+              background: defaultTheme.palette.secondary.main,
+            },
+          }}
+        >
+          <ArrowUpwardRounded color='primary' />
+        </IconButton>
+      )}
       <ScrollHandler scrollableBoxRef={scrollableBoxRef} onScroll={handleScroll} prevScrollPosition={prevScrollPosition} setPrevScrollPosition={setPrevScrollPosition} />
     </Box>
   )

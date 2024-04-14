@@ -6,6 +6,7 @@ import br.com.repasseconsorcio.domain.enumeration.ConsortiumStatusType;
 import br.com.repasseconsorcio.repository.ConsortiumRepository;
 import br.com.repasseconsorcio.service.BidService;
 import br.com.repasseconsorcio.service.ConsortiumService;
+import br.com.repasseconsorcio.service.FirebaseMessagingService;
 import br.com.repasseconsorcio.service.MailService;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -21,12 +22,20 @@ public class ConsortiumScheduler {
     private final ConsortiumRepository consortiumRepository;
     private final MailService mailService;
     private final BidService bidService;
+    private final FirebaseMessagingService firebaseMessagingService;
 
-    public ConsortiumScheduler(ConsortiumService consortiumService, ConsortiumRepository consortiumRepository, MailService mailService, BidService bidService) {
+    public ConsortiumScheduler(
+        ConsortiumService consortiumService,
+        ConsortiumRepository consortiumRepository,
+        MailService mailService,
+        BidService bidService,
+        FirebaseMessagingService firebaseMessagingService
+    ) {
         this.consortiumService = consortiumService;
         this.consortiumRepository = consortiumRepository;
         this.mailService = mailService;
         this.bidService = bidService;
+        this.firebaseMessagingService = firebaseMessagingService;
     }
 
     @Transactional
@@ -48,6 +57,9 @@ public class ConsortiumScheduler {
                 Optional<Bid> bid = bidService.findLatestBid(result.get().getId());
 
                 if (bid.isPresent()) {
+                    firebaseMessagingService.sendNotificationAuctionResultWinnerNotification(bid);
+                    firebaseMessagingService.sendNotificationAuctionResultOwnerNotification(bid);
+
                     mailService.sendAuctionResultWinnerNotification(bid.get().getUser(), result.get());
                     mailService.sendAuctionResultOwnerNotification(result.get());
                 }

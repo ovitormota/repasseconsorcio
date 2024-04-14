@@ -1,25 +1,8 @@
-import { Close, CloseOutlined } from '@mui/icons-material'
-import {
-  Box,
-  Button,
-  Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControlLabel,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  ThemeProvider,
-  Typography,
-  useTheme,
-} from '@mui/material/'
+import { CloseOutlined } from '@mui/icons-material'
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, IconButton, ThemeProvider, Typography } from '@mui/material/'
 import React from 'react'
-import { defaultTheme } from '../layout/themes'
 import { Translate } from 'react-jhipster'
+import { defaultTheme } from '../layout/themes'
 import { IConsortium } from '../model/consortium.model'
 
 interface IModalUseTerms {
@@ -38,19 +21,18 @@ export const BidModalUseTerms = ({ setOpen, setAcceptTerms }: IModalUseTerms) =>
       <Dialog
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
-        PaperProps={{
-          sx: { borderRadius: '10px', background: defaultTheme.palette.primary.main, p: 1, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
-        }}
-        onClose={() => setOpen(false)}
+        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.secondary['A100'], minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
       >
-        <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between', alignContent: 'center', alignItems: 'center' }}>
+        <DialogTitle width='100%' color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Translate contentKey='termsOfUse'>Termos de uso</Translate>
+
           <IconButton onClick={() => setOpen(false)}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
         </DialogTitle>
-        <DialogContent style={{ fontSize: '15px' }}>
-          <Box sx={{ px: 2, py: 1 }}>
+        <DialogContent>
+          <DialogContentText sx={{ mt: 4 }}></DialogContentText>
+          <Box>
             <Typography sx={{ color: defaultTheme.palette.text.primary }}>
               <DialogContentText textAlign='start' mb={2}>
                 Ao dar o lance, você concorda com os seguintes termos:
@@ -64,20 +46,23 @@ export const BidModalUseTerms = ({ setOpen, setAcceptTerms }: IModalUseTerms) =>
             <Typography sx={{ mb: 2, color: defaultTheme.palette.secondary.main }} fontSize='13px' fontWeight={600}>
               Obs: A taxa de administração para realizar a transferência da cota já está inclusa no valor do lance.
             </Typography>
+          </Box>
+          <Box sx={{ textAlign: { sm: 'center' } }}>
             <FormControlLabel
-              control={<Checkbox checked={checked} onClick={() => setChecked((prevChecked: boolean) => !prevChecked)} color='secondary' />}
               label={<Typography>Aceito as condições de participação</Typography>}
+              control={<Checkbox checked={checked} onClick={() => setChecked((prevChecked: boolean) => !prevChecked)} color='secondary' />}
             />
           </Box>
-          <DialogActions>
-            <Button onClick={() => setOpen(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
-              <Translate contentKey='entity.action.back'>Voltar</Translate>
-            </Button>
-            <Button variant='contained' color='secondary' disabled={!checked} onClick={() => setAcceptTerms(true)} sx={{ fontSize: '12px' }}>
-              <Translate contentKey='entity.action.confirm'>Confirmar</Translate>
-            </Button>
-          </DialogActions>
         </DialogContent>
+
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
+            <Translate contentKey='entity.action.back'>Voltar</Translate>
+          </Button>
+          <Button variant='contained' color='secondary' disabled={!checked} onClick={() => setAcceptTerms(true)} sx={{ fontSize: '12px' }}>
+            <Translate contentKey='entity.action.confirm'>Confirmar</Translate>
+          </Button>
+        </DialogActions>
       </Dialog>
     </ThemeProvider>
   )

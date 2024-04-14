@@ -4,10 +4,10 @@ import br.com.repasseconsorcio.domain.Bid;
 import br.com.repasseconsorcio.domain.User;
 import br.com.repasseconsorcio.repository.BidRepository;
 import br.com.repasseconsorcio.service.util.UserCustomUtility;
+import br.com.repasseconsorcio.web.rest.errors.ServiceException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
-import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,9 +28,12 @@ public class BidService {
 
     private final MailService mailService;
 
-    public BidService(BidRepository bidRepository, MailService mailService) {
+    private final FirebaseMessagingService firebaseMessagingService;
+
+    public BidService(BidRepository bidRepository, MailService mailService, FirebaseMessagingService firebaseMessagingService) {
         this.bidRepository = bidRepository;
         this.mailService = mailService;
+        this.firebaseMessagingService = firebaseMessagingService;
     }
 
     /**
@@ -67,6 +70,7 @@ public class BidService {
         Bid result = bidRepository.save(bid);
 
         if (result.getId() != null) {
+            firebaseMessagingService.sendNotificationBidConsortium(bid);
             mailService.sendBidReceivedNotification(bid);
         }
 

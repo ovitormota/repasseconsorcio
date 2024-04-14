@@ -21,10 +21,12 @@ export const useCustomToast = () => {
   }
 
   const CustomToastComponent = () => (
-    <Snackbar TransitionComponent={SlideTransition} open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-      <Stack direction='row' sx={{ bgcolor: 'background.paper', boxShadow: 4, borderRadius: 2, maxWidth: 400 }}>
+    <Snackbar TransitionComponent={SlideTransition} open={open} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+      <Stack direction='row' sx={{ bgcolor: 'primary.main', boxShadow: 4, borderRadius: 2, maxWidth: 400 }}>
         <Stack sx={{ flexGrow: 1, p: 2, gap: 1 }}>
-          <Typography variant='subtitle2'>{toastContent.title}</Typography>
+          <Typography variant='subtitle2' color='secondary' fontWeight={600}>
+            {toastContent.title}
+          </Typography>
           <Typography variant='body2' color='text.secondary'>
             {toastContent.body}
           </Typography>

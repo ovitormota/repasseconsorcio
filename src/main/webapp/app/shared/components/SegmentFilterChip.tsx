@@ -1,6 +1,6 @@
 import { FilterListRounded } from '@mui/icons-material'
 import { Box, Chip, FormControl, InputLabel, MenuItem, Select, Skeleton, Typography } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { translate } from 'react-jhipster'
 import { defaultTheme } from '../layout/themes'
 import { SegmentType } from '../model/enumerations/segment-type.model'
@@ -11,10 +11,18 @@ interface ISegmentFilterChipProps {
   setFilterSegmentType: (value: React.SetStateAction<SegmentType>) => void
   isAdmin?: boolean
   onMaxWidth?: boolean
-  loading: boolean
+  loading?: boolean
 }
 
-export const SegmentFilterChip = ({ setFilterSegmentType, filterSegmentType, isAdmin, onMaxWidth, loading }: ISegmentFilterChipProps) => {
+export const SegmentFilterChip = ({ setFilterSegmentType, filterSegmentType, isAdmin, onMaxWidth }: ISegmentFilterChipProps) => {
+  const [loading, setLoading] = React.useState(true)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 100)
+  }, [])
+
   const { isSMScreen } = useBreakpoints()
 
   const getSegmentType = () => {
@@ -57,7 +65,7 @@ export const SegmentFilterChip = ({ setFilterSegmentType, filterSegmentType, isA
           </FormControl>
         </>
       ) : (
-        <Skeleton variant='rectangular' width={onMaxWidth ? '10vw' : '25vw'} height={40} sx={{ borderRadius: '10px' }} />
+        <Skeleton animation='wave' variant='rectangular' width={onMaxWidth ? '10vw' : '25vw'} height={40} sx={{ borderRadius: '10px' }} />
       )}
     </Box>
   ) : (
@@ -85,7 +93,7 @@ export const SegmentFilterChip = ({ setFilterSegmentType, filterSegmentType, isA
           ))}
         </>
       ) : (
-        <Skeleton variant='rectangular' width={onMaxWidth ? '10vw' : '25vw'} height={40} sx={{ borderRadius: '10px' }} />
+        <Skeleton animation='wave' variant='rectangular' width={onMaxWidth ? '10vw' : '25vw'} height={40} sx={{ borderRadius: '10px' }} />
       )}
     </Box>
   )

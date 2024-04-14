@@ -4,15 +4,14 @@ export const defaultTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#f5f5f5',
-      light: 'rgba(247, 247, 247, 1)',
+      main: '#FFFFFF',
+      light: 'rgba(247,247,253)',
       contrastText: 'rgb(43,43,43)',
     },
     secondary: {
       main: '#5b61dc',
-      // light: 'rgba(91, 97, 220, 1)',
       A400: 'rgba(91, 97, 220, 0.05)',
-      A100: 'rgba(222,223,248)',
+      A100: 'rgba(247,247,253)',
     },
     grey: {
       50: '#F6F6F6',
@@ -28,19 +27,20 @@ export const defaultTheme = createTheme({
     },
     background: {
       paper: '#FFFFFF',
-      default: 'rgba(247, 247, 247, 0.9)',
+      default: '#FFFFFF',
     },
     error: {
-      main: '#FF8080',
+      main: '#FF6B6B',
+      contrastText: '#FFFFFF',
     },
     success: {
-      main: '#009688',
+      main: '#6AAA6A',
     },
     info: {
-      main: '#ADD8E6',
+      main: '#2196F3',
     },
     warning: {
-      main: '#FFB779',
+      main: '#FFB74D',
     },
     text: {
       primary: '#363636',
@@ -54,7 +54,7 @@ export const defaultTheme = createTheme({
           color: '#515DE0',
         },
         root: {
-          borderRadius: '10px',
+          borderRadius: '1em',
         },
       },
     },
@@ -62,7 +62,7 @@ export const defaultTheme = createTheme({
       styleOverrides: {
         outlined: {
           '&.MuiInputLabel-shrink': {
-            background: '#f5f5f5',
+            background: '#FFFFFF',
             color: '#515DE0',
             paddingLeft: '5px',
             paddingRight: '5px',
@@ -81,7 +81,7 @@ export const defaultTheme = createTheme({
           width: '50%',
           margin: '-6px 2px',
           padding: '6px',
-          borderRadius: '10px',
+          borderRadius: '1em',
         },
         primary: {
           color: 'rgba(43,43,43, 0.7)',
@@ -107,32 +107,45 @@ export const defaultTheme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
+          background: 'rgba(247,247,253)',
           ':hover': {
-            background: '#FFFFFF !important',
-            scale: '1.03',
-            transition: 'all 0.3s ease',
+            cursor: 'pointer',
           },
+        },
+      },
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          padding: '0.6em !important',
+          paddingBottom: '0 !important',
+          background: '#FFFFFF',
+          borderRadius: '1em',
         },
       },
     },
     MuiTableCell: {
       styleOverrides: {
         root: {
+          background: '#FFFFFF',
+
           textAlign: 'center',
           fontSize: 'clamp(0.8rem, 1.8vw, 0.95em) !important',
 
           '&:first-child': {
-            borderTopLeftRadius: '1rem',
-            borderBottomLeftRadius: '1rem',
+            borderTopLeftRadius: '8px',
+            borderBottomLeftRadius: '8px',
           },
 
           '&:last-child': {
-            borderTopRightRadius: '1rem',
-            borderBottomRightRadius: '1rem',
+            borderTopRightRadius: '8px',
+            borderBottomRightRadius: '8px',
           },
         },
 
         head: {
+          background: 'transparent !important',
+
           fontWeight: '500',
           fontSize: 'clamp(0.8rem, 1.8vw, 0.95em) !important',
           padding: '8px',
@@ -147,18 +160,14 @@ export const defaultTheme = createTheme({
     MuiTableRow: {
       styleOverrides: {
         root: {
-          background: '#FFFFFF',
-
           ':hover': {
-            background: 'rgba(91, 97, 220, 0.1) !important',
             cursor: 'pointer',
           },
         },
         head: {
-          background: 'transparent',
           cursor: 'default !important',
           ':hover': {
-            background: 'transparent',
+            background: 'transparent !important',
           },
         },
       },
@@ -174,7 +183,7 @@ export const defaultTheme = createTheme({
     MuiAvatar: {
       styleOverrides: {
         root: {
-          background: 'rgba(91, 97, 220, 0.05)',
+          background: '#FFFFFF',
           color: '#5b61dc',
           border: '1px solid rgba(91, 97, 220, 0.5)',
         },
@@ -183,7 +192,7 @@ export const defaultTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: '10px',
+          // borderRadius: '1em',
         },
       },
     },
@@ -200,6 +209,45 @@ export const defaultTheme = createTheme({
         root: {
           paddingLeft: '1em',
           paddingRight: '1em',
+        },
+      },
+    },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: {
+          background: '#FFFFFF',
+          borderTopLeftRadius: '1em',
+          borderTopRightRadius: '1em',
+        },
+      },
+    },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: {
+          background: '#FFFFFF',
+          padding: '1.5em ',
+          paddingTop: '0.5em !important',
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          borderRadius: '1em',
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          borderRadius: '1em !important',
+        },
+      },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          padding: '0.7em 1em',
         },
       },
     },

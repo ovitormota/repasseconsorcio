@@ -1,6 +1,7 @@
-import { Avatar } from '@mui/material'
+import { Avatar, Skeleton } from '@mui/material'
 import React, { useState } from 'react'
-import { LazyLoadComponent } from 'react-lazy-load-image-component'
+import { LazyLoadComponent, LazyLoadImage } from 'react-lazy-load-image-component'
+import 'react-lazy-load-image-component/src/effects/blur.css'
 
 export const AvatarWithSkeleton = ({ imageUrl, firstName, width }) => {
   const [imageLoaded, setImageLoaded] = useState(false)
@@ -11,7 +12,7 @@ export const AvatarWithSkeleton = ({ imageUrl, firstName, width }) => {
 
   return (
     <LazyLoadComponent>
-      {!imageUrl && (
+      {!imageUrl ? (
         <Avatar
           sx={{
             width,
@@ -21,8 +22,9 @@ export const AvatarWithSkeleton = ({ imageUrl, firstName, width }) => {
         >
           {firstName && firstName[0]}
         </Avatar>
+      ) : (
+        <LazyLoadImage beforeLoad={handleImageLoad} src={imageUrl} alt={firstName} effect='blur' width={width} height={width} style={{ borderRadius: '50%' }} loading='lazy' />
       )}
-      {imageUrl && <img onLoad={handleImageLoad} src={imageUrl} alt={firstName} style={{ borderRadius: '50%', width, height: width }} />}
     </LazyLoadComponent>
   )
 }

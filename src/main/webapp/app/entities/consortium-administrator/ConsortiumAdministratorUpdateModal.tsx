@@ -72,15 +72,23 @@ export const ConsortiumAdministratorUpdateModal = ({ setOpenConsorciumAdministra
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
         PaperProps={{
           sx: {
-            borderRadius: '10px',
-            background: defaultTheme.palette.primary.main,
-            p: { sm: 2 },
+            borderRadius: '1em',
+            background: defaultTheme.palette.secondary['A100'],
             minWidth: { xs: '92vw', sm: '80vw', md: '600px' },
           },
         }}
         onClose={() => setOpenConsorciumAdministratorUpdateModal(false)}
       >
-        <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ my: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <DialogTitle
+          color='secondary'
+          fontWeight={'600'}
+          fontSize={'18px'}
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <Translate contentKey={`repasseconsorcioApp.consortiumAdministrator.home.title.${consortiumAdministrator?.id ? 'edit' : 'create'}`}>Create or edit a consortium administrator</Translate>
           <IconButton onClick={() => setOpenConsorciumAdministratorUpdateModal(false)}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
@@ -90,36 +98,33 @@ export const ConsortiumAdministratorUpdateModal = ({ setOpenConsorciumAdministra
           {loading ? (
             <p>Loading...</p>
           ) : (
-            <form onSubmit={saveEntity}>
-              {/* <ImageUploader onUpload={handleUpload} currentImage={image} isUser={false} /> */}
-
-              <TextField
-                required
-                id='consortium-administrator-name'
-                name='numberOfInstallments'
-                label={translate('repasseconsorcioApp.consortium.consortiumAdministrator')}
-                type='text'
-                fullWidth
-                color='secondary'
-                value={consortiumName}
-                onChange={(e) => setConsortiumName(e.target.value)}
-                sx={{ mt: 2 }}
-                InputProps={{
-                  style: { borderRadius: '10px' },
-                }}
-              />
-
-              <DialogActions sx={{ mt: 3, px: 0 }}>
-                <Button onClick={() => setOpenConsorciumAdministratorUpdateModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
-                  <Translate contentKey='entity.action.cancel'>Cancel</Translate>
-                </Button>
-                <Button type='submit' variant='contained' color='secondary' sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}>
-                  <Translate contentKey='entity.action.save'>Save</Translate>
-                </Button>
-              </DialogActions>
-            </form>
+            <TextField
+              required
+              id='consortium-administrator-name'
+              name='numberOfInstallments'
+              label={translate('repasseconsorcioApp.consortium.consortiumAdministrator')}
+              type='text'
+              fullWidth
+              color='secondary'
+              value={consortiumName}
+              onChange={(e) => setConsortiumName(e.target.value)}
+              sx={{ mt: 3 }}
+              InputProps={{
+                style: { borderRadius: '10px' },
+              }}
+            />
           )}
         </DialogContent>
+        <form onSubmit={saveEntity}>
+          <DialogActions>
+            <Button onClick={() => setOpenConsorciumAdministratorUpdateModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
+              <Translate contentKey='entity.action.cancel'>Cancel</Translate>
+            </Button>
+            <Button type='submit' variant='contained' color='secondary' sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}>
+              <Translate contentKey='entity.action.save'>Save</Translate>
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </ThemeProvider>
   )

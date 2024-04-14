@@ -3,6 +3,7 @@ package br.com.repasseconsorcio.service.cloud;
 import br.com.repasseconsorcio.config.ApplicationProperties;
 import br.com.repasseconsorcio.repository.FileServiceRepository;
 import br.com.repasseconsorcio.service.cloud.exceptions.FileDownloadException;
+import br.com.repasseconsorcio.web.rest.errors.ServiceException;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
@@ -18,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import org.apache.commons.io.FilenameUtils;
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
