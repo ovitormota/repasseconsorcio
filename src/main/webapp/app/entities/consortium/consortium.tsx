@@ -219,11 +219,11 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
               />
             </ListItem>
             <hr className='hr-text' data-content='' style={{ height: 0 }} />
-            <ListItem sx={{ m: 0, p: 0 }}>
+            <List sx={{ m: 0, p: 0 }}>
               <AuctionTimer created={created} consortium={consortium} />
-            </ListItem>
+            </List>
 
-            <ListItem>
+            <ListItem style={showElement(!isAdmin)}>
               <Button
                 sx={{
                   borderRadius: '1em',
@@ -238,7 +238,6 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                 variant='outlined'
                 color='secondary'
                 fullWidth
-                style={showElement(!isAdmin)}
                 onClick={(event) => {
                   event.stopPropagation()
                   handleBid(consortium)

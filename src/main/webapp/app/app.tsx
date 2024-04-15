@@ -33,7 +33,9 @@ export const App = () => {
           <Typography variant='subtitle2' color='secondary' fontWeight={600}>
             {data.notification.title} 👏
           </Typography>
-          <Typography variant='body2' color='text.secondary' dangerouslySetInnerHTML={{ __html: data.notification.body }} />
+          <Typography variant='body2' color='text.secondary'>
+            {data.notification.body}
+          </Typography>
         </Box>
       ),
       {
@@ -41,11 +43,6 @@ export const App = () => {
       }
     )
   })
-
-  useEffect(() => {
-    dispatch(getSession())
-    dispatch(getProfile())
-  }, [])
 
   useEffect(() => {
     requestPermission()

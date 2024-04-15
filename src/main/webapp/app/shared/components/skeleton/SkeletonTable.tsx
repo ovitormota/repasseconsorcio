@@ -20,7 +20,7 @@ export const SkeletonTable = ({ rowCount, columnCount }) => {
             <TableRow key={index}>
               {range(0, columnCount).map((item) => (
                 <TableCell key={item} sx={{ py: 0, background: 'transparent' }}>
-                  <Skeleton animation='wave' height={50} />
+                  <Skeleton animation='wave' height={50} sx={{ py: 1 }} />
                 </TableCell>
               ))}
             </TableRow>

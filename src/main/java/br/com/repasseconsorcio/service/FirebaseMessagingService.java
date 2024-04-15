@@ -1,5 +1,6 @@
 package br.com.repasseconsorcio.service;
 
+import br.com.repasseconsorcio.RepasseconsorcioApp;
 import br.com.repasseconsorcio.domain.Bid;
 import br.com.repasseconsorcio.domain.Consortium;
 import br.com.repasseconsorcio.domain.NotificationToken;
@@ -22,9 +23,12 @@ public class FirebaseMessagingService {
 
     private final NotificationTokenService notificationTokenService;
 
-    public FirebaseMessagingService(FirebaseMessaging firebaseMessaging, NotificationTokenService notificationTokenService) {
+    private final RepasseconsorcioApp repasseconsorcioApp;
+
+    public FirebaseMessagingService(FirebaseMessaging firebaseMessaging, NotificationTokenService notificationTokenService, RepasseconsorcioApp repasseconsorcioApp) {
         this.firebaseMessaging = firebaseMessaging;
         this.notificationTokenService = notificationTokenService;
+        this.repasseconsorcioApp = repasseconsorcioApp;
     }
 
     private List<NotificationToken> findTokenByConsortium(User user) {
@@ -43,7 +47,7 @@ public class FirebaseMessagingService {
                 Notification notification = Notification
                     .builder()
                     .setTitle(consortium.get().getUser().getFirstName() + ", ótimas notícias!")
-                    .setBody("A sua proposta com o ID <b>#" + consortium.get().getId() + "</b> foi aprovada.")
+                    .setBody("A sua proposta com o ID #" + consortium.get().getId() + " foi aprovada.")
                     .build();
 
                 Message message = Message.builder().setToken(notificationToken.getToken()).setNotification(notification).build();
@@ -62,7 +66,7 @@ public class FirebaseMessagingService {
                 Notification notification = Notification
                     .builder()
                     .setTitle(notificationToken.getUser().getFirstName() + ", ótimas notícias!")
-                    .setBody("A uma nova proposta com o ID <b>#" + consortium.get().getId() + "</b> está pendente de aprovação.")
+                    .setBody("A uma nova proposta com o ID #" + consortium.get().getId() + " está pendente de aprovação.")
                     .build();
 
                 Message message = Message.builder().setToken(notificationToken.getToken()).setNotification(notification).build();
@@ -81,7 +85,7 @@ public class FirebaseMessagingService {
                 Notification notification = Notification
                     .builder()
                     .setTitle(bid.get().getUser().getFirstName() + ", ótimas notícias!")
-                    .setBody("O leilão da proposta com o ID <b>#" + bid.get().getConsortium().getId() + "</b> no qual você participou foi vencido por você. Vamos entrar em contato.")
+                    .setBody("O leilão da proposta com o ID #" + bid.get().getConsortium().getId() + " no qual você participou foi vencido por você. Vamos entrar em contato.")
                     .build();
 
                 Message message = Message.builder().setToken(notificationToken.getToken()).setNotification(notification).build();
@@ -100,7 +104,7 @@ public class FirebaseMessagingService {
                 Notification notification = Notification
                     .builder()
                     .setTitle(bid.get().getConsortium().getUser() + ", ótimas notícias!")
-                    .setBody("O leilão da sua proposta com o ID <b>#" + bid.get().getConsortium().getId() + "</b> encerrou e foi arrematada. Vamos entrar em contato.")
+                    .setBody("O leilão da sua proposta com o ID #" + bid.get().getConsortium().getId() + " encerrou e foi arrematada. Vamos entrar em contato.")
                     .build();
 
                 Message message = Message.builder().setToken(notificationToken.getToken()).setNotification(notification).build();
@@ -122,7 +126,7 @@ public class FirebaseMessagingService {
                 Notification notification = Notification
                     .builder()
                     .setTitle(bid.getConsortium().getUser().getFirstName() + ", ótimas notícias!")
-                    .setBody("Sua proposta com o ID <b>#" + bid.getConsortium().getId() + "</b> recebeu um novo lance no valor de <b>" + formattedValue + "</b>.")
+                    .setBody("Sua proposta com o ID #" + bid.getConsortium().getId() + " recebeu um novo lance no valor de " + formattedValue + ".")
                     .build();
 
                 Message message = Message.builder().setToken(notificationToken.getToken()).setNotification(notification).build();
@@ -134,6 +138,10 @@ public class FirebaseMessagingService {
     }
 
     private void sendNotification(Message message, NotificationToken notificationToken) throws FirebaseMessagingException {
+        if (repasseconsorcioApp.isDevMode()) {
+            return;
+        }
+
         try {
             firebaseMessaging.send(message);
         } catch (FirebaseMessagingException e) {

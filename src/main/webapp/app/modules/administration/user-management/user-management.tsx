@@ -88,6 +88,8 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
     setSorting(true)
   }
 
+  console.log('users', users)
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <AppBarComponent loading={loading} onClick={() => setOpenAccountRegisterModal(true)} scrollableBoxRef={scrollableBoxRef}>
@@ -148,7 +150,7 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
           ) : !loading ? (
             <NoDataIndicator message='Nenhum usuário encontrado' />
           ) : (
-            <SkeletonTable rowCount={15} columnCount={1} />
+            <Loading />
           )}
         </InfiniteScroll>
       </Box>

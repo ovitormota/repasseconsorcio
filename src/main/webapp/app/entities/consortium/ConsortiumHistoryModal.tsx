@@ -142,9 +142,9 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
               />
             </ListItem>
             <hr className='hr-text' data-content='' style={{ height: 0 }} />
-            <ListItem sx={{ m: 0, p: 0 }}>
+            <List sx={{ m: 0, p: 0 }}>
               <AuctionTimer created={created} consortium={consortium} />
-            </ListItem>
+            </List>
           </List>
         </CardContent>
       </Card>

@@ -40,7 +40,7 @@ export const getUsers = createAsyncThunk('userManagement/fetch_users', async ({ 
 })
 
 export const getUsersAsAdmin = createAsyncThunk('userManagement/fetch_users_as_admin', async ({ page, size, sort, filterStatusType }: IGetUsersAsAdmin) => {
-  const requestUrl = `${adminUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&filterStatusType=${filterStatusType}` : ''}`
+  const requestUrl = `${adminUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&filterStatusType=${filterStatusType}` : ''}&cacheBuster=${new Date().getTime()}`
   return axios.get<IUser[]>(requestUrl)
 })
 
@@ -140,12 +140,13 @@ export const UserManagementSlice = createSlice({
       })
       .addMatcher(isFulfilled(getUsers, getUsersAsAdmin), (state, action) => {
         const links = parseHeaderForLinks(action.payload.headers.link)
+        const newUsers = action.payload.data?.length ? action.payload.data : []
 
         return {
           ...state,
           loading: false,
           links,
-          users: loadMoreDataWhenScrolled(state.users, action.payload.data, links),
+          users: loadMoreDataWhenScrolled(newUsers, newUsers, links),
           totalItems: parseInt(action.payload.headers['x-total-count'], 10),
         }
       })

@@ -21,12 +21,16 @@ firebase.initializeApp(firebaseConfig)
 const messaging = firebase.messaging()
 
 messaging.onBackgroundMessage(function (payload) {
-  console.log('Received background message ', payload)
-
   const notificationTitle = payload.notification.title
   const notificationOptions = {
     body: payload.notification.body,
+    icon: '../content/images/192x192.png',
   }
 
   self.registration.showNotification(notificationTitle, notificationOptions)
+
+  self.addEventListener('notificationclick', function (event) {
+    event.notification.close()
+    event.waitUntil(clients.openWindow('https://app.repasseconsorcio.com.br'))
+  })
 })

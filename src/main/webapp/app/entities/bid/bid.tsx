@@ -145,7 +145,7 @@ const Bid = (props: RouteComponentProps<{ url: string }>) => {
           ) : !loading ? (
             <NoDataIndicator message='Nenhum lance encontrado' />
           ) : (
-            <SkeletonTable rowCount={15} columnCount={1} />
+            <Loading />
           )}
         </InfiniteScroll>
       </Box>

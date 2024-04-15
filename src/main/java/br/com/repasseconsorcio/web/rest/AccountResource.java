@@ -51,13 +51,10 @@ public class AccountResource {
 
     private final MailService mailService;
 
-    private final RepasseconsorcioApp repasseconsorcioApp;
-
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService, RepasseconsorcioApp repasseconsorcioApp) {
+    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
-        this.repasseconsorcioApp = repasseconsorcioApp;
     }
 
     /**
@@ -76,9 +73,7 @@ public class AccountResource {
         }
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
 
-        if (!repasseconsorcioApp.isDevMode()) {
-            mailService.sendActivationEmail(user);
-        }
+        mailService.sendActivationEmail(user);
 
         return user;
     }

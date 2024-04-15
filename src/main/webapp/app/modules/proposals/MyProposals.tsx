@@ -209,9 +209,9 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
               />
             </ListItem>
             <hr className='hr-text' data-content='' style={{ height: 0 }} />
-            <ListItem sx={{ p: 0 }}>
+            <List sx={{ p: 0 }}>
               <AuctionTimer created={created} consortium={consortium} />
-            </ListItem>
+            </List>
           </List>
         </CardContent>
       </Card>

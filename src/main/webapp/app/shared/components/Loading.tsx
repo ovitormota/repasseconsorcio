@@ -9,15 +9,15 @@ interface LoadingProps {
   marginTop?: number
 }
 
-export const Loading: React.FC<LoadingProps> = ({ message = 'Aguarde, carregando...', height = '100vh', marginTop = 0 }) => {
+export const Loading: React.FC<LoadingProps> = ({ message = 'Aguarde, carregando...', height = '70vh', marginTop = 0 }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height, mt: marginTop }}>
-      {/* <Box sx={{ width: '50%%' }}>
+      <Box sx={{ width: '50%' }}>
         <LinearProgress color='secondary' />
       </Box>
       <Typography variant='body2' mt={2} color={defaultTheme.palette.secondary.main}>
         {message}
-      </Typography> */}
+      </Typography>
     </Box>
   )
 }

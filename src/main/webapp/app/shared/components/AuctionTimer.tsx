@@ -35,7 +35,7 @@ export const AuctionTimer = ({ created, consortium }: IAuctionTimer) => {
   return (
     <ListItem>
       <ListItemText
-        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', background: 'none !important' }}
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', background: 'none !important', gap: 1 }}
         primary={setPrimaryText()}
         primaryTypographyProps={{ fontSize: '12px !important' }}
         secondary={
@@ -47,10 +47,10 @@ export const AuctionTimer = ({ created, consortium }: IAuctionTimer) => {
               renderer={({ days, hours, minutes, seconds, completed }) => {
                 if (completed) {
                   return (
-                    <Typography variant='body2' fontWeight={600}>
+                    <b>
                       {getWinner()}
                       <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
-                    </Typography>
+                    </b>
                   )
                 } else {
                   const nonZeroValues = []
@@ -60,7 +60,7 @@ export const AuctionTimer = ({ created, consortium }: IAuctionTimer) => {
                   if (minutes > 0) nonZeroValues.push(`${minutes} minutos`)
                   if (seconds > 0) nonZeroValues.push(`${seconds} segundos`)
 
-                  return <Typography fontSize='14px'>{nonZeroValues.join(', ')}</Typography>
+                  return <span style={{ fontSize: '14px' }}>{nonZeroValues.join(', ')}</span>
                 }
               }}
             />

@@ -136,7 +136,7 @@ export const ConsortiumAdministrator = (props: RouteComponentProps<{ url: string
           ) : !loading ? (
             <NoDataIndicator message='Nenhum registro encontrado' />
           ) : (
-            <SkeletonTable rowCount={15} columnCount={1} />
+            <Loading />
           )}
         </InfiniteScroll>
       </Box>

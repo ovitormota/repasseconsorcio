@@ -1,5 +1,6 @@
 package br.com.repasseconsorcio.service;
 
+import br.com.repasseconsorcio.RepasseconsorcioApp;
 import br.com.repasseconsorcio.domain.Bid;
 import br.com.repasseconsorcio.domain.Consortium;
 import br.com.repasseconsorcio.domain.User;
@@ -50,12 +51,22 @@ public class MailService {
 
     private final TranslationService translationService;
 
-    public MailService(JHipsterProperties jHipsterProperties, JavaMailSender javaMailSender, MessageSource messageSource, SpringTemplateEngine templateEngine, TranslationService translationService) {
+    private final RepasseconsorcioApp repasseconsorcioApp;
+
+    public MailService(
+        JHipsterProperties jHipsterProperties,
+        JavaMailSender javaMailSender,
+        MessageSource messageSource,
+        SpringTemplateEngine templateEngine,
+        TranslationService translationService,
+        RepasseconsorcioApp repasseconsorcioApp
+    ) {
         this.jHipsterProperties = jHipsterProperties;
         this.javaMailSender = javaMailSender;
         this.messageSource = messageSource;
         this.templateEngine = templateEngine;
         this.translationService = translationService;
+        this.repasseconsorcioApp = repasseconsorcioApp;
     }
 
     @Async
@@ -79,6 +90,10 @@ public class MailService {
 
     @Async
     public void sendEmailFromTemplate(User user, String status, String consortiumId, Bid bid, String templateName, String titleKey) {
+        if (repasseconsorcioApp.isDevMode()) {
+            return;
+        }
+
         if (user.getEmail() == null) {
             log.debug("Email doesn't exist for user '{}'", user.getLogin());
             return;

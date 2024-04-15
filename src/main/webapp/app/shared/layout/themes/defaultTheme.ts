@@ -132,12 +132,12 @@ export const defaultTheme = createTheme({
           textAlign: 'center',
           fontSize: 'clamp(0.8rem, 1.8vw, 0.95em) !important',
 
-          '&:first-child': {
+          '&:first-of-type': {
             borderTopLeftRadius: '8px',
             borderBottomLeftRadius: '8px',
           },
 
-          '&:last-child': {
+          '&:last-of-type': {
             borderTopRightRadius: '8px',
             borderBottomRightRadius: '8px',
           },

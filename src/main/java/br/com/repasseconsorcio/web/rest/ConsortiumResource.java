@@ -220,7 +220,7 @@ public class ConsortiumResource {
 
         if (result.isPresent()) {
             if (result.get().getStatus().equals(ConsortiumStatusType.OPEN)) {
-                // mailService.sendProposalStatusChanged(result.get());
+                mailService.sendProposalStatusChanged(result.get());
                 firebaseMessagingService.sendNotificationProposalStatusChanged(result);
             } else {
                 throw new BadRequestAlertException("Invalid status", ENTITY_NAME, "statusinvalid");

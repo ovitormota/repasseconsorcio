@@ -168,7 +168,8 @@ jhipster:
     license: unlicensed
     license-url:
   security:
-    content-security-policy: '*'
+    content-security-policy: "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://storage.googleapis.com https://www.gstatic.com https://www.googleapis.com; style-src 'self' 'unsafe-inline'  data: https://fonts.googleapis.com https://www.gstatic.com; img-src 'self' data: maps.gstatic.com *.googleapis.com *.ggpht.com *.s3.sa-east-1.amazonaws.com; font-src 'self' data: fonts.gstatic.com; connect-src 'self'  https://maps.googleapis.com *.s3.sa-east-1.amazonaws.com https://www.googleapis.com;"
+
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

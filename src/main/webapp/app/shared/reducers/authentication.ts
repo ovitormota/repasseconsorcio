@@ -151,7 +151,7 @@ const saveUserFCMToken = async () => {
         console.log('Não foi possível obter o token FCM.')
       }
     } else {
-      console.log('Permissão negada para notificações.')
+      return false
     }
   } catch (error) {
     console.log('Erro ao salvar o token:', error)
@@ -179,7 +179,7 @@ const deleteUserFCMToken = async () => {
         console.log('Não foi possível obter o token FCM.')
       }
     } else {
-      console.log('Permissão negada para notificações.')
+      return false
     }
   } catch (error) {
     console.log('Erro ao deletar o token:', error)
@@ -201,7 +201,7 @@ export const AuthenticationSlice = createSlice({
         ...state,
         showModalLogin: true,
         redirectMessage: action.payload,
-        errorMessage: action,
+        errorMessage: action.payload,
       }
     },
     clearAuth(state) {
@@ -217,7 +217,7 @@ export const AuthenticationSlice = createSlice({
     builder
       .addCase(authenticate.rejected, (state, action) => ({
         ...initialState,
-        errorMessage: action,
+        errorMessage: action.payload,
         showModalLogin: true,
         loginError: true,
       }))
@@ -234,7 +234,7 @@ export const AuthenticationSlice = createSlice({
         isAuthenticated: false,
         sessionHasBeenFetched: true,
         showModalLogin: true,
-        errorMessage: action,
+        errorMessage: action.payload,
       }))
       .addCase(getAccount.fulfilled, (state, action) => {
         const isAuthenticated = action.payload && action.payload.data && action.payload.data.activated
