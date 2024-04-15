@@ -4,7 +4,6 @@ import br.com.repasseconsorcio.RepasseconsorcioApp;
 import br.com.repasseconsorcio.domain.Bid;
 import br.com.repasseconsorcio.domain.Consortium;
 import br.com.repasseconsorcio.domain.User;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import javax.mail.MessagingException;
