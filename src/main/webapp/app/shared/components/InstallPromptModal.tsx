@@ -17,12 +17,21 @@ export const InstallPromptModal: React.FC<InstallPromptModalProps> = ({ deferred
     const isPWACompatible = () => {
       if ('serviceWorker' in navigator && window.matchMedia('(display-mode: standalone)').matches) {
         setIsAppInstalled(true)
+      } else {
+        setIsAppInstalled(false)
       }
     }
 
+    // Executa a verificação inicial
     isPWACompatible()
 
-    return () => {}
+    // Adiciona um ouvinte de evento para monitorar alterações na instalação do PWA
+    window.addEventListener('appinstalled', isPWACompatible)
+
+    // Remove o ouvinte de evento quando o componente é desmontado
+    return () => {
+      window.removeEventListener('appinstalled', isPWACompatible)
+    }
   }, [])
 
   const handleInstallClick = () => {
@@ -67,9 +76,11 @@ export const InstallPromptModal: React.FC<InstallPromptModalProps> = ({ deferred
         </DialogContentText>
 
         <DialogActions sx={{ px: 2, gap: 2, justifyContent: 'center', flexDirection: 'column' }}>
-          <Button variant='contained' onClick={handleInstallClick} color='secondary' fullWidth>
-            Adicionar à tela inicial
-          </Button>
+          {!isAppInstalled && (
+            <Button variant='contained' onClick={handleInstallClick} color='secondary' fullWidth>
+              Adicionar à tela inicial
+            </Button>
+          )}
           <Button variant='contained' onClick={handleOpenAppClick} color='secondary' fullWidth>
             Abrir o aplicativo
           </Button>
