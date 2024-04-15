@@ -53,7 +53,6 @@ export const App = () => {
   })
 
   useEffect(() => {
-    console.log('notificationUrl', notificationUrl)
     if (notificationUrl) {
       if (notificationUrl === '/my-proposals') {
         dispatch(

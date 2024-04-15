@@ -108,13 +108,11 @@ public class ConsortiumService {
 
         Boolean isAuthenticated = SecurityUtils.hasCurrentUserNoneOfAuthorities(AuthoritiesConstants.ANONYMOUS);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Boolean isAdmin = SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN);
 
         filterSegmentType = filterSegmentType.equals(SegmentType.ALL) ? null : filterSegmentType;
 
         filterStatusType = filterStatusType.equals(ConsortiumStatusType.ALL) ? null : filterStatusType;
-        System.out.println("isAuthenticated: " + authentication);
 
         if (isAuthenticated && !isAdmin) {
             filterStatusType = ConsortiumStatusType.OPEN;

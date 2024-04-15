@@ -27,10 +27,14 @@ messaging.onBackgroundMessage(function (payload) {
     icon: '../content/images/192x192.png',
   }
 
-  self.registration.showNotification(notificationTitle, notificationOptions)
+  self.addEventListener('push', function (event) {
+    event.waitUntil(self.registration.showNotification('Repasse Consórcio', notificationOptions))
+  })
 
   self.addEventListener('notificationclick', function (event) {
     event.notification.close()
     event.waitUntil(clients.openWindow('https://app.repasseconsorcio.com.br' + payload.data.redirectUrl))
   })
+
+  return self.registration.showNotification(notificationTitle, notificationOptions)
 })
