@@ -88,8 +88,6 @@ export const UserManagement = (props: RouteComponentProps<{ url: string }>) => {
     setSorting(true)
   }
 
-  console.log('users', users)
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <AppBarComponent loading={loading} onClick={() => setOpenAccountRegisterModal(true)} scrollableBoxRef={scrollableBoxRef}>

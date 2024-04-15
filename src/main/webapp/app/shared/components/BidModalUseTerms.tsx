@@ -49,7 +49,7 @@ export const BidModalUseTerms = ({ setOpen, setAcceptTerms }: IModalUseTerms) =>
           </Box>
           <Box sx={{ textAlign: { sm: 'center' } }}>
             <FormControlLabel
-              label={<Typography>Aceito as condições de participação</Typography>}
+              label={<Typography fontSize='15px'>Aceito as condições de participação</Typography>}
               control={<Checkbox checked={checked} onClick={() => setChecked((prevChecked: boolean) => !prevChecked)} color='secondary' />}
             />
           </Box>

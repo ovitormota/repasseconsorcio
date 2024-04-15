@@ -9,10 +9,11 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MessagingErrorCode;
-import com.google.firebase.messaging.Notification;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -44,13 +45,12 @@ public class FirebaseMessagingService {
             List<NotificationToken> notificationTokens = findTokenByConsortium(consortium.get().getUser());
 
             for (NotificationToken notificationToken : notificationTokens) {
-                Notification notification = Notification
-                    .builder()
-                    .setTitle(consortium.get().getUser().getFirstName() + ", ótimas notícias!")
-                    .setBody("A sua proposta com o ID #" + consortium.get().getId() + " foi aprovada.")
-                    .build();
+                Map<String, String> notificationData = new HashMap<>();
+                notificationData.put("title", consortium.get().getUser().getFirstName() + ", ótimas notícias!");
+                notificationData.put("body", "A sua proposta com o ID #" + consortium.get().getId() + " foi aprovada.");
+                notificationData.put("redirectUrl", "/my-proposals");
 
-                Message message = Message.builder().setToken(notificationToken.getToken()).setNotification(notification).build();
+                Message message = Message.builder().setToken(notificationToken.getToken()).putAllData(notificationData).build();
                 sendNotification(message, notificationToken);
             }
         } catch (Exception e) {
@@ -63,13 +63,12 @@ public class FirebaseMessagingService {
             List<NotificationToken> notificationTokens = findTokensByAdmin();
 
             for (NotificationToken notificationToken : notificationTokens) {
-                Notification notification = Notification
-                    .builder()
-                    .setTitle(notificationToken.getUser().getFirstName() + ", ótimas notícias!")
-                    .setBody("A uma nova proposta com o ID #" + consortium.get().getId() + " está pendente de aprovação.")
-                    .build();
+                Map<String, String> notificationData = new HashMap<>();
+                notificationData.put("title", notificationToken.getUser().getFirstName() + ", ótimas notícias!");
+                notificationData.put("body", "A uma nova proposta com o ID #" + consortium.get().getId() + " está pendente de aprovação.");
+                notificationData.put("redirectUrl", "/proposal-approvals");
 
-                Message message = Message.builder().setToken(notificationToken.getToken()).setNotification(notification).build();
+                Message message = Message.builder().setToken(notificationToken.getToken()).putAllData(notificationData).build();
                 sendNotification(message, notificationToken);
             }
         } catch (Exception e) {
@@ -82,13 +81,12 @@ public class FirebaseMessagingService {
             List<NotificationToken> notificationTokens = findTokenByConsortium(bid.get().getUser());
 
             for (NotificationToken notificationToken : notificationTokens) {
-                Notification notification = Notification
-                    .builder()
-                    .setTitle(bid.get().getUser().getFirstName() + ", ótimas notícias!")
-                    .setBody("O leilão da proposta com o ID #" + bid.get().getConsortium().getId() + " no qual você participou foi vencido por você. Vamos entrar em contato.")
-                    .build();
+                Map<String, String> notificationData = new HashMap<>();
+                notificationData.put("title", bid.get().getUser().getFirstName() + ", ótimas notícias!");
+                notificationData.put("body", "O leilão da proposta com o ID #" + bid.get().getConsortium().getId() + " no qual você participou foi vencido por você. Vamos entrar em contato.");
+                notificationData.put("redirectUrl", "/bid");
 
-                Message message = Message.builder().setToken(notificationToken.getToken()).setNotification(notification).build();
+                Message message = Message.builder().setToken(notificationToken.getToken()).putAllData(notificationData).build();
                 sendNotification(message, notificationToken);
             }
         } catch (Exception e) {
@@ -101,13 +99,12 @@ public class FirebaseMessagingService {
             List<NotificationToken> notificationTokens = findTokenByConsortium(bid.get().getUser());
 
             for (NotificationToken notificationToken : notificationTokens) {
-                Notification notification = Notification
-                    .builder()
-                    .setTitle(bid.get().getConsortium().getUser() + ", ótimas notícias!")
-                    .setBody("O leilão da sua proposta com o ID #" + bid.get().getConsortium().getId() + " encerrou e foi arrematada. Vamos entrar em contato.")
-                    .build();
+                Map<String, String> notificationData = new HashMap<>();
+                notificationData.put("title", bid.get().getConsortium().getUser().getFirstName() + ", ótimas notícias!");
+                notificationData.put("body", "O leilão da sua proposta com o ID #" + bid.get().getConsortium().getId() + " encerrou e foi arrematada. Vamos entrar em contato.");
+                notificationData.put("redirectUrl", "/my-proposals");
 
-                Message message = Message.builder().setToken(notificationToken.getToken()).setNotification(notification).build();
+                Message message = Message.builder().setToken(notificationToken.getToken()).putAllData(notificationData).build();
                 sendNotification(message, notificationToken);
             }
         } catch (Exception e) {
@@ -123,13 +120,12 @@ public class FirebaseMessagingService {
                 NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
                 String formattedValue = currencyFormat.format(bid.getValue());
 
-                Notification notification = Notification
-                    .builder()
-                    .setTitle(bid.getConsortium().getUser().getFirstName() + ", ótimas notícias!")
-                    .setBody("Sua proposta com o ID #" + bid.getConsortium().getId() + " recebeu um novo lance no valor de " + formattedValue + ".")
-                    .build();
+                Map<String, String> notificationData = new HashMap<>();
+                notificationData.put("title", bid.getConsortium().getUser().getFirstName() + ", ótimas notícias!");
+                notificationData.put("body", "Sua proposta com o ID #" + bid.getConsortium().getId() + " recebeu um novo lance no valor de " + formattedValue + ".");
+                notificationData.put("redirectUrl", "/my-proposals");
 
-                Message message = Message.builder().setToken(notificationToken.getToken()).setNotification(notification).build();
+                Message message = Message.builder().setToken(notificationToken.getToken()).putAllData(notificationData).build();
                 sendNotification(message, notificationToken);
             }
         } catch (Exception e) {

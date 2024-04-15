@@ -107,9 +107,9 @@ const isPWA = () => {
 }
 
 export const requestPermission = async () => {
-  if (!isPWA()) {
-    return false
-  }
+  // if (!isPWA()) {
+  //   return false
+  // }
   const permission = await Notification.requestPermission()
   if (permission === 'denied') {
     return false

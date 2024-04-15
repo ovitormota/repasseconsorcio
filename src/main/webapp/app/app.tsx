@@ -1,4 +1,4 @@
-import 'app/config/dayjs.ts'
+import 'app/config/dayjs'
 import './app.scss'
 
 import React, { useEffect, useState } from 'react'
@@ -11,30 +11,38 @@ import AppRoutes from 'app/routes'
 import ErrorBoundary from 'app/shared/error/error-boundary'
 import { Header } from 'app/shared/layout/header/header'
 import { getProfile } from 'app/shared/reducers/application-profile'
-import { getSession, requestPermission } from 'app/shared/reducers/authentication'
+import { getSession } from 'app/shared/reducers/authentication'
 import { onMessage } from 'firebase/messaging'
-import { isMobile } from 'react-device-detect'
 import toast, { ToastBar, Toaster } from 'react-hot-toast'
 import { messaging } from './FirebaseConfig'
+import { getEntities as getBids } from './entities/bid/bid.reducer'
+import { getEntities as getMyProposals } from './modules/proposals/my-proposal.reducer'
+import { getCountConsortiumsByProposalApprovals, getEntities as getProposalsForAproval } from './entities/proposals-for-approval/proposals-for-approval.reducer'
 import { InstallPromptModal } from './shared/components/InstallPromptModal'
 import { AppThemeProvider } from './shared/context/ThemeContext'
+import { ConsortiumStatusType } from './shared/model/enumerations/consortium-status-type.model'
+import { SegmentType } from './shared/model/enumerations/segment-type.model'
+import { ITEMS_PER_PAGE } from './shared/util/pagination.constants'
 
 const baseHref = document.querySelector('base').getAttribute('href').replace(/\/$/, '')
 
 export const App = () => {
   const dispatch = useAppDispatch()
-  const [deferredPrompt, setDeferredPrompt] = useState(null)
-  const [modalOpen, setModalOpen] = useState(false)
+  const [notificationUrl, setNotificationUrl] = useState<string>('')
 
-  onMessage(messaging, (data) => {
+  onMessage(messaging, ({ data }) => {
+    if (data?.redirectUrl) {
+      setNotificationUrl(data.redirectUrl)
+    }
+
     toast(
       () => (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
           <Typography variant='subtitle2' color='secondary' fontWeight={600}>
-            {data.notification.title} 👏
+            {data?.title} 👏
           </Typography>
           <Typography variant='body2' color='text.secondary'>
-            {data.notification.body}
+            {data?.body}
           </Typography>
         </Box>
       ),
@@ -45,29 +53,44 @@ export const App = () => {
   })
 
   useEffect(() => {
-    requestPermission()
+    console.log('notificationUrl', notificationUrl)
+    if (notificationUrl) {
+      if (notificationUrl === '/my-proposals') {
+        dispatch(
+          getMyProposals({
+            filterSegmentType: SegmentType.ALL,
+            filterStatusType: ConsortiumStatusType.ALL,
+            sort: 'id,desc',
+            page: 0,
+            size: ITEMS_PER_PAGE,
+          })
+        )
+      } else if (notificationUrl === '/bid') {
+        dispatch(
+          getBids({
+            sort: 'id,desc',
+            page: 0,
+            size: ITEMS_PER_PAGE,
+          })
+        )
+      } else if (notificationUrl === '/proposal-approvals') {
+        dispatch(getCountConsortiumsByProposalApprovals())
+        dispatch(
+          getProposalsForAproval({
+            filterSegmentType: SegmentType.ALL,
+            sort: 'id,desc',
+            page: 0,
+            size: ITEMS_PER_PAGE,
+          })
+        )
+      }
+    }
+  }, [notificationUrl])
+
+  useEffect(() => {
     dispatch(getSession())
     dispatch(getProfile())
-
-    const handler = (e) => {
-      e.preventDefault()
-      setDeferredPrompt(e)
-
-      const timeout = setTimeout(() => {
-        if (isMobile) {
-          setModalOpen(true)
-        }
-      }, 5000)
-
-      return () => clearTimeout(timeout)
-    }
-
-    window.addEventListener('beforeinstallprompt', handler)
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handler)
-    }
-  }, [isMobile])
+  }, [])
 
   return (
     <Router basename={baseHref}>
@@ -93,7 +116,7 @@ export const App = () => {
           <AppRoutes />
           <Header />
         </ErrorBoundary>
-        {<InstallPromptModal deferredPrompt={deferredPrompt} isOpen={modalOpen} onClose={() => setModalOpen(false)} />}
+        <InstallPromptModal />
       </AppThemeProvider>
     </Router>
   )

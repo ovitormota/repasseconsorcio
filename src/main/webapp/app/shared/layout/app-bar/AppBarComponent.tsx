@@ -9,11 +9,9 @@ import { ArrowDropUpTwoTone, ArrowUpwardRounded } from '@mui/icons-material'
 interface ScrollHandlerProps {
   scrollableBoxRef: React.RefObject<HTMLDivElement>
   onScroll: (trigger: boolean) => void
-  prevScrollPosition: number
-  setPrevScrollPosition: (position: number) => void
 }
 
-const ScrollHandler: React.FC<ScrollHandlerProps> = ({ scrollableBoxRef, onScroll, prevScrollPosition, setPrevScrollPosition }) => {
+const ScrollHandler: React.FC<ScrollHandlerProps> = ({ scrollableBoxRef, onScroll }) => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPosition = scrollableBoxRef?.current?.scrollTop || 0
@@ -49,7 +47,6 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
   const { isMDScreen } = useBreakpoints()
   const history = useHistory()
   const [trigger, setTrigger] = useState(true)
-  const [prevScrollPosition, setPrevScrollPosition] = useState(0)
   const isAuthenticated = useAppSelector((state) => state.authentication.isAuthenticated)
 
   useImperativeHandle(ref, () => scrollableBoxRef?.current)
@@ -98,7 +95,7 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
           onClick={() => scrollableBoxRef?.current?.scrollTo({ top: 0, behavior: 'smooth' })}
           sx={{
             position: 'absolute',
-            zIndex: 9999,
+            zIndex: 1,
             right: { xs: 15, sm: 30 },
             bottom: 90,
             background: defaultTheme.palette.secondary.main,
@@ -110,7 +107,7 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
           <ArrowUpwardRounded color='primary' />
         </IconButton>
       )}
-      <ScrollHandler scrollableBoxRef={scrollableBoxRef} onScroll={handleScroll} prevScrollPosition={prevScrollPosition} setPrevScrollPosition={setPrevScrollPosition} />
+      <ScrollHandler scrollableBoxRef={scrollableBoxRef} onScroll={handleScroll} />
     </Box>
   )
 })

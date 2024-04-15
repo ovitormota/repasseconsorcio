@@ -31,6 +31,9 @@ import { createEntity, reset } from '../../entities/consortium/consortium.reduce
 import { ModalUseTerms } from 'app/shared/components/ModalUseTerms'
 import { useHistory } from 'react-router-dom'
 import { addPercentage, formatCurrency } from 'app/shared/util/data-utils'
+import { getEntities } from '../proposals/my-proposal.reducer'
+import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
+import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 
 export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
   const dispatch = useAppDispatch()
@@ -55,7 +58,20 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
       dispatch(reset())
       setOpenConsortiumUpdateModal(false)
       setModalUseTerms(false)
-      history.push('/my-proposals')
+
+      if (history.location.pathname === '/my-proposals') {
+        dispatch(
+          getEntities({
+            filterSegmentType: SegmentType.ALL,
+            filterStatusType: ConsortiumStatusType.ALL,
+            sort: 'id,desc',
+            page: 0,
+            size: ITEMS_PER_PAGE,
+          })
+        )
+      } else {
+        history.push('/my-proposals')
+      }
     }
   }, [updateSuccess])
 

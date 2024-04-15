@@ -145,7 +145,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
             sx={{
               background: defaultTheme.palette.background.paper,
               position: 'absolute',
-              top: 45,
+              top: isAdmin ? 45 : 30,
               ':hover': {
                 background: defaultTheme.palette.background.paper,
               },

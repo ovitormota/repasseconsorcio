@@ -21,9 +21,9 @@ firebase.initializeApp(firebaseConfig)
 const messaging = firebase.messaging()
 
 messaging.onBackgroundMessage(function (payload) {
-  const notificationTitle = payload.notification.title
+  const notificationTitle = payload.data.title
   const notificationOptions = {
-    body: payload.notification.body,
+    body: payload.data.body,
     icon: '../content/images/192x192.png',
   }
 
@@ -31,6 +31,6 @@ messaging.onBackgroundMessage(function (payload) {
 
   self.addEventListener('notificationclick', function (event) {
     event.notification.close()
-    event.waitUntil(clients.openWindow('https://app.repasseconsorcio.com.br'))
+    event.waitUntil(clients.openWindow('https://app.repasseconsorcio.com.br' + payload.data.redirectUrl))
   })
 })
