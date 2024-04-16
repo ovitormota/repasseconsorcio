@@ -60,7 +60,7 @@ export const ModalUseTerms = ({ setOpen, setAcceptTerms, adminstrationFee }: IMo
           <Button onClick={() => setOpen(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
             <Translate contentKey='entity.action.back'>Voltar</Translate>
           </Button>
-          <Button variant='contained' color='secondary' disabled={!checked} onClick={() => setAcceptTerms(true)} sx={{ fontSize: '12px' }}>
+          <Button variant='contained' color='secondary' disabled={!checked} onClick={() => setAcceptTerms(true)}>
             <Translate contentKey='entity.action.save'>Salvar</Translate>
           </Button>
         </DialogActions>

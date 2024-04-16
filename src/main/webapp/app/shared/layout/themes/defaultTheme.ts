@@ -30,17 +30,17 @@ export const defaultTheme = createTheme({
       default: '#FFFFFF',
     },
     error: {
-      main: '#FF6B6B',
+      main: '#EF5350',
       contrastText: '#FFFFFF',
     },
     success: {
-      main: '#6AAA6A',
+      main: '#66BB6A',
     },
     info: {
-      main: '#2196F3',
+      main: '#64B5F6',
     },
     warning: {
-      main: '#FFB74D',
+      main: '#FFB54F',
     },
     text: {
       primary: '#363636',
@@ -54,7 +54,7 @@ export const defaultTheme = createTheme({
           color: '#515DE0',
         },
         root: {
-          borderRadius: '1em',
+          borderRadius: '10px',
         },
       },
     },
@@ -192,7 +192,7 @@ export const defaultTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          // borderRadius: '1em',
+          borderRadius: '6px',
         },
       },
     },
@@ -234,13 +234,6 @@ export const defaultTheme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: '1em',
-        },
-      },
-    },
-    MuiInputBase: {
-      styleOverrides: {
-        root: {
-          borderRadius: '1em !important',
         },
       },
     },

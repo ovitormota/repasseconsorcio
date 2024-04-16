@@ -3,8 +3,8 @@
   "short_name": "Repasse Consórcio",
   "icons": [
     {
-      "src": "./content/images/192x192.png",
-      "sizes": "192x192",
+      "src": "./content/images/512x512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ],

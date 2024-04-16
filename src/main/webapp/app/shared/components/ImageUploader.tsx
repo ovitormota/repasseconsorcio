@@ -19,7 +19,7 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
   const cropperRef = useRef<any>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const [croppedImage, setCroppedImage] = useState<string | null>(null)
+  const [croppedImage, setCroppedImage] = useState<any>(null)
   const [defaultImage, setDefaultImage] = useState<string | null>(currentImage)
   const [originalFileName, setOriginalFileName] = useState<string | null>(null)
 
@@ -50,11 +50,26 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
             const file = new File([blob], originalFileName, { type: 'image/jpeg' })
 
             onUpload(file)
-            setCroppedImage(URL.createObjectURL(blob))
+            convertBlobToBase64(blob)
+              .then((base64String: string) => {
+                setCroppedImage(base64String)
+              })
+              .catch((error: any) => {
+                console.error('Error converting blob to base64:', error)
+              })
           }
         }, 'image/jpeg')
       }
     }
+  }
+
+  const convertBlobToBase64 = (blob: Blob) => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onerror = reject
+      reader.onload = () => resolve(reader.result as string)
+      reader.readAsDataURL(blob)
+    })
   }
 
   const clearImage = () => {

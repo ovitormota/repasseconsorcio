@@ -54,7 +54,7 @@ export const InstallPromptModal = () => {
     >
       <DialogTitle align='center'>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2, gap: 2 }}>
-          <img src='content/images/192x192.png' alt='Ícone do Aplicativo' style={{ width: '60px' }} />
+          <img src='content/images/512x512.png' alt='Ícone do Aplicativo' style={{ width: '60px' }} />
           <Typography sx={{ color: defaultTheme.palette.secondary.main, fontSize: '16px', fontWeight: '600', textAlign: 'left' }}>Deseja instalar o aplicativo Repasse Consórcio?</Typography>
         </Box>
       </DialogTitle>
