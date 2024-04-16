@@ -27,17 +27,10 @@ messaging.onBackgroundMessage(function (payload) {
     icon: '../content/images/512x512.png',
   }
 
+  self.addEventListener('notificationclick', function (event) {
+    event.notification.close()
+    event.waitUntil(clients.openWindow('https://app.repasseconsorcio.com.br' + payload.data.redirectUrl))
+  })
+
   return self.registration.showNotification(notificationTitle, notificationOptions)
-})
-
-self.addEventListener('notificationclick', function (event) {
-  const notification = event.notification
-  const action = event.action
-
-  if (action === 'confirm') {
-    notification.close()
-    event.waitUntil(clients.openWindow('https://app.repasseconsorcio.com.br' + notification.data.redirectUrl))
-  } else {
-    console.log('Notification action not recognized')
-  }
 })

@@ -92,7 +92,7 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
           </IconButton>
         </Box>
         <Chip
-          label={consortium?.bids?.length ? `${consortium?.bids?.length} lances` : 'Sem lances'}
+          label={consortium.bids?.length ? `${consortium.bids.length} ${consortium.bids.length > 1 ? 'lances' : 'lance'}` : 'Sem lances'}
           variant='filled'
           size='small'
           style={showElement(!!consortium?.bids?.length)}

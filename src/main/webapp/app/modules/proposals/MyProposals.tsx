@@ -148,7 +148,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, position: 'absolute', top: 10, right: 10 }}>
           <Chip
-            label={consortium?.bids?.length ? `${consortium?.bids?.length} lances` : 'Sem lances'}
+            label={consortium.bids?.length ? `${consortium.bids.length} ${consortium.bids.length > 1 ? 'lances' : 'lance'}` : 'Sem lances'}
             variant='filled'
             size='small'
             style={showElement(!!consortium?.bids?.length)}
@@ -252,7 +252,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
                 ))}
             </List>
           ) : !loading ? (
-            <NoDataIndicator message='Nehuma proposta encontrada' />
+            <NoDataIndicator message='Nenhuma proposta encontrada' />
           ) : (
             <ConsortiumCardSkeleton items={ITEMS_PER_PAGE} />
           )}

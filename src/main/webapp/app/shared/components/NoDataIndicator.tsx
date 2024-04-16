@@ -19,7 +19,7 @@ export const NoDataIndicator = ({ message = 'Nenhum dado encontrado' }) => {
       }}
     >
       <SentimentDissatisfiedIcon sx={{ fontSize: 90, color: defaultTheme.palette.grey[200], mx: 'auto' }} />
-      <Typography variant='overline' sx={{ mt: 2 }}>
+      <Typography variant='subtitle2' sx={{ mt: 2 }}>
         {message}
       </Typography>
     </Box>
@@ -39,7 +39,7 @@ export const NoDataIndicatorRelative = ({ message = 'Nenhum dado encontrado' }) 
       }}
     >
       <SentimentDissatisfiedIcon sx={{ fontSize: 90, color: defaultTheme.palette.grey[200], mx: 'auto' }} />
-      <Typography variant='overline' sx={{ mt: 2 }}>
+      <Typography variant='subtitle2' sx={{ mt: 2 }}>
         {message}
       </Typography>
     </Box>

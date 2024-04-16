@@ -285,7 +285,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                 ))}
             </List>
           ) : !loading ? (
-            <NoDataIndicator message='Nehuma proposta encontrada' />
+            <NoDataIndicator message='Nenhuma proposta encontrada' />
           ) : (
             <ConsortiumCardSkeleton items={ITEMS_PER_PAGE} />
           )}

@@ -421,7 +421,7 @@ export const Header = () => {
                         aria-haspopup='true'
                         aria-expanded={open ? 'true' : undefined}
                         color='secondary'
-                        sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}
+                        sx={{ width: '45px', height: '45px', mt: '-4px' }}
                       >
                         <Badge badgeContent={anchorElNav === null ? count : 0} color='error' sx={{ top: 5 }}>
                           <MoreVertRounded style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator', '/users']) }} />
