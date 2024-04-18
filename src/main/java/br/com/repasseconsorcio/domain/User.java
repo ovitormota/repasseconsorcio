@@ -80,6 +80,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "image")
     private String image;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @Transient
     @JsonProperty("imageUrl")
     private String imageUrl;
@@ -207,6 +210,19 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getPhoneNumber() {
+        return this.phoneNumber;
+    }
+
+    public User phoneNumber(String phoneNumber) {
+        this.setPhoneNumber(phoneNumber);
+        return this;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Set<Authority> getAuthorities() {

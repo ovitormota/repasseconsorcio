@@ -15,6 +15,7 @@ export interface IUser {
   image?: string | null
   imageUrl?: string | null
   imageContentType?: string
+  phoneNumber?: string
 }
 
 export const defaultValue: Readonly<IUser> = {

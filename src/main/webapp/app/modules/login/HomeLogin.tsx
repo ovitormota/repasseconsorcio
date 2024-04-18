@@ -115,14 +115,14 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
               }}
               sx={{ mt: 3, mb: 1 }}
             />
-            {loginError ? (
+            {/* {loginError ? (
               <Alert severity='error' sx={{ mb: 1 }} variant='outlined'>
                 <Translate contentKey='login.messages.error.authentication'>
                   <strong>Failed to sign in!</strong> Please check your credentials and try again.
                 </Translate>
               </Alert>
-            ) : null}
-            <Typography color={defaultTheme.palette.primary.contrastText} fontWeight={'200'} align='right' style={{ fontSize: '13px' }}>
+            ) : null} */}
+            {/* <Typography color={defaultTheme.palette.primary.contrastText} fontWeight={'200'} align='right' style={{ fontSize: '13px' }}>
               <Translate
                 contentKey='login.password.forgot'
                 interpolate={{
@@ -133,7 +133,7 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
                   ),
                 }}
               />
-            </Typography>
+            </Typography> */}
 
             <Button type='submit' fullWidth variant='contained' size='large' color='secondary' sx={{ mt: 4, mb: 2, fontWeight: '600' }}>
               <Translate contentKey='login.form.button.login'>Sign in</Translate>

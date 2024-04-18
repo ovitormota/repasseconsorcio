@@ -64,8 +64,8 @@ export const defaultTheme = createTheme({
           '&.MuiInputLabel-shrink': {
             background: '#FFFFFF',
             color: '#515DE0',
-            paddingLeft: '5px',
-            paddingRight: '5px',
+            // paddingLeft: '5px',
+            // paddingRight: '5px',
             fontWeight: '500',
           },
         },

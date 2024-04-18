@@ -6,10 +6,11 @@ import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Ic
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { ImageUploader } from 'app/shared/components/ImageUploader'
-import { toast } from 'react-hot-toast'
+import PhoneInput from 'app/shared/components/PhoneInput'
 import { defaultTheme } from 'app/shared/layout/themes'
+import { login } from 'app/shared/reducers/authentication'
+import { toast } from 'react-hot-toast'
 import { handleRegister, reset } from './register.reducer'
-import { uploadUserImage } from 'app/modules/administration/user-management/user-management.reducer'
 
 export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
   const dispatch = useAppDispatch()
@@ -17,6 +18,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
     firstName: '',
     lastName: '',
     email: '',
+    phoneNumber: '',
     password: '',
     confirmPassword: '',
   })
@@ -32,6 +34,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
     if (registrationSuccess) {
       toast.success(translate(successMessage))
       dispatch(reset())
+      dispatch(login(fields.email, fields.password, true))
       handleClose()
     }
   }, [registrationSuccess])
@@ -69,6 +72,11 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(fields.email)
+  }
+
+  const isPhoneValid = () => {
+    const phoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/ // Padrão para telefone: (99) 99999-9999
+    return phoneRegex.test(fields.phoneNumber)
   }
 
   const handleUpload = (imageField) => {
@@ -143,7 +151,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
               fullWidth
               color='secondary'
               data-cy='email'
-              error={!isEmailValid()}
+              // error={!isEmailValid()}
               helperText={!isEmailValid() && 'Seu e-mail é inválido'}
               InputProps={{
                 style: { borderRadius: '10px' },
@@ -152,7 +160,8 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
               onChange={(e) => updateField('email', e.target.value)}
             />
           )}
-          {visibleFields.includes('email') && (
+          {visibleFields.includes('email') && <PhoneInput value={fields?.phoneNumber} onChange={(e) => updateField('phoneNumber', e.target.value)} />}
+          {visibleFields.includes('phoneNumber') && (
             <TextField
               name='password'
               label={translate('global.form.password.label')}
@@ -170,6 +179,7 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
               onChange={(e) => updateField('password', e.target.value)}
             />
           )}
+
           {visibleFields.includes('password') && (
             <TextField
               name='confirmPassword'
@@ -208,10 +218,20 @@ export const AccountRegister = ({ setOpenAccountRegisterModal }) => {
               color='secondary'
               variant='contained'
               sx={{ fontWeight: '600' }}
-              disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || fields.password === '' || fields.confirmPassword === '' || !isPasswordsMatch() || !isEmailValid()}
+              disabled={
+                fields.firstName === '' ||
+                fields.lastName === '' ||
+                fields.email === '' ||
+                fields.password === '' ||
+                fields.phoneNumber === '' ||
+                fields.confirmPassword === '' ||
+                !isPasswordsMatch() ||
+                !isEmailValid() ||
+                !isPhoneValid()
+              }
             >
               <Translate contentKey='register.form.button'>Register</Translate>
-              {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.primary.main }} />}
+              {loading && <CircularProgress size={20} sx={{ ml: 1, color: defaultTheme.palette.primary.main }} />}
             </Button>
           </DialogActions>
         </form>

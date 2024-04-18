@@ -50,6 +50,8 @@ public class AdminUserDTO {
 
     private String image;
 
+    private String phoneNumber;
+
     private Set<String> authorities;
 
     public AdminUserDTO() {
@@ -71,6 +73,7 @@ public class AdminUserDTO {
         this.lastModifiedDate = user.getLastModifiedDate();
         this.authorities = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
         this.image = user.getImage();
+        this.phoneNumber = user.getPhoneNumber();
     }
 
     public Long getId() {
@@ -184,23 +187,12 @@ public class AdminUserDTO {
     public void setImage(String image) {
         this.image = image;
     }
-    // // prettier-ignore
-    // @Override
-    // public String toString() {
-    //     return "AdminUserDTO{" +
-    //         "login='" + login + '\'' +
-    //         ", firstName='" + firstName + '\'' +
-    //         ", lastName='" + lastName + '\'' +
-    //         ", email='" + email + '\'' +
-    //         ", imageUrl='" + imageUrl + '\'' +
-    //         ", activated=" + activated +
-    //         ", langKey='" + langKey + '\'' +
-    //         ", createdBy=" + createdBy +
-    //         ", createdDate=" + createdDate +
-    //         ", lastModifiedBy='" + lastModifiedBy + '\'' +
-    //         ", lastModifiedDate=" + lastModifiedDate +
-    //         ", authorities=" + authorities +
-    //         ", image='" + image + '\'' +
-    //         "}";
-    // }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

@@ -25,6 +25,7 @@
     <include file="config/liquibase/changelog/20240217230000_added_column_contemplation_status_consortium.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240331181000_added_entity_NotificationToken.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240331181000_added_entity_constraints_NotificationToken.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20240417202020_added_column_phone_number.xml" relativeToChangelogFile="false" />
 
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->

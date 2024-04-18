@@ -6,6 +6,7 @@ import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Te
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { deleteUserImage, updateUser, uploadUserImage } from 'app/modules/administration/user-management/user-management.reducer'
 import { ImageUploader } from 'app/shared/components/ImageUploader'
+import PhoneInput from 'app/shared/components/PhoneInput'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { IUser } from 'app/shared/model/user.model'
 import { AccountDeleteModal } from './AccountDeleteModal'
@@ -25,6 +26,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
     firstName: '',
     lastName: '',
     email: '',
+    phoneNumber: '',
   })
 
   const loading = useAppSelector((state) => state.userManagement.loading)
@@ -37,6 +39,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
         firstName: editUser.firstName,
         lastName: editUser.lastName,
         email: editUser.email,
+        phoneNumber: editUser.phoneNumber,
       })
     }
   }, [editUser])
@@ -59,6 +62,9 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
       if (editUser.email !== fields.email) {
         fieldsToUpdate.email = fields.email
         fieldsToUpdate.login = fields.email
+      }
+      if (editUser.phoneNumber !== fields.phoneNumber) {
+        fieldsToUpdate.phoneNumber = fields.phoneNumber
       }
     }
 
@@ -110,6 +116,11 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(fields.email)
+  }
+
+  const isPhoneValid = () => {
+    const phoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/ // Padrão para telefone: (99) 99999-9999
+    return phoneRegex.test(fields.phoneNumber)
   }
 
   const handleUpload = (imageField) => {
@@ -172,6 +183,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
             sx={{ mt: 2, mb: 1 }}
             onChange={(e) => updateField('lastName', e.target.value)}
           />
+          {<PhoneInput value={fields?.phoneNumber} onChange={(e) => updateField('phoneNumber', e.target.value)} />}
 
           <TextField
             name='email'
@@ -209,7 +221,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
                 color='secondary'
                 variant='contained'
                 sx={{ fontWeight: '600', gap: 1 }}
-                disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || !isEmailValid()}
+                disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || fields.phoneNumber === '' || !isEmailValid() || !isPhoneValid()}
               >
                 <Translate contentKey='entity.action.save'>Save</Translate>
                 {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.primary.main }} />}
