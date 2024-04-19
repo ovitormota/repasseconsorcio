@@ -122,7 +122,17 @@ public class ConsortiumService {
             filterStatusType = ConsortiumStatusType.OPEN;
         }
 
-        return consortiumRepository.findAllByAdminAndSegmentType(filterStatusType, filterSegmentType, pageable);
+        Page<Consortium> consortiums = consortiumRepository.findAllByAdminAndSegmentType(filterStatusType, filterSegmentType, pageable);
+
+        consortiums
+            .getContent()
+            .forEach(consortium -> {
+                if (!isAuthenticated) {
+                    consortium.setUser(null);
+                }
+            });
+
+        return consortiums;
     }
 
     /**
