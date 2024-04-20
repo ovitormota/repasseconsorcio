@@ -2,6 +2,7 @@ package br.com.repasseconsorcio.domain;
 
 import br.com.repasseconsorcio.domain.enumeration.ConsortiumStatusType;
 import br.com.repasseconsorcio.domain.enumeration.SegmentType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -59,6 +60,7 @@ public class Consortium implements Serializable {
     private Set<Bid> bids = new HashSet<>();
 
     @ManyToOne
+    @JsonIgnore
     private User user;
 
     @ManyToOne

@@ -1,9 +1,11 @@
 package br.com.repasseconsorcio.service;
 
 import br.com.repasseconsorcio.domain.Bid;
+import br.com.repasseconsorcio.domain.Consortium;
 import br.com.repasseconsorcio.domain.User;
 import br.com.repasseconsorcio.repository.BidRepository;
 import br.com.repasseconsorcio.service.util.UserCustomUtility;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
@@ -29,10 +31,13 @@ public class BidService {
 
     private final FirebaseMessagingService firebaseMessagingService;
 
-    public BidService(BidRepository bidRepository, MailService mailService, FirebaseMessagingService firebaseMessagingService) {
+    private final ConsortiumService consortiumService;
+
+    public BidService(BidRepository bidRepository, MailService mailService, FirebaseMessagingService firebaseMessagingService, ConsortiumService consortiumService) {
         this.bidRepository = bidRepository;
         this.mailService = mailService;
         this.firebaseMessagingService = firebaseMessagingService;
+        this.consortiumService = consortiumService;
     }
 
     /**
@@ -51,7 +56,9 @@ public class BidService {
             throw new ServiceException("Não é possível dar lance em um consórcio que já encerrou.");
         }
 
-        if (bid.getConsortium().getUser().getId().equals(loggedUser.getId())) {
+        Consortium consortium = consortiumService.findOne(bid.getConsortium().getId()).get();
+
+        if (consortium.getUser().getId().equals(loggedUser.getId())) {
             throw new ServiceException("Não é possível dar lance para si mesmo.");
         }
 
@@ -143,6 +150,17 @@ public class BidService {
     public Optional<Bid> findLatestBid(Long consortiumId) {
         log.debug("Request to get latest Bid");
         return bidRepository.findLatestBid(consortiumId);
+    }
+
+    /**
+     * Get the latest bid.
+     *
+     * @return the entity.
+     */
+    @Transactional(readOnly = true)
+    public Optional<BigDecimal> findLatestBidValue(Long consortiumId) {
+        log.debug("Request to get latest Bid");
+        return bidRepository.findLatestBidValue(consortiumId);
     }
 
     @Transactional(readOnly = true)

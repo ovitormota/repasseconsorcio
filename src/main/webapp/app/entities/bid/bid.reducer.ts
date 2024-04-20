@@ -16,6 +16,7 @@ const initialState: EntityState<IBid> = {
   updating: false,
   totalItems: 0,
   updateSuccess: false,
+  value: null,
 }
 
 const apiUrl = 'api/bids'
@@ -38,7 +39,7 @@ export const getEntity = createAsyncThunk(
 
 export const getLatestEntity = createAsyncThunk('bid/fetch_latest_entity', async (consortiumId: string | number) => {
   const requestUrl = `${apiUrl}/latest/${consortiumId}`
-  return axios.get<IBid>(requestUrl)
+  return axios.get<number | null>(requestUrl)
 })
 
 export const createEntity = createAsyncThunk(
@@ -88,7 +89,7 @@ export const BidSlice = createEntitySlice({
       })
       .addCase(getLatestEntity.fulfilled, (state, action) => {
         state.loading = false
-        state.entity = action.payload.data
+        state.value = action.payload.data
       })
       .addCase(deleteEntity.fulfilled, (state) => {
         state.updating = false

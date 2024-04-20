@@ -69,6 +69,7 @@ export interface EntityState<T> {
   totalItems?: number
   updateSuccess: boolean
   count?: number
+  value?: number
 }
 
 /**

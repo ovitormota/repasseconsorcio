@@ -25,7 +25,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
   const loading = useAppSelector((state) => state.bid.loading)
   const updateSuccess = useAppSelector((state) => state.bid.updateSuccess)
   const errorMessage = useAppSelector((state) => state.bid.errorMessage)
-  const bidEntity = useAppSelector((state) => state.bid.entity)
+  const latestBidValue = useAppSelector((state) => state.bid.value)
   const [acceptTerms, setAcceptTerms] = React.useState<boolean>(false)
   const [modalUseTerms, setModalUseTerms] = React.useState<boolean>(false)
   const [copyMinimumBidValue, setCopyMinimumBidValue] = React.useState<boolean>(false)
@@ -75,8 +75,8 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
   }
 
   const setMinimumBidValue = () => {
-    if (isNotEmptyObject(bidEntity)) {
-      return addPercentage(bidEntity?.value)
+    if (latestBidValue) {
+      return addPercentage(latestBidValue)
     } else {
       return addPercentage(entityConsortium?.minimumBidValue)
     }
@@ -139,7 +139,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
               type='submit'
               variant='contained'
               color='secondary'
-              disabled={!bidValue || bidValue < (isNotEmptyObject(bidEntity) ? addPercentage(bidEntity?.value) : addPercentage(entityConsortium?.minimumBidValue))}
+              disabled={!bidValue || bidValue < (latestBidValue ? addPercentage(latestBidValue) : addPercentage(entityConsortium?.minimumBidValue))}
               sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}
             >
               <Translate contentKey='entity.action.continue'>Continue</Translate>

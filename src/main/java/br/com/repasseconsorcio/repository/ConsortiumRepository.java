@@ -4,6 +4,7 @@ import br.com.repasseconsorcio.domain.Consortium;
 import br.com.repasseconsorcio.domain.User;
 import br.com.repasseconsorcio.domain.enumeration.ConsortiumStatusType;
 import br.com.repasseconsorcio.domain.enumeration.SegmentType;
+import br.com.repasseconsorcio.service.dto.ProposalApprovalsDTO;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,10 +34,10 @@ public interface ConsortiumRepository extends JpaRepository<Consortium, Long> {
     Page<Consortium> findAllByAdminAndSegmentType(@Param("filterStatusType") ConsortiumStatusType filterStatusType, @Param("segmentType") SegmentType segmentType, Pageable pageable);
 
     @Query("SELECT DISTINCT consortium FROM Consortium consortium LEFT JOIN consortium.bids bids where consortium.status IN ?1 and consortium.user != ?2")
-    Page<Consortium> findAllByStatusIn(List<ConsortiumStatusType> status, User loggedUser, Pageable pageable);
+    Page<ProposalApprovalsDTO> findAllByStatusIn(List<ConsortiumStatusType> status, User loggedUser, Pageable pageable);
 
     @Query("SELECT DISTINCT consortium FROM Consortium consortium LEFT JOIN consortium.bids bids where consortium.status in ?1 and consortium.segmentType = ?2")
-    Page<Consortium> findAllByStatusInAndSegmentType(List<ConsortiumStatusType> status, SegmentType segmentType, Pageable pageable);
+    Page<ProposalApprovalsDTO> findAllByStatusInAndSegmentType(List<ConsortiumStatusType> status, SegmentType segmentType, Pageable pageable);
 
     @Query("SELECT DISTINCT consortium FROM Consortium consortium LEFT JOIN consortium.bids bids WHERE consortium.status = :status AND consortium.created <= :cutoffDate")
     List<Consortium> findAllByStatusAndCreatedDate(@Param("status") ConsortiumStatusType status, @Param("cutoffDate") Instant cutoffDate);

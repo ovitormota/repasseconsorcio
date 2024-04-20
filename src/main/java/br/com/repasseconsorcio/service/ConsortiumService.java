@@ -7,6 +7,7 @@ import br.com.repasseconsorcio.domain.enumeration.SegmentType;
 import br.com.repasseconsorcio.repository.ConsortiumRepository;
 import br.com.repasseconsorcio.security.AuthoritiesConstants;
 import br.com.repasseconsorcio.security.SecurityUtils;
+import br.com.repasseconsorcio.service.dto.ProposalApprovalsDTO;
 import br.com.repasseconsorcio.service.util.UserCustomUtility;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -16,8 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -116,7 +115,16 @@ public class ConsortiumService {
 
         if (isAuthenticated && !isAdmin) {
             filterStatusType = ConsortiumStatusType.OPEN;
-            return consortiumRepository.findAllByStatusNotInAndSegmentTypeAndUser(filterStatusType, filterSegmentType, pageable);
+            Page<Consortium> consortiums = consortiumRepository.findAllByStatusNotInAndSegmentTypeAndUser(filterStatusType, filterSegmentType, pageable);
+
+            consortiums
+                .getContent()
+                .forEach(consortium -> {
+                    consortium.setUser(null);
+                    consortium.getBids().forEach(bid -> bid.setUser(null));
+                });
+
+            return consortiums;
         }
         if (!isAdmin) {
             filterStatusType = ConsortiumStatusType.OPEN;
@@ -127,9 +135,8 @@ public class ConsortiumService {
         consortiums
             .getContent()
             .forEach(consortium -> {
-                if (!isAuthenticated) {
-                    consortium.setUser(null);
-                }
+                consortium.setUser(null);
+                consortium.getBids().forEach(bid -> bid.setUser(null));
             });
 
         return consortiums;
@@ -157,7 +164,7 @@ public class ConsortiumService {
         consortiumRepository.deleteById(id);
     }
 
-    public Page<Consortium> findAllByProposalApprovals(Pageable pageable, SegmentType filterSegmentType) {
+    public Page<ProposalApprovalsDTO> findAllByProposalApprovals(Pageable pageable, SegmentType filterSegmentType) {
         log.debug("Request to get all Consortiums by Proposal Approvals");
 
         User loggedUser = UserCustomUtility.getUserCustom();
@@ -166,7 +173,7 @@ public class ConsortiumService {
 
         statusTypes.add(ConsortiumStatusType.REGISTERED);
 
-        Page<Consortium> consortiums;
+        Page<ProposalApprovalsDTO> consortiums;
         if (filterSegmentType.equals(SegmentType.ALL)) {
             consortiums = consortiumRepository.findAllByStatusIn(statusTypes, loggedUser, pageable);
         } else {
@@ -180,6 +187,7 @@ public class ConsortiumService {
                 user = userService.updateUserImageWithSignedUrl(user);
                 consortium.setUser(user);
             });
+
         return consortiums;
     }
 

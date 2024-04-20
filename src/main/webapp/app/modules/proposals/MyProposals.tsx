@@ -114,7 +114,6 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
           },
         }}
         elevation={2}
-        onClick={() => isAuthenticated && handleBidHistory(consortium)}
       >
         <Box
           sx={{

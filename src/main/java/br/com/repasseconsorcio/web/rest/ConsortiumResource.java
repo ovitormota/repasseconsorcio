@@ -8,6 +8,7 @@ import br.com.repasseconsorcio.security.AuthoritiesConstants;
 import br.com.repasseconsorcio.service.ConsortiumService;
 import br.com.repasseconsorcio.service.FirebaseMessagingService;
 import br.com.repasseconsorcio.service.MailService;
+import br.com.repasseconsorcio.service.dto.ProposalApprovalsDTO;
 import br.com.repasseconsorcio.web.rest.errors.BadRequestAlertException;
 import com.google.firebase.messaging.Notification;
 import java.net.URI;
@@ -89,7 +90,7 @@ public class ConsortiumResource {
         return ResponseEntity
             .created(new URI("/api/consortiums/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+            .body(null);
     }
 
     /**
@@ -167,9 +168,9 @@ public class ConsortiumResource {
 
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     @GetMapping("/proposal-approvals")
-    public ResponseEntity<List<Consortium>> getConsortiumsByProposalApprovals(Pageable pageable, SegmentType filterSegmentType) {
+    public ResponseEntity<List<ProposalApprovalsDTO>> getConsortiumsByProposalApprovals(Pageable pageable, SegmentType filterSegmentType) {
         log.debug("REST request to get a page of Consortiums by Proposal Approvals");
-        Page<Consortium> page = consortiumService.findAllByProposalApprovals(pageable, filterSegmentType);
+        Page<ProposalApprovalsDTO> page = consortiumService.findAllByProposalApprovals(pageable, filterSegmentType);
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -230,6 +231,7 @@ public class ConsortiumResource {
         return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, consortium.getId().toString()));
     }
 
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     @GetMapping("/proposal-approvals/count")
     public ResponseEntity<Long> countConsortiumsByProposalApprovals() {
         log.debug("REST request to count Consortiums by Proposal Approvals");

@@ -1,6 +1,7 @@
 package br.com.repasseconsorcio.repository;
 
 import br.com.repasseconsorcio.domain.Bid;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,9 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
 
     @Query("SELECT bid from Bid bid WHERE bid.value = (SELECT max(b.value) FROM Bid b WHERE b.consortium.id = :consortiumId) AND bid.consortium.id = :consortiumId")
     Optional<Bid> findLatestBid(@Param("consortiumId") Long consortiumId);
+
+    @Query("SELECT bid.value from Bid bid WHERE bid.value = (SELECT max(b.value) FROM Bid b WHERE b.consortium.id = :consortiumId) AND bid.consortium.id = :consortiumId")
+    Optional<BigDecimal> findLatestBidValue(@Param("consortiumId") Long consortiumId);
 
     @Query("select bid from Bid bid where bid.user.login = ?#{principal.username}")
     Page<Bid> findAllByUserIsCurrentUser(Pageable pageable);
