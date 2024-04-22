@@ -43,8 +43,8 @@ export const defaultTheme = createTheme({
       main: '#FFB54F',
     },
     text: {
-      primary: '#363636',
-      secondary: 'rgba(43,43,43, 0.7)',
+      primary: 'rgba(43,43,43, 1)',
+      secondary: 'rgba(43,43,43, 0.5)',
     },
   },
   components: {
@@ -60,12 +60,13 @@ export const defaultTheme = createTheme({
     },
     MuiInputLabel: {
       styleOverrides: {
+        root: {
+          color: 'rgba(43,43,43, 1)',
+        },
         outlined: {
           '&.MuiInputLabel-shrink': {
             background: '#FFFFFF',
             color: '#515DE0',
-            // paddingLeft: '5px',
-            // paddingRight: '5px',
             fontWeight: '500',
           },
         },

@@ -32,7 +32,7 @@ const Bid = (props: RouteComponentProps<{ url: string }>) => {
   const loading = useAppSelector((state) => state.bid.loading)
   const links = useAppSelector((state) => state.bid.links)
   const [order, setOrder] = useState<'desc' | 'asc'>(DESC)
-  const [currentSort, setCurrentSort] = useState('value')
+  const [currentSort, setCurrentSort] = useState('created')
 
   const getAllEntities = () => {
     dispatch(

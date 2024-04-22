@@ -1,10 +1,9 @@
-import { ListItem, ListItemText, Typography } from '@mui/material'
+import { ArrowOutward } from '@mui/icons-material'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
 import Countdown from 'react-countdown'
-import { ConsortiumStatusType } from '../model/enumerations/consortium-status-type.model'
 import { IConsortium } from '../model/consortium.model'
-import { formatCurrency } from '../util/data-utils'
-import { ArrowOutward } from '@mui/icons-material'
+import { ConsortiumStatusType } from '../model/enumerations/consortium-status-type.model'
 
 interface IAuctionTimer {
   created: string
@@ -33,40 +32,38 @@ export const AuctionTimer = ({ created, consortium }: IAuctionTimer) => {
   }
 
   return (
-    <ListItem>
-      <ListItemText
-        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', background: 'none !important', gap: 1 }}
-        primary={setPrimaryText()}
-        primaryTypographyProps={{ fontSize: '12px !important' }}
-        secondary={
-          consortium?.status === ConsortiumStatusType.REGISTERED ? (
-            'Aguardando aprovação'
-          ) : (
-            <Countdown
-              date={expirationDate}
-              renderer={({ days, hours, minutes, seconds, completed }) => {
-                if (completed) {
-                  return (
-                    <b>
-                      {getWinner()}
-                      <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
-                    </b>
-                  )
-                } else {
-                  const nonZeroValues = []
+    <Box sx={{ p: 1, borderRadius: '1em', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+      <Typography variant='caption' color='rgba(43,43,43, 0.7)'>
+        {setPrimaryText()}
+      </Typography>
+      <Typography variant='caption' color='rgba(43,43,43,1)'>
+        {consortium?.status === ConsortiumStatusType.REGISTERED ? (
+          'Aguardando aprovação'
+        ) : (
+          <Countdown
+            date={expirationDate}
+            renderer={({ days, hours, minutes, seconds, completed }) => {
+              if (completed) {
+                return (
+                  <b>
+                    {getWinner()}
+                    <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
+                  </b>
+                )
+              } else {
+                const nonZeroValues = []
 
-                  if (days > 0) nonZeroValues.push(days === 1 ? '1 dia' : `${days} dias`)
-                  if (hours > 0) nonZeroValues.push(`${hours} horas`)
-                  if (minutes > 0) nonZeroValues.push(`${minutes} minutos`)
-                  if (seconds > 0) nonZeroValues.push(`${seconds} segundos`)
+                if (days > 0) nonZeroValues.push(days === 1 ? '1 dia' : `${days} dias`)
+                if (hours > 0) nonZeroValues.push(`${hours} horas`)
+                if (minutes > 0) nonZeroValues.push(`${minutes} minutos`)
+                if (seconds > 0) nonZeroValues.push(`${seconds} segundos`)
 
-                  return <span style={{ fontSize: '14px' }}>{nonZeroValues.join(', ')}</span>
-                }
-              }}
-            />
-          )
-        }
-      />
-    </ListItem>
+                return <span style={{ fontSize: '14px' }}>{nonZeroValues.join(', ')}</span>
+              }
+            }}
+          />
+        )}
+      </Typography>
+    </Box>
   )
 }

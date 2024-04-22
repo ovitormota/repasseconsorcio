@@ -60,7 +60,7 @@ public class Consortium implements Serializable {
     private Set<Bid> bids = new HashSet<>();
 
     @ManyToOne
-    @JsonIgnore
+    @JsonIgnoreProperties(value = { "login", "email", "resetDate", "phoneNumber", "langKey", "imageUrl", "image", "activated" }, allowSetters = true)
     private User user;
 
     @ManyToOne

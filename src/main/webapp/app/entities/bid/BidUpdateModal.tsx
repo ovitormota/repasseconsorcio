@@ -13,6 +13,8 @@ import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import { NumericFormat } from 'react-number-format'
 import { getEntitiesByConsortium, reset } from './bid-by-consortium.reducer'
 import { createEntity, getLatestEntity } from './bid.reducer'
+import { getEntity } from '../consortium/consortium.reducer'
+import { useHistory } from 'react-router-dom'
 
 interface IBidUpdateModalProps {
   setOpenBidUpdateModal: (open: boolean) => void
@@ -21,6 +23,7 @@ interface IBidUpdateModalProps {
 
 export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBidUpdateModalProps) => {
   const dispatch = useAppDispatch()
+  const history = useHistory()
 
   const loading = useAppSelector((state) => state.bid.loading)
   const updateSuccess = useAppSelector((state) => state.bid.updateSuccess)
@@ -62,16 +65,9 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
       consortium: entityConsortium,
     }
 
-    dispatch(createEntity(entity))
-      .then(() => {
-        dispatch(reset())
-      })
-      .then(() => {
-        setOpenBidUpdateModal(false)
-      })
-      .then(() => {
-        dispatch(getEntitiesByConsortium({ consortiumId: entityConsortium.id, page: 0, size: ITEMS_PER_PAGE, sort: 'created,desc' }))
-      })
+    dispatch(createEntity(entity)).then(() => {
+      history.replace(`/bid`)
+    })
   }
 
   const setMinimumBidValue = () => {

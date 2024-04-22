@@ -1,5 +1,6 @@
 package br.com.repasseconsorcio.service;
 
+import br.com.repasseconsorcio.domain.Bid;
 import br.com.repasseconsorcio.domain.Consortium;
 import br.com.repasseconsorcio.domain.User;
 import br.com.repasseconsorcio.domain.enumeration.ConsortiumStatusType;
@@ -9,8 +10,10 @@ import br.com.repasseconsorcio.security.AuthoritiesConstants;
 import br.com.repasseconsorcio.security.SecurityUtils;
 import br.com.repasseconsorcio.service.dto.ProposalApprovalsDTO;
 import br.com.repasseconsorcio.service.util.UserCustomUtility;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -121,7 +124,9 @@ public class ConsortiumService {
                 .getContent()
                 .forEach(consortium -> {
                     consortium.setUser(null);
-                    consortium.getBids().forEach(bid -> bid.setUser(null));
+                    Optional<BigDecimal> minBidValue = consortium.getBids().stream().map(Bid::getValue).max(Comparator.naturalOrder());
+                    minBidValue.ifPresent(consortium::setMinimumBidValue);
+                    consortium.getBids().forEach(nullBid -> nullBid.setConsortium(null));
                 });
 
             return consortiums;
@@ -136,7 +141,9 @@ public class ConsortiumService {
             .getContent()
             .forEach(consortium -> {
                 consortium.setUser(null);
-                consortium.getBids().forEach(bid -> bid.setUser(null));
+                Optional<BigDecimal> minBidValue = consortium.getBids().stream().map(Bid::getValue).max(Comparator.naturalOrder());
+                minBidValue.ifPresent(consortium::setMinimumBidValue);
+                consortium.getBids().forEach(nullBid -> nullBid.setConsortium(null));
             });
 
         return consortiums;

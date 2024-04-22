@@ -94,7 +94,7 @@ const SelectPaginate: React.FC<Props> = ({ value, apiUrl, placeholder = '', onCh
     }),
     placeholder: (provided) => ({
       ...provided,
-      color: 'rgb(96,97,96)',
+      color: defaultTheme.palette.text.primary,
     }),
     singleValue: (provided) => ({
       ...provided,

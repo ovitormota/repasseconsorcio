@@ -1,11 +1,11 @@
 {
-    "repasseconsorcioApp": {
-        "SegmentType": {
-            "null": "",
-            "AUTOMOBILE": "Automóvel",
-            "OTHER": "Outros",
-            "REAL_ESTATE": "Imóvel",
-            "ALL": "Todos"
-        }
+  "repasseconsorcioApp": {
+    "SegmentType": {
+      "null": "",
+      "AUTOMOBILE": "Veículos",
+      "OTHER": "Outros",
+      "REAL_ESTATE": "Imóveis",
+      "ALL": "Todos"
     }
+  }
 }

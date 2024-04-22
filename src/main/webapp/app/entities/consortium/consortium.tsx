@@ -1,5 +1,4 @@
-import { DirectionsCarRounded, HomeRounded, MoreRounded } from '@mui/icons-material'
-import { Box, Button, Card, CardContent, Chip, IconButton, List, ListItem, ListItemText, ThemeProvider, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, Chip, List, ListItem, ThemeProvider, Typography } from '@mui/material'
 import { AUTHORITIES } from 'app/config/constants'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { HomeLogin } from 'app/modules/login/HomeLogin'
@@ -13,11 +12,10 @@ import { SortingBox } from 'app/shared/components/SortingBox'
 import { StatusFilter } from 'app/shared/components/StatusFilter'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { defaultTheme } from 'app/shared/layout/themes'
-import { IBid } from 'app/shared/model/bid.model'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
-import { formatCurrency, getStatusColor, showElement } from 'app/shared/util/data-utils'
+import { addPercentage, formatCurrency, getStatusColor, showElement } from 'app/shared/util/data-utils'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
@@ -42,7 +40,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
 
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [order, setOrder] = useState(ASC)
-  const sortTypes = ['consortiumAdministrator', 'contemplationStatus', 'numberOfInstallments', 'installmentValue', 'consortiumValue']
+  const sortTypes = ['consortiumAdministrator', 'contemplationStatus', 'numberOfInstallments', 'installmentValue', 'minimumBidValue', 'consortiumValue']
 
   const isAdmin = useAppSelector((state) => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN]))
   const isAuthenticated = useAppSelector((state) => state.authentication.isAuthenticated)
@@ -92,11 +90,6 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
     setEntityConsortium(consortium)
   }
 
-  const findMinValue = (bids: IBid[]) => {
-    const minValue = bids.reduce((min, bid) => (bid.value < min ? bid.value : min), bids[0].value)
-    return formatCurrency(minValue)
-  }
-
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
     const {
       consortiumAdministrator: { name, image },
@@ -132,33 +125,15 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
         <Box
           sx={{
             overflow: 'hidden',
-            width: { xs: '90vw', sm: '330px' },
-            height: isAdmin ? '55px' : '35px',
+            height: '80px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            mb: 1,
+            my: 1,
             background: defaultTheme.palette.secondary['A100'],
           }}
         >
-          <IconButton
-            sx={{
-              background: defaultTheme.palette.background.paper,
-              position: 'absolute',
-              top: isAdmin ? 45 : 30,
-              ':hover': {
-                background: defaultTheme.palette.background.paper,
-              },
-            }}
-          >
-            {segmentType === SegmentType.AUTOMOBILE ? (
-              <DirectionsCarRounded sx={{ fontSize: '30px', color: defaultTheme.palette.secondary.light }} />
-            ) : segmentType === SegmentType.REAL_ESTATE ? (
-              <HomeRounded sx={{ fontSize: '30px', color: defaultTheme.palette.secondary.light }} />
-            ) : (
-              <MoreRounded sx={{ fontSize: '25px', color: defaultTheme.palette.secondary.light }} />
-            )}
-          </IconButton>
+          {<img src={`content/images/${segmentType === SegmentType.AUTOMOBILE ? 'car' : segmentType === SegmentType.REAL_ESTATE ? 'house' : 'other'}.png`} height='100%' />}
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, position: 'absolute', top: 10, right: 10 }}>
           <Chip
@@ -170,6 +145,8 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
               cursor: 'pointer',
               background: defaultTheme.palette.background.paper,
               color: defaultTheme.palette.secondary.main,
+              backdropFilter: 'blur(5px)',
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
             }}
           />
           <Chip
@@ -184,69 +161,112 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
           />
         </Box>
         {contemplationStatus && renderStatusRibbon()}
-        <CardContent>
-          <List>
-            <ListItemText
-              primaryTypographyProps={{ fontSize: '12px !important' }}
-              sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-              primary={`${translate('repasseconsorcioApp.consortium.consortiumAdministrator')} `}
-              secondary={name}
-            />
-            <ListItemText
-              primaryTypographyProps={{ fontSize: '12px !important' }}
-              sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-              primary={`${translate('repasseconsorcioApp.consortium.numberOfInstallments')} `}
-              secondary={numberOfInstallments}
-            />
-            <ListItemText
-              primaryTypographyProps={{ fontSize: '12px !important' }}
-              secondaryTypographyProps={{ fontWeight: '600 !important' }}
-              sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-              primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `}
-              secondary={formatCurrency(installmentValue)}
-            />
-            <hr className='hr-text' data-content='' style={{ height: 0 }} />
+        <CardContent
+          sx={{
+            marginTop: '-30px',
+            padding: '1em !important',
+            paddingTop: '0.5em !important',
+            paddingBottom: '0 !important',
+          }}
+        >
+          <Box sx={{ my: 1, p: 1, borderRadius: '1em', position: 'relative' }}>
+            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                {translate('repasseconsorcioApp.consortium.segmentType')}
+              </Typography>
+              <span className='divider' />
+              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
+                {translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}
+              </Typography>
+            </Typography>
+            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                {translate('repasseconsorcioApp.consortium.consortiumAdministrator')}
+              </Typography>
+              <span className='divider' />
+              <Typography variant='caption'>{name}</Typography>
+            </Typography>
+            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                {translate('repasseconsorcioApp.consortium.numberOfInstallments')}
+              </Typography>
+              <span className='divider' />
+              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
+                {numberOfInstallments}
+              </Typography>
+            </Typography>
+            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                {translate('repasseconsorcioApp.consortium.installmentValue')}
+              </Typography>
+              <span className='divider' />
+              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
+                {formatCurrency(installmentValue)}
+              </Typography>
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              my: 1,
+              p: 1,
+              background: defaultTheme.palette.secondary['A100'],
+              borderRadius: '1em',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              position: 'relative',
+            }}
+          >
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 5,
+                left: 5,
+                p: '5px 10px',
+                borderRadius: '1em',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: defaultTheme.palette.primary.main,
+              }}
+            >
+              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                {translate('repasseconsorcioApp.consortium.minimumBidValue')}
+              </Typography>
+              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
+                {formatCurrency(bids?.length ? addPercentage(minimumBidValue) : minimumBidValue)}
+              </Typography>
+            </Box>
+            <Typography variant='caption' color={defaultTheme.palette.text.secondary} sx={{ marginLeft: 12 }}>
+              {translate('repasseconsorcioApp.consortium.consortiumValue')}
+            </Typography>
+            <Typography variant='h5' color={defaultTheme.palette.text.primary} sx={{ marginLeft: 12 }}>
+              {formatCurrency(consortiumValue)}
+            </Typography>
+          </Box>
 
-            <ListItem sx={{ m: 0, p: 0 }}>
-              <ListItemText
-                primaryTypographyProps={{ fontSize: '12px !important' }}
-                primary={`${translate('repasseconsorcioApp.consortium.consortiumValue')} `}
-                secondary={formatCurrency(consortiumValue)}
-                secondaryTypographyProps={{
-                  fontSize: '25px !important',
-                  fontWeight: '600 !important',
-                }}
-              />
-            </ListItem>
-            <hr className='hr-text' data-content='' style={{ height: 0 }} />
-            <List sx={{ m: 0, p: 0 }}>
-              <AuctionTimer created={created} consortium={consortium} />
-            </List>
+          <AuctionTimer created={created} consortium={consortium} />
 
-            <ListItem style={showElement(!isAdmin)}>
-              <Button
-                sx={{
-                  borderRadius: '1em',
-                  marginX: '0.4em',
-                  background: defaultTheme.palette.secondary['A400'],
-
-                  ':hover': {
-                    background: defaultTheme.palette.secondary.light,
-                    color: defaultTheme.palette.secondary.contrastText,
-                  },
-                }}
-                variant='outlined'
-                color='secondary'
-                fullWidth
-                onClick={(event) => {
-                  event.stopPropagation()
-                  handleBid(consortium)
-                }}
-              >
-                <Typography variant='button'>Participar</Typography>
-              </Button>
-            </ListItem>
-          </List>
+          <ListItem>
+            <Button
+              sx={{
+                borderRadius: '1em',
+                marginBottom: '0.5em',
+                background: defaultTheme.palette.secondary.light,
+              }}
+              variant='contained'
+              color='secondary'
+              fullWidth
+              disabled={isAdmin}
+              onClick={(event) => {
+                event.stopPropagation()
+                handleBid(consortium)
+              }}
+            >
+              <Typography variant='button'>Participar</Typography>
+            </Button>
+          </ListItem>
         </CardContent>
       </Card>
     )

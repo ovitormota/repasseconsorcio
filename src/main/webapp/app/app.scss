@@ -325,6 +325,7 @@ http://stackoverflow.com/questions/23436430/bootstrap-3-input-group-100-width */
   white-space: nowrap;
   z-index: 0;
   pointer-events: none;
+  backdrop-filter: blur(5px);
   a {
     color: #ffffff;
     font-size: 12px;
@@ -384,4 +385,10 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+}
+
+.divider {
+  flex-grow: 1;
+  border-bottom: 1px solid rgba(91, 97, 220, 0.1);
+  margin: 10px;
 }

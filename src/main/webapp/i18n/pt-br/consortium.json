@@ -21,7 +21,7 @@
       "id": "ID",
       "consortiumAdministrator": "Administradora",
       "consortiumValue": "Valor do crédito",
-      "minimumBidValue": "Valor mínimo do lance",
+      "minimumBidValue": "Lance mínimo",
       "numberOfInstallments": "Parcelas restantes",
       "installmentValue": "Valor da parcela",
       "segmentType": "Segmento",
