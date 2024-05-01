@@ -115,7 +115,7 @@ export const App = () => {
           <AppRoutes />
           <Header />
         </ErrorBoundary>
-        <InstallPromptModal />
+        {/* <InstallPromptModal /> */}
       </AppThemeProvider>
     </Router>
   )

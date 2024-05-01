@@ -96,7 +96,7 @@ public class FirebaseMessagingService {
 
     public void sendNotificationAuctionResultOwnerNotification(Optional<Bid> bid) {
         try {
-            List<NotificationToken> notificationTokens = findTokenByConsortium(bid.get().getUser());
+            List<NotificationToken> notificationTokens = findTokenByConsortium(bid.get().getConsortium().getUser());
 
             for (NotificationToken notificationToken : notificationTokens) {
                 Map<String, String> notificationData = new HashMap<>();
