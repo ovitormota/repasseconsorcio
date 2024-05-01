@@ -45,7 +45,7 @@ export const ModalUseTerms = ({ setOpen, setAcceptTerms, adminstrationFee }: IMo
                 </ul>
               </Typography>
               <Typography sx={{ my: 2, color: defaultTheme.palette.secondary.main }} fontSize='13px' fontWeight={600}>
-                {adminstrationFee > 0 && `Obs: A taxa de administração para realizar a transferência dessa cota é ${formatCurrency(adminstrationFee)}.`}
+                {adminstrationFee > 0 && `Observação: A taxa de administração para realizar a transferência desta cota é de 5% sobre o lance vencedor.`}
               </Typography>
             </Box>
             <Box sx={{ textAlign: { sm: 'center' } }}>

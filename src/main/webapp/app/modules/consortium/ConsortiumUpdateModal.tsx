@@ -188,7 +188,6 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                   const { formattedValue, floatValue } = values
                   return formattedValue === '' || floatValue <= 500000
                 }}
-                helperText={consortiumValue > 0 ? `A taxa de administração para realizar a transferência dessa cota é ${formatCurrency(adminstrationFee)}` : ''}
                 value={consortiumValue}
                 onValueChange={(values) => setConsortiumValue(+values.floatValue)}
                 sx={{ mt: 2 }}

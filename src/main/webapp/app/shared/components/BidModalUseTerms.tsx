@@ -44,7 +44,7 @@ export const BidModalUseTerms = ({ setOpen, setAcceptTerms }: IModalUseTerms) =>
               </ul>
             </Typography>
             <Typography sx={{ mb: 2, color: defaultTheme.palette.secondary.main }} fontSize='13px' fontWeight={600}>
-              Obs: A taxa de administração para realizar a transferência da cota já está inclusa no valor do lance.
+              Observação: A taxa de administração para realizar a transferência da cota já está inclusa no valor do lance.
             </Typography>
           </Box>
           <Box sx={{ textAlign: { sm: 'center' } }}>

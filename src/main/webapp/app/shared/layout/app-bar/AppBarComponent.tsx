@@ -13,24 +13,20 @@ interface ScrollHandlerProps {
 
 const ScrollHandler: React.FC<ScrollHandlerProps> = ({ scrollableBoxRef, onScroll }) => {
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollPosition = scrollableBoxRef?.current?.scrollTop || 0
-      const trigger = currentScrollPosition < 20
-
-      onScroll(trigger)
-    }
-
-    const boxRef = scrollableBoxRef?.current
-
-    if (boxRef) {
-      boxRef.addEventListener('scroll', handleScroll)
-    }
-
-    return () => {
-      if (boxRef) {
-        boxRef.removeEventListener('scroll', handleScroll)
-      }
-    }
+    // const handleScroll = () => {
+    //   const currentScrollPosition = scrollableBoxRef?.current?.scrollTop || 0
+    //   const trigger = currentScrollPosition < 20
+    //   onScroll(trigger)
+    // }
+    // const boxRef = scrollableBoxRef?.current
+    // if (boxRef) {
+    //   boxRef.addEventListener('scroll', handleScroll)
+    // }
+    // return () => {
+    //   if (boxRef) {
+    //     boxRef.removeEventListener('scroll', handleScroll)
+    //   }
+    // }
   }, [scrollableBoxRef])
 
   return null
