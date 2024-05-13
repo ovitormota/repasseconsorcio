@@ -42,8 +42,8 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
       consortiumAdministrator: { name, image },
       segmentType,
       consortiumValue,
-      numberOfInstallments,
-      installmentValue,
+      // numberOfInstallments,
+      // installmentValue,
       created,
       contemplationStatus,
       minimumBidValue,
@@ -115,19 +115,19 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
               primary={`${translate('repasseconsorcioApp.consortium.consortiumAdministrator')} `}
               secondary={name}
             />
-            <ListItemText
+            {/* <ListItemText
               primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.numberOfInstallments')} `}
               secondary={numberOfInstallments}
-            />
-            <ListItemText
+            /> */}
+            {/* <ListItemText
               primaryTypographyProps={{ fontSize: '12px !important' }}
               secondaryTypographyProps={{ fontWeight: '600 !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `}
               secondary={formatCurrency(installmentValue)}
-            />
+            /> */}
             <hr className='hr-text' data-content='' style={{ height: 0 }} />
 
             <ListItem sx={{ m: 0, p: 0 }}>
@@ -173,7 +173,7 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
           <ConsortiumCard consortium={entityConsortium} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenConsortiumHistoryModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
+          <Button onClick={() => setOpenConsortiumHistoryModal(false)} sx={{ color: defaultTheme.palette.text.primary, fontSize: '12px' }}>
             <Translate contentKey='entity.action.back'>Back</Translate>
           </Button>
         </DialogActions>

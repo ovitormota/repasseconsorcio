@@ -43,8 +43,8 @@
       "password.placeholder": "Digite sua senha",
       "newpassword.label": "Nova senha",
       "newpassword.placeholder": "Nova senha",
-      "confirmpassword.label": "Confirmação de sua senha",
-      "confirmnewpassword.label": "Confirmação de nova senha",
+      "confirmpassword.label": "Confirmação da senha",
+      "confirmnewpassword.label": "Confirmação da senha",
       "confirmnewpassword.placeholder": "Confirme a nova senha",
       "email.label": "E-mail",
       "email.placeholder": "Digite seu e-mail"

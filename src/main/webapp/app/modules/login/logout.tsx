@@ -58,10 +58,10 @@ export const Logout = ({ setOpenLogoutModal }) => {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setOpenLogoutModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
+          <Button onClick={() => setOpenLogoutModal(false)} sx={{ color: defaultTheme.palette.text.primary, fontSize: '12px' }}>
             <Translate contentKey='repasseconsorcioApp.logout.buttons.cancel'>Cancel</Translate>
           </Button>
-          <Button onClick={handleLogout} variant='contained' color='secondary' sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}>
+          <Button onClick={handleLogout} variant='contained' color='secondary' sx={{ fontWeight: '600', color: defaultTheme.palette.background.paper }}>
             <Translate contentKey='repasseconsorcioApp.logout.buttons.confirm'>Logout</Translate>
           </Button>
         </DialogActions>

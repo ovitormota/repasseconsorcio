@@ -48,7 +48,7 @@ public class FirebaseMessagingService {
                 Map<String, String> notificationData = new HashMap<>();
                 notificationData.put("title", consortium.get().getUser().getFirstName() + ", ótimas notícias!");
                 notificationData.put("body", "A sua proposta com o ID #" + consortium.get().getId() + " foi aprovada.");
-                notificationData.put("redirectUrl", "/my-proposals");
+                notificationData.put("redirectUrl", "/minhas-propostas");
 
                 Message message = Message.builder().setToken(notificationToken.getToken()).putAllData(notificationData).build();
                 sendNotification(message, notificationToken);
@@ -66,7 +66,7 @@ public class FirebaseMessagingService {
                 Map<String, String> notificationData = new HashMap<>();
                 notificationData.put("title", notificationToken.getUser().getFirstName() + ", ótimas notícias!");
                 notificationData.put("body", "A uma nova proposta com o ID #" + consortium.get().getId() + " está pendente de aprovação.");
-                notificationData.put("redirectUrl", "/proposal-approvals");
+                notificationData.put("redirectUrl", "/aprovacoes");
 
                 Message message = Message.builder().setToken(notificationToken.getToken()).putAllData(notificationData).build();
                 sendNotification(message, notificationToken);
@@ -84,7 +84,7 @@ public class FirebaseMessagingService {
                 Map<String, String> notificationData = new HashMap<>();
                 notificationData.put("title", bid.get().getUser().getFirstName() + ", ótimas notícias!");
                 notificationData.put("body", "O leilão da proposta com o ID #" + bid.get().getConsortium().getId() + " no qual você participou foi vencido por você. Vamos entrar em contato.");
-                notificationData.put("redirectUrl", "/bid");
+                notificationData.put("redirectUrl", "/meus-lances");
 
                 Message message = Message.builder().setToken(notificationToken.getToken()).putAllData(notificationData).build();
                 sendNotification(message, notificationToken);
@@ -102,7 +102,7 @@ public class FirebaseMessagingService {
                 Map<String, String> notificationData = new HashMap<>();
                 notificationData.put("title", bid.get().getConsortium().getUser().getFirstName() + ", ótimas notícias!");
                 notificationData.put("body", "O leilão da sua proposta com o ID #" + bid.get().getConsortium().getId() + " encerrou e foi arrematada. Vamos entrar em contato.");
-                notificationData.put("redirectUrl", "/my-proposals");
+                notificationData.put("redirectUrl", "/minhas-propostas");
 
                 Message message = Message.builder().setToken(notificationToken.getToken()).putAllData(notificationData).build();
                 sendNotification(message, notificationToken);
@@ -123,7 +123,7 @@ public class FirebaseMessagingService {
                 Map<String, String> notificationData = new HashMap<>();
                 notificationData.put("title", bid.getConsortium().getUser().getFirstName() + ", ótimas notícias!");
                 notificationData.put("body", "Sua proposta com o ID #" + bid.getConsortium().getId() + " recebeu um novo lance no valor de " + formattedValue + ".");
-                notificationData.put("redirectUrl", "/my-proposals");
+                notificationData.put("redirectUrl", "/minhas-propostas");
 
                 Message message = Message.builder().setToken(notificationToken.getToken()).putAllData(notificationData).build();
                 sendNotification(message, notificationToken);

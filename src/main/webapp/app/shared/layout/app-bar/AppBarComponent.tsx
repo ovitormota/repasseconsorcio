@@ -59,7 +59,7 @@ export const AppBarComponent = forwardRef<HTMLDivElement, IAppBarComponentProps>
           top: 0,
           bottom: 'auto',
           borderRadius: '0px 0px 10px 10px',
-          background: defaultTheme.palette.primary.main,
+          background: defaultTheme.palette.background.paper,
           boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.15)',
           height: trigger ? '70px' : '0px',
           transition: 'height 0.2s ease-in-out',

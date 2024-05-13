@@ -27,7 +27,7 @@ export const AccountDeleteModal = ({ setDeleteAccountModalOpen }) => {
       <Dialog
         open={true}
         sx={{ backgroundColor: defaultTheme.palette.background.default }}
-        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { sm: 0 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
+        PaperProps={{ sx: { borderRadius: '1em', background: defaultTheme.palette.background.paper, p: { sm: 0 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } } }}
       >
         <DialogContent>
           <DialogTitle color='secondary' fontWeight={'600'} fontSize={'18px'} sx={{ mb: 4 }}>
@@ -35,7 +35,7 @@ export const AccountDeleteModal = ({ setDeleteAccountModalOpen }) => {
           </DialogTitle>
           <form onSubmit={handleValidSubmit}>
             <DialogActions>
-              <Button variant='contained' color='secondary' onClick={() => handleClose()} sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}>
+              <Button variant='contained' color='secondary' onClick={() => handleClose()} sx={{ fontWeight: '600', color: defaultTheme.palette.background.paper }}>
                 <Translate contentKey='entity.action.cancel'>Cancel</Translate>
               </Button>
               <Button type='submit' variant='outlined' color='secondary'>

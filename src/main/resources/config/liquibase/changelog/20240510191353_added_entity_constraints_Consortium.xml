@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+    <!--
+        Added the constraints for entity Consortium.
+    -->
+    <changeSet id="20240510191353-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="consortium"
+                                 constraintName="fk_consortium__user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="app_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="consortium_administrator_id"
+                                 baseTableName="consortium"
+                                 constraintName="fk_consortium__consortium_administrator_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="consortium_administrator"/>
+    </changeSet>
+</databaseChangeLog>

@@ -84,10 +84,10 @@ export const RequestPassword = ({ setOpenRequestModal }) => {
         </DialogContent>
         <form onSubmit={isEmailValid() ? handleValidSubmit : null}>
           <DialogActions>
-            <Button onClick={() => handleClose()} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
+            <Button onClick={() => handleClose()} sx={{ color: defaultTheme.palette.text.primary, fontSize: '12px' }}>
               <Translate contentKey='entity.action.cancel'>Cancel</Translate>
             </Button>
-            <Button type='submit' variant='contained' color='secondary' disabled={!isEmailValid() || email.trim() === ''} sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}>
+            <Button type='submit' variant='contained' color='secondary' disabled={!isEmailValid() || email.trim() === ''} sx={{ fontWeight: '600', color: defaultTheme.palette.background.paper }}>
               <Translate contentKey='reset.request.form.button'>Reset password</Translate>
             </Button>
           </DialogActions>

@@ -80,13 +80,13 @@ export const Header = () => {
   }
 
   const handleDisplayFab = () => {
-    if ((location.pathname === '/' || location.pathname === '/my-proposals') && !isAdmin) {
+    if ((location.pathname === '/' || location.pathname === '/minhas-propostas') && !isAdmin) {
       return true
     }
-    if (location.pathname === '/users' && isAdmin) {
+    if (location.pathname === '/usuarios' && isAdmin) {
       return true
     }
-    if (location.pathname === '/consortium-administrator' && isAdmin) {
+    if (location.pathname === '/administradoras' && isAdmin) {
       return true
     }
     return false
@@ -97,13 +97,13 @@ export const Header = () => {
       case '/':
         isAuthenticated ? setOpenConsortiumUpdateModal(true) : setOpenLoginModal(true)
         break
-      case '/my-proposals':
+      case '/minhas-propostas':
         setOpenConsortiumUpdateModal(true)
         break
-      case '/users':
+      case '/usuarios':
         setOpenAccountRegisterModal(true)
         break
-      case '/consortium-administrator':
+      case '/administradoras':
         setOpenConsorciumAdministratorUpdateModal(true)
         break
       default:
@@ -115,9 +115,9 @@ export const Header = () => {
     switch (location.pathname) {
       case '/':
         return isAuthenticated ? 'Adicionar Proposta' : 'Entrar'
-      case '/users':
+      case '/usuarios':
         return 'Adicionar Usuário'
-      case '/consortium-administrator':
+      case '/administradoras':
         return 'Adicionar Administradora'
       default:
         return ''
@@ -126,7 +126,7 @@ export const Header = () => {
 
   const setBorderColorByPath = (path: string[]) => {
     const matchingPath = path.find((p) => location.pathname === p)
-    return matchingPath ? defaultTheme.palette.secondary.main : defaultTheme.palette.primary.main
+    return matchingPath ? defaultTheme.palette.secondary.main : defaultTheme.palette.background.paper
   }
 
   const setIconColorByPath = (path: string[]) => {
@@ -149,8 +149,8 @@ export const Header = () => {
           sx={{
             top: 'auto',
             bottom: 0,
-            color: defaultTheme.palette.primary.main,
-            background: defaultTheme.palette.primary.main,
+            color: defaultTheme.palette.background.paper,
+            background: defaultTheme.palette.background.paper,
             boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.15)',
             height: '70px',
             borderRadius: '14px 14px 0 0',
@@ -231,13 +231,13 @@ export const Header = () => {
               onClick={() => handleFab()}
               style={showElement(handleDisplayFab())}
               sx={{
-                background: defaultTheme.palette.primary.main,
+                background: defaultTheme.palette.background.paper,
                 color: defaultTheme.palette.secondary.main,
                 boxShadow: '0px 8px 10px rgba(0,0,0,0.2)',
                 cursor: 'pointer',
                 '&:hover': {
                   backgroundColor: defaultTheme.palette.secondary.main,
-                  color: defaultTheme.palette.primary.main,
+                  color: defaultTheme.palette.background.paper,
                 },
               }}
             >
@@ -280,19 +280,19 @@ export const Header = () => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         minWidth: { xs: '50px', md: '100px' },
-                        borderTop: `3px solid ${setBorderColorByPath(['/bid'])}`,
+                        borderTop: `3px solid ${setBorderColorByPath(['/meus-lances'])}`,
 
                         ':hover': {
                           cursor: 'pointer',
                         },
                       }}
-                      onClick={() => history.replace('/bid')}
+                      onClick={() => history.replace('/meus-lances')}
                       style={showElement(!isAdmin)}
                     >
                       <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
-                        <PriceCheckRounded style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid']) }} />
+                        <PriceCheckRounded style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/meus-lances']) }} />
                       </IconButton>
-                      <Typography variant='overline' sx={{ color: setIconColorByPath(['/bid']) }} fontSize={10} fontWeight={setFontWeightByPath(['/bid'])}>
+                      <Typography variant='overline' sx={{ color: setIconColorByPath(['/meus-lances']) }} fontSize={10} fontWeight={setFontWeightByPath(['/meus-lances'])}>
                         Meus Lances
                       </Typography>
                     </Box>
@@ -306,19 +306,19 @@ export const Header = () => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         minWidth: { xs: '50px', md: '100px' },
-                        borderTop: `3px solid ${setBorderColorByPath(['/my-proposals'])}`,
+                        borderTop: `3px solid ${setBorderColorByPath(['/minhas-propostas'])}`,
 
                         ':hover': {
                           cursor: 'pointer',
                         },
                       }}
-                      onClick={() => history.replace('/my-proposals')}
+                      onClick={() => history.replace('/minhas-propostas')}
                       style={showElement(!isAdmin)}
                     >
                       <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
-                        <GavelRounded style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/my-proposals']) }} />
+                        <GavelRounded style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/minhas-propostas']) }} />
                       </IconButton>
-                      <Typography variant='overline' sx={{ color: setIconColorByPath(['/my-proposals']) }} fontSize={10} fontWeight={setFontWeightByPath(['/my-proposals'])}>
+                      <Typography variant='overline' sx={{ color: setIconColorByPath(['/minhas-propostas']) }} fontSize={10} fontWeight={setFontWeightByPath(['/minhas-propostas'])}>
                         Minhas Propostas
                       </Typography>
                     </Box>
@@ -332,19 +332,19 @@ export const Header = () => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         minWidth: { xs: '50px', md: '100px' },
-                        borderTop: `3px solid ${setBorderColorByPath(['/consortium-administrator'])}`,
+                        borderTop: `3px solid ${setBorderColorByPath(['/administradoras'])}`,
 
                         ':hover': {
                           cursor: 'pointer',
                         },
                       }}
-                      onClick={() => history.replace('/consortium-administrator')}
+                      onClick={() => history.replace('/administradoras')}
                       style={showElement(isAdmin)}
                     >
                       <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
-                        <AccountBalanceRounded style={{ fontSize: 23 }} sx={{ color: setIconColorByPath(['/consortium-administrator']) }} />
+                        <AccountBalanceRounded style={{ fontSize: 23 }} sx={{ color: setIconColorByPath(['/administradoras']) }} />
                       </IconButton>
-                      <Typography variant='overline' sx={{ color: setIconColorByPath(['/consortium-administrator']) }} fontSize={10} fontWeight={setFontWeightByPath(['/consortium-administrator'])}>
+                      <Typography variant='overline' sx={{ color: setIconColorByPath(['/administradoras']) }} fontSize={10} fontWeight={setFontWeightByPath(['/administradoras'])}>
                         Administradoras
                       </Typography>
                     </Box>
@@ -358,21 +358,21 @@ export const Header = () => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         minWidth: { xs: '50px', md: '100px' },
-                        borderTop: `3px solid ${setBorderColorByPath(['/proposal-approvals'])}`,
+                        borderTop: `3px solid ${setBorderColorByPath(['/aprovacoes'])}`,
 
                         ':hover': {
                           cursor: 'pointer',
                         },
                       }}
-                      onClick={() => history.replace('/proposal-approvals')}
+                      onClick={() => history.replace('/aprovacoes')}
                       style={showElement(isAdmin)}
                     >
                       <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
                         <Badge badgeContent={count} color='error'>
-                          <ChecklistRounded style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/proposal-approvals']) }} />
+                          <ChecklistRounded style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/aprovacoes']) }} />
                         </Badge>
                       </IconButton>
-                      <Typography variant='overline' sx={{ color: setIconColorByPath(['/proposal-approvals']) }} fontSize={10} fontWeight={setFontWeightByPath(['/proposal-approvals'])}>
+                      <Typography variant='overline' sx={{ color: setIconColorByPath(['/aprovacoes']) }} fontSize={10} fontWeight={setFontWeightByPath(['/aprovacoes'])}>
                         Aprovações
                       </Typography>
                     </Box>
@@ -386,19 +386,19 @@ export const Header = () => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         minWidth: { xs: '50px', md: '100px' },
-                        borderTop: `3px solid ${setBorderColorByPath(['/users'])}`,
+                        borderTop: `3px solid ${setBorderColorByPath(['/usuarios'])}`,
 
                         ':hover': {
                           cursor: 'pointer',
                         },
                       }}
-                      onClick={() => history.replace('/users')}
+                      onClick={() => history.replace('/usuarios')}
                       style={showElement(isAdmin)}
                     >
                       <IconButton color='secondary' sx={{ width: '45px', height: '45px', mb: '-6px', mt: '2px' }}>
-                        <ManageAccountsRounded style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/users']) }} />
+                        <ManageAccountsRounded style={{ fontSize: 25 }} sx={{ color: setIconColorByPath(['/usuarios']) }} />
                       </IconButton>
-                      <Typography variant='overline' sx={{ color: setIconColorByPath(['/users']) }} fontSize={10} fontWeight={setFontWeightByPath(['/users'])}>
+                      <Typography variant='overline' sx={{ color: setIconColorByPath(['/usuarios']) }} fontSize={10} fontWeight={setFontWeightByPath(['/usuarios'])}>
                         Usuários
                       </Typography>
                     </Box>
@@ -412,7 +412,7 @@ export const Header = () => {
                         justifyContent: 'center',
                         display: { xs: 'flex', lg: 'none' },
                         minWidth: { xs: '50px', md: '100px' },
-                        borderTop: `3px solid ${setBorderColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator', '/users'])}`,
+                        borderTop: `3px solid ${setBorderColorByPath(['/meus-lances', '/minhas-propostas', '/aprovacoes', '/administradoras', '/usuarios'])}`,
                       }}
                     >
                       <IconButton
@@ -424,15 +424,15 @@ export const Header = () => {
                         sx={{ width: '45px', height: '45px', mt: '-4px' }}
                       >
                         <Badge badgeContent={anchorElNav === null ? count : 0} color='error' sx={{ top: 5 }}>
-                          <MoreVertRounded style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator', '/users']) }} />
+                          <MoreVertRounded style={{ fontSize: 30 }} sx={{ color: setIconColorByPath(['/meus-lances', '/minhas-propostas', '/aprovacoes', '/administradoras', '/usuarios']) }} />
                         </Badge>
                       </IconButton>
 
                       <Typography
                         variant='overline'
-                        sx={{ color: setIconColorByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator', '/users']) }}
+                        sx={{ color: setIconColorByPath(['/meus-lances', '/minhas-propostas', '/aprovacoes', '/administradoras', '/usuarios']) }}
                         fontSize={10}
-                        fontWeight={setFontWeightByPath(['/bid', '/my-proposals', '/proposal-approvals', '/consortium-administrator', '/users'])}
+                        fontWeight={setFontWeightByPath(['/meus-lances', '/minhas-propostas', '/aprovacoes', '/administradoras', '/usuarios'])}
                       >
                         Menu
                       </Typography>
@@ -458,7 +458,7 @@ export const Header = () => {
                 >
                   <MenuItem
                     component={Link}
-                    to='/consortium-administrator'
+                    to='/administradoras'
                     sx={{
                       py: 2,
                       ':hover': {
@@ -481,7 +481,7 @@ export const Header = () => {
                       },
                     }}
                     component={Link}
-                    to='/proposal-approvals'
+                    to='/aprovacoes'
                     style={showElement(isAdmin)}
                   >
                     <ListItemIcon>
@@ -494,7 +494,7 @@ export const Header = () => {
 
                   <MenuItem
                     component={Link}
-                    to='/users'
+                    to='/usuarios'
                     style={showElement(isAdmin)}
                     sx={{
                       py: 2,
@@ -511,7 +511,7 @@ export const Header = () => {
 
                   <MenuItem
                     component={Link}
-                    to='/bid'
+                    to='/meus-lances'
                     style={showElement(!isAdmin)}
                     sx={{
                       py: 2,
@@ -528,7 +528,7 @@ export const Header = () => {
 
                   <MenuItem
                     component={Link}
-                    to='/my-proposals'
+                    to='/minhas-propostas'
                     style={showElement(!isAdmin)}
                     sx={{
                       py: 2,

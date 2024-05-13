@@ -131,23 +131,13 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
     <ThemeProvider theme={defaultTheme}>
       <Dialog
         open={true}
-        sx={{ backgroundColor: defaultTheme.palette.primary.main }}
+        sx={{ backgroundColor: defaultTheme.palette.background.paper }}
         PaperProps={{
           sx: { borderRadius: '1em', background: defaultTheme.palette.secondary['A100'], minWidth: { xs: '92vw', sm: '80vw', md: '550px' }, maxWidth: '550px' },
         }}
       >
-        <Box
-          sx={{
-            overflow: 'hidden',
-            width: '100%',
-            height: '90px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        />
         <DialogContent>
-          <Box sx={{ position: 'absolute', inset: 0, top: 20 }}>
+          <Box sx={{ mt: 2 }}>
             <ImageUploader onUpload={handleUpload} currentImage={image} name={null} />
           </Box>
           <TextField
@@ -163,7 +153,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
             InputProps={{
               style: { borderRadius: '10px' },
             }}
-            sx={{ mt: 8, mb: 1 }}
+            sx={{ mt: 2, mb: 1 }}
             onChange={(e) => updateField('firstName', e.target.value)}
           />
 
@@ -201,7 +191,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
             InputProps={{
               style: { borderRadius: '10px' },
             }}
-            sx={{ mt: 2, mb: 1 }}
+            sx={{ mt: 3, mb: 1 }}
             onChange={(e) => updateField('email', e.target.value)}
           />
         </DialogContent>
@@ -224,7 +214,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
                 disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || fields.phoneNumber === '' || !isEmailValid() || !isPhoneValid()}
               >
                 <Translate contentKey='entity.action.save'>Save</Translate>
-                {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.primary.main }} />}
+                {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.background.paper }} />}
               </Button>
             </Box>
           </DialogActions>

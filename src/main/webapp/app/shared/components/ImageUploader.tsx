@@ -92,7 +92,7 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
           PaperProps={{
             sx: {
               borderRadius: '1em',
-              background: defaultTheme.palette.primary.main,
+              background: defaultTheme.palette.background.paper,
               p: { sm: 2 },
               minWidth: { xs: '92vw', sm: '80vw', md: '600px' },
               overflowX: 'hidden',
@@ -102,7 +102,7 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
           <DialogContent>
             <Cropper ref={cropperRef} src={selectedImage} aspectRatio={isUser ? 1 : 16 / 9} width={isUser ? 300 : 533} height={300} guides={true} initialAspectRatio={1} />
             <DialogActions sx={{ mt: 3, px: 0 }}>
-              <Button variant='text' sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }} onClick={() => setSelectedImage(null)}>
+              <Button variant='text' sx={{ color: defaultTheme.palette.text.primary, fontSize: '12px' }} onClick={() => setSelectedImage(null)}>
                 <Translate contentKey='entity.action.cancel'>Cancel</Translate>
               </Button>
               <Button onClick={handleCrop} color='secondary' variant='contained' sx={{ fontWeight: '600' }}>
@@ -133,10 +133,10 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
                     borderRadius: '50%',
                     cursor: 'pointer',
                     color: defaultTheme.palette.secondary.main,
-                    background: defaultTheme.palette.primary.main,
+                    background: defaultTheme.palette.background.paper,
 
                     '&:hover': {
-                      color: defaultTheme.palette.primary.main,
+                      color: defaultTheme.palette.background.paper,
                       background: defaultTheme.palette.secondary.main,
                     },
                   }}
@@ -154,10 +154,10 @@ export const ImageUploader: React.FC<IImageUploaderProps> = ({ onUpload, current
                   borderRadius: '50%',
                   cursor: 'pointer',
                   color: defaultTheme.palette.secondary.main,
-                  background: defaultTheme.palette.primary.main,
+                  background: defaultTheme.palette.background.paper,
 
                   '&:hover': {
-                    color: defaultTheme.palette.primary.main,
+                    color: defaultTheme.palette.background.paper,
                     background: defaultTheme.palette.secondary.main,
                   },
                 }}

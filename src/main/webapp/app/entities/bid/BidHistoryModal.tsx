@@ -155,7 +155,7 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
           </Box>
         </DialogContent>
         <DialogActions sx={{ pt: '1em' }}>
-          <Button onClick={() => setOpenBidHistoryModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
+          <Button onClick={() => setOpenBidHistoryModal(false)} sx={{ color: defaultTheme.palette.text.primary, fontSize: '12px' }}>
             <Translate contentKey='entity.action.back'>Voltar</Translate>
           </Button>
           <Button

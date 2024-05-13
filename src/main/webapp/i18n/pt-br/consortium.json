@@ -22,8 +22,10 @@
       "consortiumAdministrator": "Administradora",
       "consortiumValue": "Valor do crédito",
       "minimumBidValue": "Lance mínimo",
+      "statusConsortiumInstallments": "Status da parcela",
       "numberOfInstallments": "Parcelas restantes",
       "installmentValue": "Valor da parcela",
+      "installmentDate": "Vencimento da parcela",
       "segmentType": "Segmento",
       "status": "Status",
       "bid": "Lance",
@@ -31,7 +33,7 @@
       "user": "Usuário",
       "contemplationStatus": "Contemplado",
       "contemplationTypeStatus": {
-        "title": "Status de Contemplação",
+        "title": "Status de contemplação",
         "approved": "Contemplado",
         "disapproved": "Não Contemplado"
       },

@@ -84,8 +84,6 @@ class ConsortiumResourceIT {
             .consortiumValue(DEFAULT_CONSORTIUM_VALUE)
             .created(DEFAULT_CREATED)
             .minimumBidValue(DEFAULT_MINIMUM_BID_VALUE)
-            .numberOfInstallments(DEFAULT_NUMBER_OF_INSTALLMENTS)
-            .installmentValue(DEFAULT_INSTALLMENT_VALUE)
             .segmentType(DEFAULT_SEGMENT_TYPE)
             .status(DEFAULT_STATUS);
         return consortium;
@@ -102,8 +100,6 @@ class ConsortiumResourceIT {
             .consortiumValue(UPDATED_CONSORTIUM_VALUE)
             .created(UPDATED_CREATED)
             .minimumBidValue(UPDATED_MINIMUM_BID_VALUE)
-            .numberOfInstallments(UPDATED_NUMBER_OF_INSTALLMENTS)
-            .installmentValue(UPDATED_INSTALLMENT_VALUE)
             .segmentType(UPDATED_SEGMENT_TYPE)
             .status(UPDATED_STATUS);
         return consortium;
@@ -119,9 +115,7 @@ class ConsortiumResourceIT {
     void createConsortium() throws Exception {
         int databaseSizeBeforeCreate = consortiumRepository.findAll().size();
         // Create the Consortium
-        restConsortiumMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(consortium)))
-            .andExpect(status().isCreated());
+        restConsortiumMockMvc.perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(consortium))).andExpect(status().isCreated());
 
         // Validate the Consortium in the database
         List<Consortium> consortiumList = consortiumRepository.findAll();
@@ -130,8 +124,6 @@ class ConsortiumResourceIT {
         assertThat(testConsortium.getConsortiumValue()).isEqualByComparingTo(DEFAULT_CONSORTIUM_VALUE);
         assertThat(testConsortium.getCreated()).isEqualTo(DEFAULT_CREATED);
         assertThat(testConsortium.getMinimumBidValue()).isEqualByComparingTo(DEFAULT_MINIMUM_BID_VALUE);
-        assertThat(testConsortium.getNumberOfInstallments()).isEqualTo(DEFAULT_NUMBER_OF_INSTALLMENTS);
-        assertThat(testConsortium.getInstallmentValue()).isEqualByComparingTo(DEFAULT_INSTALLMENT_VALUE);
         assertThat(testConsortium.getSegmentType()).isEqualTo(DEFAULT_SEGMENT_TYPE);
         assertThat(testConsortium.getStatus()).isEqualTo(DEFAULT_STATUS);
     }
@@ -145,9 +137,7 @@ class ConsortiumResourceIT {
         int databaseSizeBeforeCreate = consortiumRepository.findAll().size();
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restConsortiumMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(consortium)))
-            .andExpect(status().isBadRequest());
+        restConsortiumMockMvc.perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(consortium))).andExpect(status().isBadRequest());
 
         // Validate the Consortium in the database
         List<Consortium> consortiumList = consortiumRepository.findAll();
@@ -215,21 +205,10 @@ class ConsortiumResourceIT {
         Consortium updatedConsortium = consortiumRepository.findById(consortium.getId()).get();
         // Disconnect from session so that the updates on updatedConsortium are not directly saved in db
         em.detach(updatedConsortium);
-        updatedConsortium
-            .consortiumValue(UPDATED_CONSORTIUM_VALUE)
-            .created(UPDATED_CREATED)
-            .minimumBidValue(UPDATED_MINIMUM_BID_VALUE)
-            .numberOfInstallments(UPDATED_NUMBER_OF_INSTALLMENTS)
-            .installmentValue(UPDATED_INSTALLMENT_VALUE)
-            .segmentType(UPDATED_SEGMENT_TYPE)
-            .status(UPDATED_STATUS);
+        updatedConsortium.consortiumValue(UPDATED_CONSORTIUM_VALUE).created(UPDATED_CREATED).minimumBidValue(UPDATED_MINIMUM_BID_VALUE).segmentType(UPDATED_SEGMENT_TYPE).status(UPDATED_STATUS);
 
         restConsortiumMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, updatedConsortium.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedConsortium))
-            )
+            .perform(put(ENTITY_API_URL_ID, updatedConsortium.getId()).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(updatedConsortium)))
             .andExpect(status().isOk());
 
         // Validate the Consortium in the database
@@ -239,8 +218,6 @@ class ConsortiumResourceIT {
         assertThat(testConsortium.getConsortiumValue()).isEqualTo(UPDATED_CONSORTIUM_VALUE);
         assertThat(testConsortium.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testConsortium.getMinimumBidValue()).isEqualTo(UPDATED_MINIMUM_BID_VALUE);
-        assertThat(testConsortium.getNumberOfInstallments()).isEqualTo(UPDATED_NUMBER_OF_INSTALLMENTS);
-        assertThat(testConsortium.getInstallmentValue()).isEqualTo(UPDATED_INSTALLMENT_VALUE);
         assertThat(testConsortium.getSegmentType()).isEqualTo(UPDATED_SEGMENT_TYPE);
         assertThat(testConsortium.getStatus()).isEqualTo(UPDATED_STATUS);
     }
@@ -253,11 +230,7 @@ class ConsortiumResourceIT {
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restConsortiumMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, consortium.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(consortium))
-            )
+            .perform(put(ENTITY_API_URL_ID, consortium.getId()).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(consortium)))
             .andExpect(status().isBadRequest());
 
         // Validate the Consortium in the database
@@ -273,11 +246,7 @@ class ConsortiumResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restConsortiumMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, count.incrementAndGet())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(consortium))
-            )
+            .perform(put(ENTITY_API_URL_ID, count.incrementAndGet()).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(consortium)))
             .andExpect(status().isBadRequest());
 
         // Validate the Consortium in the database
@@ -292,9 +261,7 @@ class ConsortiumResourceIT {
         consortium.setId(count.incrementAndGet());
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
-        restConsortiumMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(consortium)))
-            .andExpect(status().isMethodNotAllowed());
+        restConsortiumMockMvc.perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(consortium))).andExpect(status().isMethodNotAllowed());
 
         // Validate the Consortium in the database
         List<Consortium> consortiumList = consortiumRepository.findAll();
@@ -313,14 +280,8 @@ class ConsortiumResourceIT {
         Consortium partialUpdatedConsortium = new Consortium();
         partialUpdatedConsortium.setId(consortium.getId());
 
-        partialUpdatedConsortium.installmentValue(UPDATED_INSTALLMENT_VALUE).status(UPDATED_STATUS);
-
         restConsortiumMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedConsortium.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedConsortium))
-            )
+            .perform(patch(ENTITY_API_URL_ID, partialUpdatedConsortium.getId()).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(partialUpdatedConsortium)))
             .andExpect(status().isOk());
 
         // Validate the Consortium in the database
@@ -330,8 +291,6 @@ class ConsortiumResourceIT {
         assertThat(testConsortium.getConsortiumValue()).isEqualByComparingTo(DEFAULT_CONSORTIUM_VALUE);
         assertThat(testConsortium.getCreated()).isEqualTo(DEFAULT_CREATED);
         assertThat(testConsortium.getMinimumBidValue()).isEqualByComparingTo(DEFAULT_MINIMUM_BID_VALUE);
-        assertThat(testConsortium.getNumberOfInstallments()).isEqualTo(DEFAULT_NUMBER_OF_INSTALLMENTS);
-        assertThat(testConsortium.getInstallmentValue()).isEqualByComparingTo(UPDATED_INSTALLMENT_VALUE);
         assertThat(testConsortium.getSegmentType()).isEqualTo(DEFAULT_SEGMENT_TYPE);
         assertThat(testConsortium.getStatus()).isEqualTo(UPDATED_STATUS);
     }
@@ -348,21 +307,10 @@ class ConsortiumResourceIT {
         Consortium partialUpdatedConsortium = new Consortium();
         partialUpdatedConsortium.setId(consortium.getId());
 
-        partialUpdatedConsortium
-            .consortiumValue(UPDATED_CONSORTIUM_VALUE)
-            .created(UPDATED_CREATED)
-            .minimumBidValue(UPDATED_MINIMUM_BID_VALUE)
-            .numberOfInstallments(UPDATED_NUMBER_OF_INSTALLMENTS)
-            .installmentValue(UPDATED_INSTALLMENT_VALUE)
-            .segmentType(UPDATED_SEGMENT_TYPE)
-            .status(UPDATED_STATUS);
+        partialUpdatedConsortium.consortiumValue(UPDATED_CONSORTIUM_VALUE).created(UPDATED_CREATED).minimumBidValue(UPDATED_MINIMUM_BID_VALUE).segmentType(UPDATED_SEGMENT_TYPE).status(UPDATED_STATUS);
 
         restConsortiumMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedConsortium.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedConsortium))
-            )
+            .perform(patch(ENTITY_API_URL_ID, partialUpdatedConsortium.getId()).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(partialUpdatedConsortium)))
             .andExpect(status().isOk());
 
         // Validate the Consortium in the database
@@ -372,8 +320,6 @@ class ConsortiumResourceIT {
         assertThat(testConsortium.getConsortiumValue()).isEqualByComparingTo(UPDATED_CONSORTIUM_VALUE);
         assertThat(testConsortium.getCreated()).isEqualTo(UPDATED_CREATED);
         assertThat(testConsortium.getMinimumBidValue()).isEqualByComparingTo(UPDATED_MINIMUM_BID_VALUE);
-        assertThat(testConsortium.getNumberOfInstallments()).isEqualTo(UPDATED_NUMBER_OF_INSTALLMENTS);
-        assertThat(testConsortium.getInstallmentValue()).isEqualByComparingTo(UPDATED_INSTALLMENT_VALUE);
         assertThat(testConsortium.getSegmentType()).isEqualTo(UPDATED_SEGMENT_TYPE);
         assertThat(testConsortium.getStatus()).isEqualTo(UPDATED_STATUS);
     }
@@ -386,11 +332,7 @@ class ConsortiumResourceIT {
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restConsortiumMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, consortium.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(consortium))
-            )
+            .perform(patch(ENTITY_API_URL_ID, consortium.getId()).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(consortium)))
             .andExpect(status().isBadRequest());
 
         // Validate the Consortium in the database
@@ -406,11 +348,7 @@ class ConsortiumResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restConsortiumMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, count.incrementAndGet())
-                    .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(consortium))
-            )
+            .perform(patch(ENTITY_API_URL_ID, count.incrementAndGet()).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(consortium)))
             .andExpect(status().isBadRequest());
 
         // Validate the Consortium in the database
@@ -426,9 +364,7 @@ class ConsortiumResourceIT {
 
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restConsortiumMockMvc
-            .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(consortium))
-            )
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(consortium)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Consortium in the database
@@ -445,9 +381,7 @@ class ConsortiumResourceIT {
         int databaseSizeBeforeDelete = consortiumRepository.findAll().size();
 
         // Delete the consortium
-        restConsortiumMockMvc
-            .perform(delete(ENTITY_API_URL_ID, consortium.getId()).accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNoContent());
+        restConsortiumMockMvc.perform(delete(ENTITY_API_URL_ID, consortium.getId()).accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
 
         // Validate the database contains one less item
         List<Consortium> consortiumList = consortiumRepository.findAll();

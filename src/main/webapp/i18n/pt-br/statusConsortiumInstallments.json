@@ -1,0 +1,8 @@
+{
+  "repasseconsorcioApp": {
+    "StatusConsortiumInstallments": {
+      "OPEN": "Em Aberto",
+      "LATE": "Atrasada"
+    }
+  }
+}

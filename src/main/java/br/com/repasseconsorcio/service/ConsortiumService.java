@@ -2,6 +2,7 @@ package br.com.repasseconsorcio.service;
 
 import br.com.repasseconsorcio.domain.Bid;
 import br.com.repasseconsorcio.domain.Consortium;
+import br.com.repasseconsorcio.domain.ConsortiumInstallments;
 import br.com.repasseconsorcio.domain.User;
 import br.com.repasseconsorcio.domain.enumeration.ConsortiumStatusType;
 import br.com.repasseconsorcio.domain.enumeration.SegmentType;
@@ -36,9 +37,12 @@ public class ConsortiumService {
 
     private final UserService userService;
 
-    public ConsortiumService(ConsortiumRepository consortiumRepository, UserService userService) {
+    private final ConsortiumInstallmentsService consortiumInstallmentsService;
+
+    public ConsortiumService(ConsortiumRepository consortiumRepository, UserService userService, ConsortiumInstallmentsService consortiumInstallmentsService) {
         this.consortiumRepository = consortiumRepository;
         this.userService = userService;
+        this.consortiumInstallmentsService = consortiumInstallmentsService;
     }
 
     /**
@@ -56,7 +60,23 @@ public class ConsortiumService {
         consortium.setCreated(now);
         consortium.setStatus(ConsortiumStatusType.REGISTERED);
 
-        return consortiumRepository.save(consortium);
+        Consortium result = consortiumRepository.save(consortium);
+
+        System.out.println("consortium.getConsortiumInstallments().size() = " + consortium.getConsortiumInstallments());
+
+        consortium
+            .getConsortiumInstallments()
+            .forEach(consortiumInstallment -> {
+                ConsortiumInstallments installment = new ConsortiumInstallments();
+                installment.setConsortium(result);
+                installment.setInstallmentValue(consortiumInstallment.getInstallmentValue());
+                installment.setNumberOfInstallments(consortiumInstallment.getNumberOfInstallments());
+                installment.setInstallmentDate(consortiumInstallment.getInstallmentDate());
+                installment.setStatus(consortiumInstallment.getStatus());
+                consortiumInstallmentsService.save(installment);
+            });
+
+        return result;
     }
 
     /**
@@ -80,12 +100,6 @@ public class ConsortiumService {
                 if (consortium.getMinimumBidValue() != null) {
                     existingConsortium.setMinimumBidValue(consortium.getMinimumBidValue());
                 }
-                if (consortium.getNumberOfInstallments() != null) {
-                    existingConsortium.setNumberOfInstallments(consortium.getNumberOfInstallments());
-                }
-                if (consortium.getInstallmentValue() != null) {
-                    existingConsortium.setInstallmentValue(consortium.getInstallmentValue());
-                }
                 if (consortium.getSegmentType() != null) {
                     existingConsortium.setSegmentType(consortium.getSegmentType());
                 }
@@ -105,7 +119,7 @@ public class ConsortiumService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<Consortium> findAllByStatusNotIn(Pageable pageable, SegmentType filterSegmentType, ConsortiumStatusType filterStatusType) {
+    public Page<Consortium> findAllByStatusNotIn(Pageable pageable, SegmentType filterSegmentType, ConsortiumStatusType filterStatusType, Long filterConsortiumId) {
         log.debug("Request to get all Consortiums");
 
         Boolean isAuthenticated = SecurityUtils.hasCurrentUserNoneOfAuthorities(AuthoritiesConstants.ANONYMOUS);
@@ -118,7 +132,7 @@ public class ConsortiumService {
 
         if (isAuthenticated && !isAdmin) {
             filterStatusType = ConsortiumStatusType.OPEN;
-            Page<Consortium> consortiums = consortiumRepository.findAllByStatusNotInAndSegmentTypeAndUser(filterStatusType, filterSegmentType, pageable);
+            Page<Consortium> consortiums = consortiumRepository.findAllByStatusNotInAndSegmentTypeAndUser(filterStatusType, filterSegmentType, filterConsortiumId, pageable);
 
             consortiums
                 .getContent()
@@ -135,7 +149,7 @@ public class ConsortiumService {
             filterStatusType = ConsortiumStatusType.OPEN;
         }
 
-        Page<Consortium> consortiums = consortiumRepository.findAllByAdminAndSegmentType(filterStatusType, filterSegmentType, pageable);
+        Page<Consortium> consortiums = consortiumRepository.findAllByAdminAndSegmentType(filterStatusType, filterSegmentType, filterConsortiumId, pageable);
 
         consortiums
             .getContent()

@@ -24,14 +24,24 @@ public interface ConsortiumRepository extends JpaRepository<Consortium, Long> {
     List<Consortium> findByUserIsCurrentUser();
 
     @Query(
-        "SELECT DISTINCT consortium FROM Consortium consortium LEFT JOIN consortium.bids bids WHERE (:filterStatusType IS NULL OR consortium.status = :filterStatusType) AND (:segmentType IS NULL OR consortium.segmentType = :segmentType) AND consortium.user.login != ?#{principal.username}"
+        "SELECT DISTINCT consortium FROM Consortium consortium LEFT JOIN consortium.bids bids WHERE (:filterConsortiumId IS NULL or consortium.id = :filterConsortiumId) AND (:filterStatusType IS NULL OR consortium.status = :filterStatusType) AND (:segmentType IS NULL OR consortium.segmentType = :segmentType) AND consortium.user.login != ?#{principal.username}"
     )
-    Page<Consortium> findAllByStatusNotInAndSegmentTypeAndUser(@Param("filterStatusType") ConsortiumStatusType filterStatusType, @Param("segmentType") SegmentType segmentType, Pageable pageable);
+    Page<Consortium> findAllByStatusNotInAndSegmentTypeAndUser(
+        @Param("filterStatusType") ConsortiumStatusType filterStatusType,
+        @Param("segmentType") SegmentType segmentType,
+        @Param("filterConsortiumId") Long filterConsortiumId,
+        Pageable pageable
+    );
 
     @Query(
-        "SELECT DISTINCT consortium FROM Consortium consortium LEFT JOIN consortium.bids bids WHERE consortium.status != 'REGISTERED' AND (:filterStatusType IS NULL OR consortium.status = :filterStatusType) AND (:segmentType IS NULL OR consortium.segmentType = :segmentType)"
+        "SELECT DISTINCT consortium FROM Consortium consortium LEFT JOIN consortium.bids bids WHERE (:filterConsortiumId IS NULL or consortium.id = :filterConsortiumId) AND consortium.status != 'REGISTERED' AND (:filterStatusType IS NULL OR consortium.status = :filterStatusType) AND (:segmentType IS NULL OR consortium.segmentType = :segmentType)"
     )
-    Page<Consortium> findAllByAdminAndSegmentType(@Param("filterStatusType") ConsortiumStatusType filterStatusType, @Param("segmentType") SegmentType segmentType, Pageable pageable);
+    Page<Consortium> findAllByAdminAndSegmentType(
+        @Param("filterStatusType") ConsortiumStatusType filterStatusType,
+        @Param("segmentType") SegmentType segmentType,
+        @Param("filterConsortiumId") Long filterConsortiumId,
+        Pageable pageable
+    );
 
     @Query("SELECT DISTINCT consortium FROM Consortium consortium LEFT JOIN consortium.bids bids where consortium.status IN ?1 and consortium.user != ?2")
     Page<ProposalApprovalsDTO> findAllByStatusIn(List<ConsortiumStatusType> status, User loggedUser, Pageable pageable);

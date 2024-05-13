@@ -38,12 +38,6 @@ public class Consortium implements Serializable {
     @Column(name = "minimum_bid_value", precision = 21, scale = 2)
     private BigDecimal minimumBidValue;
 
-    @Column(name = "number_of_installments")
-    private Integer numberOfInstallments;
-
-    @Column(name = "installment_value", precision = 21, scale = 2)
-    private BigDecimal installmentValue;
-
     @Column(name = "contemplation_status")
     private Boolean contemplationStatus;
 
@@ -66,6 +60,11 @@ public class Consortium implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties(value = { "consortiums" }, allowSetters = true)
     private ConsortiumAdministrator consortiumAdministrator;
+
+    @OneToMany(mappedBy = "consortium", fetch = FetchType.EAGER)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "consortium" }, allowSetters = true)
+    private Set<ConsortiumInstallments> consortiumInstallments = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -119,32 +118,6 @@ public class Consortium implements Serializable {
 
     public void setMinimumBidValue(BigDecimal minimumBidValue) {
         this.minimumBidValue = minimumBidValue;
-    }
-
-    public Integer getNumberOfInstallments() {
-        return this.numberOfInstallments;
-    }
-
-    public Consortium numberOfInstallments(Integer numberOfInstallments) {
-        this.setNumberOfInstallments(numberOfInstallments);
-        return this;
-    }
-
-    public void setNumberOfInstallments(Integer numberOfInstallments) {
-        this.numberOfInstallments = numberOfInstallments;
-    }
-
-    public BigDecimal getInstallmentValue() {
-        return this.installmentValue;
-    }
-
-    public Consortium installmentValue(BigDecimal installmentValue) {
-        this.setInstallmentValue(installmentValue);
-        return this;
-    }
-
-    public void setInstallmentValue(BigDecimal installmentValue) {
-        this.installmentValue = installmentValue;
     }
 
     public SegmentType getSegmentType() {
@@ -238,6 +211,37 @@ public class Consortium implements Serializable {
         return this;
     }
 
+    public Set<ConsortiumInstallments> getConsortiumInstallments() {
+        return this.consortiumInstallments;
+    }
+
+    public void setConsortiumInstallments(Set<ConsortiumInstallments> consortiumInstallments) {
+        if (this.consortiumInstallments != null) {
+            this.consortiumInstallments.forEach(i -> i.setConsortium(null));
+        }
+        if (consortiumInstallments != null) {
+            consortiumInstallments.forEach(i -> i.setConsortium(this));
+        }
+        this.consortiumInstallments = consortiumInstallments;
+    }
+
+    public Consortium consortiumInstallments(Set<ConsortiumInstallments> consortiumInstallments) {
+        this.setConsortiumInstallments(consortiumInstallments);
+        return this;
+    }
+
+    public Consortium addConsortiumInstallments(ConsortiumInstallments consortiumInstallments) {
+        this.consortiumInstallments.add(consortiumInstallments);
+        consortiumInstallments.setConsortium(this);
+        return this;
+    }
+
+    public Consortium removeConsortiumInstallments(ConsortiumInstallments consortiumInstallments) {
+        this.consortiumInstallments.remove(consortiumInstallments);
+        consortiumInstallments.setConsortium(null);
+        return this;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -265,8 +269,6 @@ public class Consortium implements Serializable {
             ", consortiumValue=" + getConsortiumValue() +
             ", created='" + getCreated() + "'" +
             ", minimumBidValue=" + getMinimumBidValue() +
-            ", numberOfInstallments=" + getNumberOfInstallments() +
-            ", installmentValue=" + getInstallmentValue() +
             ", segmentType='" + getSegmentType() + "'" +
             ", status='" + getStatus() + "'" +
             "}";

@@ -1,9 +1,11 @@
+import { ArrowOutward } from '@mui/icons-material'
 import { Box, Card, CardContent, Chip, List, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { BidHistoryModal } from 'app/entities/bid/BidHistoryModal'
 import { HomeLogin } from 'app/modules/login/HomeLogin'
 import { AuctionTimer } from 'app/shared/components/AuctionTimer'
 import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
+import { ConsortiumInstallmentsModal } from 'app/shared/components/ConsortiumInstallmentsModal'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
 import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
@@ -11,6 +13,7 @@ import { SortingBox } from 'app/shared/components/SortingBox'
 import { StatusFilter } from 'app/shared/components/StatusFilter'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { defaultTheme } from 'app/shared/layout/themes'
+import { IConsortiumInstallments } from 'app/shared/model/consortium-installments.model'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
@@ -32,6 +35,8 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
   const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'consortiumValue'), props.location.search))
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [openBidHistoryModal, setOpenBidHistoryModal] = useState(false)
+  const [openConsortiumInstallmentsModal, setOpenConsortiumInstallmentsModal] = useState(false)
+  const [onConsortiumInstallments, setOnConsortiumInstallments] = useState([])
   const [entityConsortium, setEntityConsortium] = useState<IConsortium>(null)
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
   const [filterStatusType, setFilterStatusType] = useState(ConsortiumStatusType.ALL)
@@ -77,18 +82,23 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
     setEntityConsortium(consortium)
   }
 
+  const handleOpenConsortiumInstallmentsModal = (_event, _onConsortiumInstallments: IConsortiumInstallments[]) => {
+    _event.stopPropagation()
+    setOpenConsortiumInstallmentsModal(true)
+    setOnConsortiumInstallments(_onConsortiumInstallments)
+  }
+
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
     const {
       consortiumAdministrator: { name, image },
       segmentType,
       consortiumValue,
-      numberOfInstallments,
-      installmentValue,
       created,
       contemplationStatus,
       minimumBidValue,
       status,
       bids,
+      consortiumInstallments,
     } = consortium
 
     return (
@@ -102,12 +112,11 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
           ':hover': {
             md: {
               scale: '1.03',
-              transition: 'all 0.3s ease',
+              transition: '0.2s',
             },
           },
         }}
         elevation={2}
-        onClick={() => (isAuthenticated ? handleBidHistory(consortium) : setOpenLoginModal(true))}
       >
         <Box
           sx={{
@@ -175,24 +184,20 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
               <span className='divider' />
               <Typography variant='caption'>{name}</Typography>
             </Typography>
-            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
-                {translate('repasseconsorcioApp.consortium.numberOfInstallments')}
-              </Typography>
-              <span className='divider' />
-              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
-                {numberOfInstallments}
-              </Typography>
-            </Typography>
-            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
-                {translate('repasseconsorcioApp.consortium.installmentValue')}
-              </Typography>
-              <span className='divider' />
-              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
-                {formatCurrency(installmentValue)}
-              </Typography>
-            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
+              <Box onClick={(event) => handleOpenConsortiumInstallmentsModal(event, consortiumInstallments)}>
+                <Typography variant='caption' color={defaultTheme.palette.text.secondary} fontWeight={600}>
+                  Visualizar Parcelas
+                </Typography>
+                <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
+              </Box>
+              <Box onClick={() => handleBidHistory(consortium)} style={showElement(!!bids?.length && isAuthenticated)}>
+                <Typography variant='caption' color={defaultTheme.palette.text.secondary} fontWeight={600}>
+                  Visualizar Lances
+                </Typography>
+                <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
+              </Box>
+            </Box>
           </Box>
           <Box
             sx={{
@@ -217,7 +222,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: defaultTheme.palette.primary.main,
+                backgroundColor: defaultTheme.palette.background.paper,
               }}
             >
               <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
@@ -284,6 +289,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
 
       {openBidHistoryModal && <BidHistoryModal setOpenBidHistoryModal={setOpenBidHistoryModal} entityConsortium={entityConsortium} />}
       {openLoginModal && <HomeLogin setOpenLoginModal={setOpenLoginModal} />}
+      {openConsortiumInstallmentsModal && <ConsortiumInstallmentsModal setOpenConsortiumInstallmentsModal={setOpenConsortiumInstallmentsModal} consortiumInstallments={onConsortiumInstallments} />}
     </ThemeProvider>
   )
 }

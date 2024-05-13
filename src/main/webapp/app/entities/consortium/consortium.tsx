@@ -1,3 +1,4 @@
+import { ArrowOutward } from '@mui/icons-material'
 import { Box, Button, Card, CardContent, Chip, List, ListItem, ThemeProvider, Typography } from '@mui/material'
 import { AUTHORITIES } from 'app/config/constants'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
@@ -5,6 +6,7 @@ import { HomeLogin } from 'app/modules/login/HomeLogin'
 import { hasAnyAuthority } from 'app/shared/auth/private-route'
 import { AuctionTimer } from 'app/shared/components/AuctionTimer'
 import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
+import { ConsortiumInstallmentsModal } from 'app/shared/components/ConsortiumInstallmentsModal'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
 import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
@@ -12,6 +14,7 @@ import { SortingBox } from 'app/shared/components/SortingBox'
 import { StatusFilter } from 'app/shared/components/StatusFilter'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { defaultTheme } from 'app/shared/layout/themes'
+import { IConsortiumInstallments } from 'app/shared/model/consortium-installments.model'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
@@ -37,7 +40,8 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
   const [entityConsortium, setEntityConsortium] = useState<IConsortium>(null)
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
   const [filterStatusType, SetFilterStatusType] = useState(ConsortiumStatusType.ALL)
-
+  const [openConsortiumInstallmentsModal, setOpenConsortiumInstallmentsModal] = useState(false)
+  const [onConsortiumInstallments, setOnConsortiumInstallments] = useState([])
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [order, setOrder] = useState(ASC)
   const sortTypes = ['consortiumAdministrator', 'contemplationStatus', 'numberOfInstallments', 'installmentValue', 'minimumBidValue', 'consortiumValue']
@@ -90,13 +94,18 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
     setEntityConsortium(consortium)
   }
 
+  const handleOpenConsortiumInstallmentsModal = (_event, _onConsortiumInstallments: IConsortiumInstallments[]) => {
+    _event.stopPropagation()
+    setOpenConsortiumInstallmentsModal(true)
+    setOnConsortiumInstallments(_onConsortiumInstallments)
+  }
+
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
     const {
       consortiumAdministrator: { name, image },
       segmentType,
       consortiumValue,
-      numberOfInstallments,
-      installmentValue,
+      consortiumInstallments,
       created,
       contemplationStatus,
       minimumBidValue,
@@ -115,12 +124,11 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
           ':hover': {
             md: {
               scale: '1.03',
-              transition: 'all 0.3s ease',
+              transition: '0.2s',
             },
           },
         }}
         elevation={2}
-        onClick={() => (isAuthenticated ? handleBidHistory(consortium) : setOpenLoginModal(true))}
       >
         <Box
           sx={{
@@ -170,6 +178,9 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
           }}
         >
           <Box sx={{ my: 1, p: 1, borderRadius: '1em', position: 'relative' }}>
+            <Box sx={{ position: 'absolute', top: -15, left: 7 }}>
+              <strong style={{ color: defaultTheme.palette.secondary.main, fontSize: '12px' }}>#{consortium?.id}</strong>
+            </Box>
             <Typography sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
                 {translate('repasseconsorcioApp.consortium.segmentType')}
@@ -186,24 +197,20 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
               <span className='divider' />
               <Typography variant='caption'>{name}</Typography>
             </Typography>
-            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
-                {translate('repasseconsorcioApp.consortium.numberOfInstallments')}
-              </Typography>
-              <span className='divider' />
-              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
-                {numberOfInstallments}
-              </Typography>
-            </Typography>
-            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
-                {translate('repasseconsorcioApp.consortium.installmentValue')}
-              </Typography>
-              <span className='divider' />
-              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
-                {formatCurrency(installmentValue)}
-              </Typography>
-            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
+              <Box onClick={(event) => handleOpenConsortiumInstallmentsModal(event, consortiumInstallments)}>
+                <Typography variant='caption' color={defaultTheme.palette.text.secondary} fontWeight={600}>
+                  Visualizar Parcelas
+                </Typography>
+                <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
+              </Box>
+              <Box onClick={() => handleBidHistory(consortium)} style={showElement(!!bids?.length && isAuthenticated)}>
+                <Typography variant='caption' color={defaultTheme.palette.text.secondary} fontWeight={600}>
+                  Visualizar Lances
+                </Typography>
+                <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
+              </Box>
+            </Box>
           </Box>
           <Box
             sx={{
@@ -228,7 +235,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: defaultTheme.palette.primary.main,
+                backgroundColor: defaultTheme.palette.background.paper,
               }}
             >
               <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
@@ -314,6 +321,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
       {openBidHistoryModal && <BidHistoryModal setOpenBidHistoryModal={setOpenBidHistoryModal} entityConsortium={entityConsortium} />}
       {openLoginModal && <HomeLogin setOpenLoginModal={setOpenLoginModal} />}
       {openBidUpdateModal && <BidUpdateModal setOpenBidUpdateModal={setOpenBidUpdateModal} entityConsortium={entityConsortium} />}
+      {openConsortiumInstallmentsModal && <ConsortiumInstallmentsModal setOpenConsortiumInstallmentsModal={setOpenConsortiumInstallmentsModal} consortiumInstallments={onConsortiumInstallments} />}
     </ThemeProvider>
   )
 }

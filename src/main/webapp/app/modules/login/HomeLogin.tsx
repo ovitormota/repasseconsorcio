@@ -48,7 +48,7 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
     <ThemeProvider theme={defaultTheme}>
       <Dialog
         open={true}
-        sx={{ backgroundColor: defaultTheme.palette.primary.main }}
+        sx={{ backgroundColor: defaultTheme.palette.background.paper }}
         PaperProps={{
           sx: { borderRadius: '1em', background: defaultTheme.palette.secondary['A100'], minWidth: { xs: '92vw', sm: '80vw', md: '550px' }, maxWidth: '550px' },
         }}
@@ -73,7 +73,7 @@ export const HomeLogin = ({ setOpenLoginModal }: IHomeLoginProps) => {
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ py: 4, px: { xs: 3, sm: 4 }, background: defaultTheme.palette.primary.main, borderRadius: '1em' }}>
+        <DialogContent sx={{ py: 4, px: { xs: 3, sm: 4 }, background: defaultTheme.palette.background.paper, borderRadius: '1em' }}>
           <form onSubmit={handleSubmit} style={{ marginTop: '1em' }}>
             <TextField
               name='username'

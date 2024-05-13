@@ -66,7 +66,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
     }
 
     dispatch(createEntity(entity)).then(() => {
-      history.replace(`/bid`)
+      history.replace(`/meus-lances`)
     })
   }
 
@@ -128,7 +128,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
         </DialogContent>
         <form onSubmit={openModalUseTerms}>
           <DialogActions>
-            <Button onClick={() => setOpenBidUpdateModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
+            <Button onClick={() => setOpenBidUpdateModal(false)} sx={{ color: defaultTheme.palette.text.primary, fontSize: '12px' }}>
               <Translate contentKey='entity.action.cancel'>Cancel</Translate>
             </Button>
             <Button
@@ -136,7 +136,7 @@ export const BidUpdateModal = ({ setOpenBidUpdateModal, entityConsortium }: IBid
               variant='contained'
               color='secondary'
               disabled={!bidValue || bidValue < (latestBidValue ? addPercentage(latestBidValue) : addPercentage(entityConsortium?.minimumBidValue))}
-              sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}
+              sx={{ fontWeight: '600', color: defaultTheme.palette.background.paper }}
             >
               <Translate contentKey='entity.action.continue'>Continue</Translate>
             </Button>

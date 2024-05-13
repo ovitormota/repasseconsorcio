@@ -117,10 +117,10 @@ export const ConsortiumAdministratorUpdateModal = ({ setOpenConsorciumAdministra
         </DialogContent>
         <form onSubmit={saveEntity}>
           <DialogActions>
-            <Button onClick={() => setOpenConsorciumAdministratorUpdateModal(false)} sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px' }}>
+            <Button onClick={() => setOpenConsorciumAdministratorUpdateModal(false)} sx={{ color: defaultTheme.palette.text.primary, fontSize: '12px' }}>
               <Translate contentKey='entity.action.cancel'>Cancel</Translate>
             </Button>
-            <Button type='submit' variant='contained' color='secondary' sx={{ fontWeight: '600', color: defaultTheme.palette.primary.main }}>
+            <Button type='submit' variant='contained' color='secondary' sx={{ fontWeight: '600', color: defaultTheme.palette.background.paper }}>
               <Translate contentKey='entity.action.save'>Save</Translate>
             </Button>
           </DialogActions>

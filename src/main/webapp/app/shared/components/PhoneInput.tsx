@@ -21,11 +21,11 @@ const PhoneInput = ({ value, onChange }) => {
           fullWidth
           color='secondary'
           data-cy='telephone'
-          helperText={!isPhoneValid() && 'Seu número é inválido'}
+          helperText={value && !isPhoneValid() && 'Seu número é inválido'}
           InputProps={{
             style: { borderRadius: '10px' },
           }}
-          sx={{ mt: 2, mb: 1 }}
+          sx={{ mt: 2 }}
         />
       )}
     </InputMask>

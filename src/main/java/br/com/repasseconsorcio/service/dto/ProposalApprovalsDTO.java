@@ -3,6 +3,7 @@ package br.com.repasseconsorcio.service.dto;
 import br.com.repasseconsorcio.domain.Bid;
 import br.com.repasseconsorcio.domain.Consortium;
 import br.com.repasseconsorcio.domain.ConsortiumAdministrator;
+import br.com.repasseconsorcio.domain.ConsortiumInstallments;
 import br.com.repasseconsorcio.domain.User;
 import br.com.repasseconsorcio.domain.enumeration.ConsortiumStatusType;
 import br.com.repasseconsorcio.domain.enumeration.SegmentType;
@@ -17,14 +18,13 @@ public class ProposalApprovalsDTO {
     private BigDecimal consortiumValue;
     private Instant created;
     private BigDecimal minimumBidValue;
-    private Integer numberOfInstallments;
-    private BigDecimal installmentValue;
     private SegmentType segmentType;
     private ConsortiumStatusType status;
     private Boolean contemplationStatus;
     private Set<Bid> bids = new HashSet<>();
     private User user;
     private ConsortiumAdministrator consortiumAdministrator;
+    private Set<ConsortiumInstallments> consortiumInstallments = new HashSet<>();
 
     public ProposalApprovalsDTO() {}
 
@@ -33,14 +33,13 @@ public class ProposalApprovalsDTO {
         this.consortiumValue = consortium.getConsortiumValue();
         this.created = consortium.getCreated();
         this.minimumBidValue = consortium.getMinimumBidValue();
-        this.numberOfInstallments = consortium.getNumberOfInstallments();
-        this.installmentValue = consortium.getInstallmentValue();
         this.segmentType = consortium.getSegmentType();
         this.status = consortium.getStatus();
         this.contemplationStatus = consortium.getContemplationStatus();
         this.bids = consortium.getBids();
         this.user = consortium.getUser();
         this.consortiumAdministrator = consortium.getConsortiumAdministrator();
+        this.consortiumInstallments = consortium.getConsortiumInstallments();
     }
 
     // Getters and setters
@@ -74,22 +73,6 @@ public class ProposalApprovalsDTO {
 
     public void setMinimumBidValue(BigDecimal minimumBidValue) {
         this.minimumBidValue = minimumBidValue;
-    }
-
-    public Integer getNumberOfInstallments() {
-        return numberOfInstallments;
-    }
-
-    public void setNumberOfInstallments(Integer numberOfInstallments) {
-        this.numberOfInstallments = numberOfInstallments;
-    }
-
-    public BigDecimal getInstallmentValue() {
-        return installmentValue;
-    }
-
-    public void setInstallmentValue(BigDecimal installmentValue) {
-        this.installmentValue = installmentValue;
     }
 
     public SegmentType getSegmentType() {
@@ -138,5 +121,13 @@ public class ProposalApprovalsDTO {
 
     public void setConsortiumAdministrator(ConsortiumAdministrator consortiumAdministrator) {
         this.consortiumAdministrator = consortiumAdministrator;
+    }
+
+    public Set<ConsortiumInstallments> getConsortiumInstallments() {
+        return consortiumInstallments;
+    }
+
+    public void setConsortiumInstallments(Set<ConsortiumInstallments> consortiumInstallments) {
+        this.consortiumInstallments = consortiumInstallments;
     }
 }

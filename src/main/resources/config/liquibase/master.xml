@@ -17,15 +17,20 @@
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240209013217_added_entity_ConsortiumAdministrator.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240209013317_added_entity_Bid.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20240209013417_added_entity_Consortium.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20240510191453_added_entity_ConsortiumInstallments.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20240510191353_added_entity_Consortium.xml" relativeToChangelogFile="false"/>
+
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20240209013317_added_entity_constraints_Bid.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20240209013417_added_entity_constraints_Consortium.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240211151515_added_column_image_app_user.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240217230000_added_column_contemplation_status_consortium.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240331181000_added_entity_NotificationToken.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240331181000_added_entity_constraints_NotificationToken.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240417202020_added_column_phone_number.xml" relativeToChangelogFile="false" />
+    <include file="config/liquibase/changelog/20240510191453_added_entity_constraints_ConsortiumInstallments.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20240510191353_added_entity_constraints_Consortium.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20241105161616_added_column_installment_date_ConsortiumInstallments.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20241105171717_added_column_status_ConsortiumInstallments.xml" relativeToChangelogFile="false"/>
 
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->

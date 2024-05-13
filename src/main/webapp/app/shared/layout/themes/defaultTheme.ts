@@ -4,8 +4,7 @@ export const defaultTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#FFFFFF',
-      light: 'rgba(247,247,253)',
+      main: 'rgba(43,43,43, 1)',
       contrastText: 'rgb(43,43,43)',
     },
     secondary: {
@@ -27,7 +26,7 @@ export const defaultTheme = createTheme({
     },
     background: {
       paper: '#FFFFFF',
-      default: '#FFFFFF',
+      default: 'rgba(247,247,253)',
     },
     error: {
       main: '#EF5350',

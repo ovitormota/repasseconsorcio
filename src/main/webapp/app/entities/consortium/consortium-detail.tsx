@@ -1,101 +1,330 @@
-import React, { useEffect } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import { Button, Row, Col } from 'reactstrap';
-import { Translate, TextFormat } from 'react-jhipster';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import { getEntity } from './consortium.reducer';
-import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
-import { useAppDispatch, useAppSelector } from 'app/config/store';
+import { ArrowOutward } from '@mui/icons-material'
+import { Box, Button, Card, CardContent, Chip, List, ListItem, ThemeProvider, Typography } from '@mui/material'
+import { AUTHORITIES } from 'app/config/constants'
+import { useAppDispatch, useAppSelector } from 'app/config/store'
+import { HomeLogin } from 'app/modules/login/HomeLogin'
+import { hasAnyAuthority } from 'app/shared/auth/private-route'
+import { AuctionTimer } from 'app/shared/components/AuctionTimer'
+import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
+import { ConsortiumInstallmentsModal } from 'app/shared/components/ConsortiumInstallmentsModal'
+import { Loading } from 'app/shared/components/Loading'
+import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
+import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
+import { SortingBox } from 'app/shared/components/SortingBox'
+import { StatusFilter } from 'app/shared/components/StatusFilter'
+import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
+import { defaultTheme } from 'app/shared/layout/themes'
+import { IConsortiumInstallments } from 'app/shared/model/consortium-installments.model'
+import { IConsortium } from 'app/shared/model/consortium.model'
+import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
+import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
+import { addPercentage, formatCurrency, getStatusColor, showElement } from 'app/shared/util/data-utils'
+import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
+import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { getSortState, translate } from 'react-jhipster'
+import { RouteComponentProps } from 'react-router-dom'
+import { BidHistoryModal } from '../bid/BidHistoryModal'
+import { BidUpdateModal } from '../bid/BidUpdateModal'
+import { getEntities } from './consortium.reducer'
 
 export const ConsortiumDetail = (props: RouteComponentProps<{ id: string }>) => {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
+  const scrollableBoxRef = useRef<HTMLDivElement>(null)
+
+  const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'consortiumValue'), props.location.search))
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
+  const [openBidUpdateModal, setOpenBidUpdateModal] = useState(false)
+  const [openBidHistoryModal, setOpenBidHistoryModal] = useState(false)
+  const [entityConsortium, setEntityConsortium] = useState<IConsortium>(null)
+  const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
+  const [filterStatusType, SetFilterStatusType] = useState(ConsortiumStatusType.ALL)
+  const [openConsortiumInstallmentsModal, setOpenConsortiumInstallmentsModal] = useState(false)
+  const [onConsortiumInstallments, setOnConsortiumInstallments] = useState([])
+  const [currentSort, setCurrentSort] = useState('consortiumValue')
+  const [order, setOrder] = useState(ASC)
+  const sortTypes = ['consortiumAdministrator', 'contemplationStatus', 'numberOfInstallments', 'installmentValue', 'minimumBidValue', 'consortiumValue']
+
+  const isAdmin = useAppSelector((state) => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN]))
+  const isAuthenticated = useAppSelector((state) => state.authentication.isAuthenticated)
+  const consortiumList = useAppSelector((state) => state.consortium.entities)
+  const loading = useAppSelector((state) => state.consortium.loading)
+  const links = useAppSelector((state) => state.consortium.links)
+
+  const getAllEntities = () => {
+    dispatch(
+      getEntities({
+        page: paginationState.activePage - 1,
+        size: paginationState.itemsPerPage,
+        sort: `${currentSort},${order}`,
+        filterSegmentType,
+        filterStatusType,
+        filterConsortiumId: props.match.params.id,
+      })
+    )
+  }
 
   useEffect(() => {
-    dispatch(getEntity(props.match.params.id));
-  }, []);
+    getAllEntities()
+  }, [paginationState.activePage, props.match.params.id, filterSegmentType, filterStatusType, currentSort, order])
 
-  const consortiumEntity = useAppSelector(state => state.consortium.entity);
+  const handleLoadMore = () => {
+    setPaginationState({
+      ...paginationState,
+      activePage: paginationState.activePage + 1,
+    })
+  }
+
+  const renderStatusRibbon = () => (
+    <div className='ribbon'>
+      <a href=''>{translate('repasseconsorcioApp.consortium.contemplationTypeStatus.approved')}</a>
+    </div>
+  )
+
+  const handleBid = (consortium: IConsortium) => {
+    if (!isAuthenticated) {
+      setOpenLoginModal(true)
+    } else {
+      setEntityConsortium(consortium), setOpenBidUpdateModal(true)
+    }
+  }
+
+  const handleBidHistory = (consortium: IConsortium) => {
+    setOpenBidHistoryModal(true)
+    setEntityConsortium(consortium)
+  }
+
+  const handleOpenConsortiumInstallmentsModal = (_event, _onConsortiumInstallments: IConsortiumInstallments[]) => {
+    _event.stopPropagation()
+    setOpenConsortiumInstallmentsModal(true)
+    setOnConsortiumInstallments(_onConsortiumInstallments)
+  }
+
+  const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
+    const {
+      consortiumAdministrator: { name, image },
+      segmentType,
+      consortiumValue,
+      consortiumInstallments,
+      created,
+      contemplationStatus,
+      minimumBidValue,
+      status,
+      bids,
+    } = consortium
+
+    return (
+      <Card
+        sx={{
+          m: { xs: 1.1, sm: 1.1 },
+          width: { xs: '90vw', sm: '330px' },
+          borderRadius: '1rem',
+          position: 'relative',
+
+          ':hover': {
+            md: {
+              scale: '1.03',
+              transition: '0.2s',
+            },
+          },
+        }}
+        elevation={2}
+      >
+        <Box
+          sx={{
+            overflow: 'hidden',
+            height: '80px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            my: 1,
+            background: defaultTheme.palette.secondary['A100'],
+          }}
+        >
+          {<img src={`content/images/${segmentType === SegmentType.AUTOMOBILE ? 'car' : segmentType === SegmentType.REAL_ESTATE ? 'house' : 'other'}.png`} height='100%' />}
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, position: 'absolute', top: 10, right: 10 }}>
+          <Chip
+            label={consortium.bids?.length ? `${consortium.bids.length} ${consortium.bids.length > 1 ? 'lances' : 'lance'}` : 'Sem lances'}
+            variant='filled'
+            size='small'
+            style={showElement(!!consortium?.bids?.length)}
+            sx={{
+              cursor: 'pointer',
+              background: defaultTheme.palette.background.paper,
+              color: defaultTheme.palette.secondary.main,
+              backdropFilter: 'blur(5px)',
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
+            }}
+          />
+          <Chip
+            label={translate(`repasseconsorcioApp.ConsortiumStatusType.${status}`)}
+            color={getStatusColor(status)}
+            size='small'
+            style={showElement(isAdmin)}
+            sx={{
+              cursor: 'pointer',
+              color: defaultTheme.palette.secondary.contrastText,
+            }}
+          />
+        </Box>
+        {contemplationStatus && renderStatusRibbon()}
+        <CardContent
+          sx={{
+            marginTop: '-30px',
+            padding: '1em !important',
+            paddingTop: '0.5em !important',
+            paddingBottom: '0 !important',
+          }}
+        >
+          <Box sx={{ my: 1, p: 1, borderRadius: '1em', position: 'relative' }}>
+            <Box sx={{ position: 'absolute', top: -15, left: 7 }}>
+              <strong style={{ color: defaultTheme.palette.secondary.main, fontSize: '12px' }}>#{consortium?.id}</strong>
+            </Box>
+            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                {translate('repasseconsorcioApp.consortium.segmentType')}
+              </Typography>
+              <span className='divider' />
+              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
+                {translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}
+              </Typography>
+            </Typography>
+            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                {translate('repasseconsorcioApp.consortium.consortiumAdministrator')}
+              </Typography>
+              <span className='divider' />
+              <Typography variant='caption'>{name}</Typography>
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
+              <Box onClick={(event) => handleOpenConsortiumInstallmentsModal(event, consortiumInstallments)}>
+                <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                  Visualizar Parcelas
+                </Typography>
+                <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
+              </Box>
+              <Box onClick={() => handleBidHistory(consortium)} style={showElement(!!bids?.length && isAuthenticated)}>
+                <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                  Visualizar Lances
+                </Typography>
+                <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
+              </Box>
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              my: 1,
+              p: 1,
+              background: defaultTheme.palette.secondary['A100'],
+              borderRadius: '1em',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              position: 'relative',
+            }}
+          >
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 5,
+                left: 5,
+                p: '5px 10px',
+                borderRadius: '1em',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: defaultTheme.palette.background.paper,
+              }}
+            >
+              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                {translate('repasseconsorcioApp.consortium.minimumBidValue')}
+              </Typography>
+              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
+                {formatCurrency(bids?.length ? addPercentage(minimumBidValue) : minimumBidValue)}
+              </Typography>
+            </Box>
+            <Typography variant='caption' color={defaultTheme.palette.text.secondary} sx={{ marginLeft: 12 }}>
+              {translate('repasseconsorcioApp.consortium.consortiumValue')}
+            </Typography>
+            <Typography variant='h5' color={defaultTheme.palette.text.primary} sx={{ marginLeft: 12 }}>
+              {formatCurrency(consortiumValue)}
+            </Typography>
+          </Box>
+
+          <AuctionTimer created={created} consortium={consortium} />
+
+          <ListItem>
+            <Button
+              sx={{
+                borderRadius: '1em',
+                marginBottom: '0.5em',
+                background: defaultTheme.palette.secondary.light,
+              }}
+              variant='contained'
+              color='secondary'
+              fullWidth
+              disabled={isAdmin}
+              onClick={(event) => {
+                event.stopPropagation()
+                handleBid(consortium)
+              }}
+            >
+              <Typography variant='button'>Participar</Typography>
+            </Button>
+          </ListItem>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
-    <Row>
-      <Col md="8">
-        <h2 data-cy="consortiumDetailsHeading">
-          <Translate contentKey="repasseconsorcioApp.consortium.detail.title">Consortium</Translate>
-        </h2>
-        <dl className="jh-entity-details">
-          <dt>
-            <span id="id">
-              <Translate contentKey="global.field.id">ID</Translate>
-            </span>
-          </dt>
-          <dd>{consortiumEntity.id}</dd>
-          <dt>
-            <span id="consortiumValue">
-              <Translate contentKey="repasseconsorcioApp.consortium.consortiumValue">Consortium Value</Translate>
-            </span>
-          </dt>
-          <dd>{consortiumEntity.consortiumValue}</dd>
-          <dt>
-            <span id="created">
-              <Translate contentKey="repasseconsorcioApp.consortium.created">Created</Translate>
-            </span>
-          </dt>
-          <dd>{consortiumEntity.created ? <TextFormat value={consortiumEntity.created} type="date" format={APP_DATE_FORMAT} /> : null}</dd>
-          <dt>
-            <span id="minimumBidValue">
-              <Translate contentKey="repasseconsorcioApp.consortium.minimumBidValue">Minimum Bid Value</Translate>
-            </span>
-          </dt>
-          <dd>{consortiumEntity.minimumBidValue}</dd>
-          <dt>
-            <span id="numberOfInstallments">
-              <Translate contentKey="repasseconsorcioApp.consortium.numberOfInstallments">Number Of Installments</Translate>
-            </span>
-          </dt>
-          <dd>{consortiumEntity.numberOfInstallments}</dd>
-          <dt>
-            <span id="installmentValue">
-              <Translate contentKey="repasseconsorcioApp.consortium.installmentValue">Installment Value</Translate>
-            </span>
-          </dt>
-          <dd>{consortiumEntity.installmentValue}</dd>
-          <dt>
-            <span id="segmentType">
-              <Translate contentKey="repasseconsorcioApp.consortium.segmentType">Segment Type</Translate>
-            </span>
-          </dt>
-          <dd>{consortiumEntity.segmentType}</dd>
-          <dt>
-            <span id="status">
-              <Translate contentKey="repasseconsorcioApp.consortium.status">Status</Translate>
-            </span>
-          </dt>
-          <dd>{consortiumEntity.status}</dd>
-          <dt>
-            <Translate contentKey="repasseconsorcioApp.consortium.user">User</Translate>
-          </dt>
-          <dd>{consortiumEntity.user ? consortiumEntity.user.id : ''}</dd>
-          <dt>
-            <Translate contentKey="repasseconsorcioApp.consortium.consortiumAdministrator">Consortium Administrator</Translate>
-          </dt>
-          <dd>{consortiumEntity.consortiumAdministrator ? consortiumEntity.consortiumAdministrator.id : ''}</dd>
-        </dl>
-        <Button tag={Link} to="/consortium" replace color="info" data-cy="entityDetailsBackButton">
-          <FontAwesomeIcon icon="arrow-left" />{' '}
-          <span className="d-none d-md-inline">
-            <Translate contentKey="entity.action.back">Back</Translate>
-          </span>
-        </Button>
-        &nbsp;
-        <Button tag={Link} to={`/consortium/${consortiumEntity.id}/edit`} replace color="primary">
-          <FontAwesomeIcon icon="pencil-alt" />{' '}
-          <span className="d-none d-md-inline">
-            <Translate contentKey="entity.action.edit">Edit</Translate>
-          </span>
-        </Button>
-      </Col>
-    </Row>
-  );
-};
+    <ThemeProvider theme={defaultTheme}>
+      <AppBarComponent loading={loading} scrollableBoxRef={scrollableBoxRef}>
+        {isAdmin && <StatusFilter filterStatusType={filterStatusType} setFilterStatusType={SetFilterStatusType} />}
+        <SegmentFilterChip filterSegmentType={filterSegmentType} setFilterSegmentType={setFilterSegmentType} isAdmin={isAdmin} onMaxWidth={isAdmin} />
+        <SortingBox
+          setCurrentSort={setCurrentSort}
+          currentSort={currentSort}
+          setOrder={setOrder}
+          order={order}
+          sortTypes={sortTypes}
+          translateKey='repasseconsorcioApp.consortium'
+          onMaxWidth={isAdmin}
+        />
+      </AppBarComponent>
+      <Box sx={{ overflow: 'auto', height: 'calc(100vh - 70px)', paddingY: '70px' }} id='scrollableDiv' ref={scrollableBoxRef}>
+        <InfiniteScroll
+          dataLength={consortiumList?.length}
+          next={handleLoadMore}
+          hasMore={paginationState.activePage - 1 < links.next}
+          scrollableTarget='scrollableDiv'
+          loader={loading && <Loading height='150px' />}
+        >
+          {consortiumList?.length ? (
+            <List sx={{ mb: '150px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+              {!!consortiumList?.length &&
+                consortiumList?.map((consortium) => (
+                  <Fragment key={consortium?.id}>
+                    <ConsortiumCard consortium={consortium} />
+                  </Fragment>
+                ))}
+            </List>
+          ) : !loading ? (
+            <NoDataIndicator message='Nenhuma proposta encontrada' />
+          ) : (
+            <ConsortiumCardSkeleton items={ITEMS_PER_PAGE} />
+          )}
+        </InfiniteScroll>
+      </Box>
+      {openBidHistoryModal && <BidHistoryModal setOpenBidHistoryModal={setOpenBidHistoryModal} entityConsortium={entityConsortium} />}
+      {openLoginModal && <HomeLogin setOpenLoginModal={setOpenLoginModal} />}
+      {openBidUpdateModal && <BidUpdateModal setOpenBidUpdateModal={setOpenBidUpdateModal} entityConsortium={entityConsortium} />}
+      {openConsortiumInstallmentsModal && <ConsortiumInstallmentsModal setOpenConsortiumInstallmentsModal={setOpenConsortiumInstallmentsModal} consortiumInstallments={onConsortiumInstallments} />}
+    </ThemeProvider>
+  )
+}
 
-export default ConsortiumDetail;
+export default ConsortiumDetail

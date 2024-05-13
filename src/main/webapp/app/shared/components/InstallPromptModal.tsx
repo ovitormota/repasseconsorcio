@@ -48,7 +48,7 @@ export const InstallPromptModal = () => {
       open={modalOpen}
       sx={{ backgroundColor: defaultTheme.palette.background.default }}
       PaperProps={{
-        sx: { borderRadius: '1em', background: defaultTheme.palette.primary.main, p: { xs: 0, sm: 1 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
+        sx: { borderRadius: '1em', background: defaultTheme.palette.background.paper, p: { xs: 0, sm: 1 }, minWidth: { xs: '92vw', sm: '80vw', md: '600px' } },
       }}
       onClose={() => setModalOpen(false)}
     >

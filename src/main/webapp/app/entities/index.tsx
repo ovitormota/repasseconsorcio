@@ -14,19 +14,21 @@ import { MyProposals } from 'app/modules/proposals/MyProposals'
 import { UserManagement } from 'app/modules/administration/user-management/user-management'
 import { RoutesRegister } from 'app/modules/account/register/RoutesRegister'
 import NotificationToken from './notification-token/notification-token'
+import ConsortiumDetail from './consortium/consortium-detail'
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 const Routes = ({ match }) => (
   <div>
     <Switch>
       {/* prettier-ignore */}
-      <PrivateRoute path={`${match.url}users`} component={UserManagement} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
-      <PrivateRoute path={`${match.url}consortium-administrator`} component={ConsortiumAdministrator} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
-      <ErrorBoundaryRoute path={`${match.url}bid`} component={Bid} />
-      <PrivateRoute path={`${match.url}proposal-approvals`} component={ProposalsForApproval} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
-      <PrivateRoute path={`${match.url}my-proposals`} component={MyProposals} hasAnyAuthorities={[AUTHORITIES.USER]} />
+      <PrivateRoute path={`${match.url}usuarios`} component={UserManagement} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
+      <PrivateRoute path={`${match.url}administradoras`} component={ConsortiumAdministrator} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
+      <ErrorBoundaryRoute path={`${match.url}meus-lances`} component={Bid} />
+      <PrivateRoute path={`${match.url}aprovacoes`} component={ProposalsForApproval} hasAnyAuthorities={[AUTHORITIES.ADMIN]} />
+      <PrivateRoute path={`${match.url}minhas-propostas`} component={MyProposals} hasAnyAuthorities={[AUTHORITIES.USER]} />
       <PrivateRoute path={`${match.url}register`} component={RoutesRegister} hasAnyAuthorities={[AUTHORITIES.USER]} />
       <ErrorBoundaryRoute path={`${match.url}notification-token`} component={NotificationToken} />
+      <ErrorBoundaryRoute exact path={`${match.url}consorcio/:id`} component={ConsortiumDetail} />
       <ErrorBoundaryRoute path={'/'} exact component={Consortium} />
       <Redirect path='*' to='/' />
 

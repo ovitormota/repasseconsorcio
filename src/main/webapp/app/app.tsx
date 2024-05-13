@@ -54,7 +54,7 @@ export const App = () => {
 
   useEffect(() => {
     if (notificationUrl) {
-      if (notificationUrl === '/my-proposals') {
+      if (notificationUrl === '/minhas-propostas') {
         dispatch(
           getMyProposals({
             filterSegmentType: SegmentType.ALL,
@@ -64,7 +64,7 @@ export const App = () => {
             size: ITEMS_PER_PAGE,
           })
         )
-      } else if (notificationUrl === '/bid') {
+      } else if (notificationUrl === '/meus-lances') {
         dispatch(
           getBids({
             sort: 'id,desc',
@@ -72,7 +72,7 @@ export const App = () => {
             size: ITEMS_PER_PAGE,
           })
         )
-      } else if (notificationUrl === '/proposal-approvals') {
+      } else if (notificationUrl === '/aprovacoes') {
         dispatch(getCountConsortiumsByProposalApprovals())
         dispatch(
           getProposalsForAproval({

@@ -1,13 +1,12 @@
+import { createAsyncThunk, isFulfilled, isPending } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { createAsyncThunk, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit'
 import { loadMoreDataWhenScrolled, parseHeaderForLinks } from 'react-jhipster'
 
-import { cleanEntity } from 'app/shared/util/entity-utils'
-import { IQueryParams, createEntitySlice, EntityState, serializeAxiosError } from 'app/shared/reducers/reducer.utils'
 import { IConsortium, defaultValue } from 'app/shared/model/consortium.model'
-import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
-import { getEntities as getEntitiesForApproval } from 'app/entities/proposals-for-approval/proposals-for-approval.reducer'
 import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
+import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
+import { EntityState, IQueryParams, createEntitySlice, serializeAxiosError } from 'app/shared/reducers/reducer.utils'
+import { cleanEntity } from 'app/shared/util/entity-utils'
 
 const initialState: EntityState<IConsortium> = {
   loading: false,
@@ -27,11 +26,14 @@ const apiUrl = 'api/consortiums'
 interface IGetEntities extends IQueryParams {
   filterSegmentType?: SegmentType
   filterStatusType?: ConsortiumStatusType
+  filterConsortiumId?: number | string
 }
 
-export const getEntities = createAsyncThunk('consortium/fetch_entity_list', async ({ page, size, sort, filterSegmentType, filterStatusType }: IGetEntities) => {
+export const getEntities = createAsyncThunk('consortium/fetch_entity_list', async ({ page, size, sort, filterSegmentType, filterStatusType, filterConsortiumId }: IGetEntities) => {
+  const onFilterConsortiumId = filterConsortiumId ? `filterConsortiumId=${filterConsortiumId}&` : ''
+
   const requestUrl = `${apiUrl}${
-    sort ? `?page=${page}&size=${size}&sort=${sort}&filterSegmentType=${filterSegmentType}&filterStatusType=${filterStatusType}&` : '?'
+    sort ? `?page=${page}&size=${size}&sort=${sort}&filterSegmentType=${filterSegmentType}&filterStatusType=${filterStatusType}&${onFilterConsortiumId}s&` : '?'
   }cacheBuster=${new Date().getTime()}`
   return axios.get<IConsortium[]>(requestUrl)
 })

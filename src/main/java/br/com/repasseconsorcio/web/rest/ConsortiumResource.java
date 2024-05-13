@@ -159,9 +159,9 @@ public class ConsortiumResource {
      *         of consortiums in body.
      */
     @GetMapping("/consortiums")
-    public ResponseEntity<List<Consortium>> getAllConsortiums(Pageable pageable, SegmentType filterSegmentType, ConsortiumStatusType filterStatusType) {
+    public ResponseEntity<List<Consortium>> getAllConsortiums(Pageable pageable, SegmentType filterSegmentType, ConsortiumStatusType filterStatusType, Long filterConsortiumId) {
         log.debug("REST request to get a page of Consortiums");
-        Page<Consortium> page = consortiumService.findAllByStatusNotIn(pageable, filterSegmentType, filterStatusType);
+        Page<Consortium> page = consortiumService.findAllByStatusNotIn(pageable, filterSegmentType, filterStatusType, filterConsortiumId);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

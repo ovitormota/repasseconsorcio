@@ -1,19 +1,21 @@
-import { ArrowOutward, DirectionsCarRounded, HomeRounded, MoreRounded } from '@mui/icons-material'
-import { Box, Button, Card, CardContent, Chip, IconButton, List, ListItem, ListItemText, ThemeProvider, Typography } from '@mui/material'
+import { ArrowOutward } from '@mui/icons-material'
+import { Box, Button, Card, CardContent, Chip, List, ListItem, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
 import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
+import { ConsortiumInstallmentsModal } from 'app/shared/components/ConsortiumInstallmentsModal'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
 import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
 import { SortingBox } from 'app/shared/components/SortingBox'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { defaultTheme } from 'app/shared/layout/themes'
+import { IConsortiumInstallments } from 'app/shared/model/consortium-installments.model'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 import { IUser } from 'app/shared/model/user.model'
-import { addPercentage, getStatusColor } from 'app/shared/util/data-utils'
+import { getStatusColor } from 'app/shared/util/data-utils'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import { useBreakpoints } from 'app/shared/util/useBreakpoints'
@@ -34,6 +36,8 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
   const [editUser, setEditUser] = useState<IUser | null>(null)
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
   const [currentSort, setCurrentSort] = useState('consortiumValue')
+  const [openConsortiumInstallmentsModal, setOpenConsortiumInstallmentsModal] = useState(false)
+  const [onConsortiumInstallments, setOnConsortiumInstallments] = useState([])
   const [order, setOrder] = useState(ASC)
   const sortTypes = ['consortiumAdministrator', 'contemplationStatus', 'numberOfInstallments', 'installmentValue', 'consortiumValue']
 
@@ -86,171 +90,21 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
     </div>
   )
 
-  // const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
-  //   const {
-  //     consortiumAdministrator: { name, image },
-  //     segmentType,
-  //     consortiumValue,
-  //     numberOfInstallments,
-  //     installmentValue,
-  //     created,
-  //     contemplationStatus,
-  //     minimumBidValue,
-  //     status,
-  //     bids,
-  //     user: { firstName },
-  //   } = consortium
-
-  //   return (
-  //     <Card
-  //       sx={{
-  //         m: { xs: 1.1, sm: 1.1 },
-  //         width: { xs: '90vw', sm: '330px' },
-  //         borderRadius: '1rem',
-  //         position: 'relative',
-  //       }}
-  //       elevation={2}
-  //     >
-  //       <Box
-  //         sx={{
-  //           overflow: 'hidden',
-  //           width: { xs: '90vw', sm: '330px' },
-  //           height: '45px',
-  //           display: 'flex',
-  //           justifyContent: 'center',
-  //           alignItems: 'center',
-  //           mb: 1,
-  //         }}
-  //       >
-  //         <IconButton
-  //           sx={{
-  //             background: defaultTheme.palette.background.paper,
-  //             position: 'absolute',
-  //             top: 30,
-  //             ':hover': {
-  //               background: defaultTheme.palette.background.paper,
-  //             },
-  //           }}
-  //         >
-  //           {segmentType === SegmentType.AUTOMOBILE ? (
-  //             <DirectionsCarRounded sx={{ fontSize: '30px', color: defaultTheme.palette.secondary.light }} />
-  //           ) : segmentType === SegmentType.REAL_ESTATE ? (
-  //             <HomeRounded sx={{ fontSize: '30px', color: defaultTheme.palette.secondary.light }} />
-  //           ) : (
-  //             <MoreRounded sx={{ fontSize: '25px', color: defaultTheme.palette.secondary.light }} />
-  //           )}
-  //         </IconButton>
-  //       </Box>
-  //       <Chip
-  //         label={translate(`repasseconsorcioApp.ConsortiumStatusType.${status}`)}
-  //         color={getStatusColor(status)}
-  //         variant='filled'
-  //         size='small'
-  //         sx={{
-  //           position: 'absolute',
-  //           top: 10,
-  //           right: 10,
-  //           cursor: 'pointer',
-  //           color: 'white',
-  //         }}
-  //       />
-  //       {contemplationStatus && renderStatusRibbon()}
-  //       <CardContent sx={{ p: 1 }}>
-  //         <List>
-  //           <ListItem sx={{ position: 'relative' }}>
-  //             <Box sx={{ position: 'absolute', top: -15, right: 4 }}>
-  //               <strong style={{ color: defaultTheme.palette.secondary.main, fontSize: '14px' }}>#{consortium?.id}</strong>
-  //             </Box>
-  //           </ListItem>
-  //           <ListItemText
-  //             primaryTypographyProps={{ fontSize: '12px !important' }}
-  //             onClick={() => [setOpenAccountRegisterUpdateModal(true), setEditUser(consortium.user)]}
-  //             sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-  //             primary={`${translate('repasseconsorcioApp.consortium.user')} `}
-  //             secondary={
-  //               <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 1, cursor: 'pointer', ':hover': { scale: '1.1 !important' } }}>
-  //                 {firstName}
-  //                 <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
-  //               </Box>
-  //             }
-  //           />
-  //           <ListItemText
-  //             primaryTypographyProps={{ fontSize: '12px !important' }}
-  //             sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-  //             primary={`${translate('repasseconsorcioApp.consortium.consortiumAdministrator')} `}
-  //             secondary={name}
-  //           />
-  //           <ListItemText
-  //             primaryTypographyProps={{ fontSize: '12px !important' }}
-  //             sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-  //             primary={`${translate('repasseconsorcioApp.consortium.numberOfInstallments')} `}
-  //             secondary={numberOfInstallments}
-  //           />
-  //           <ListItemText
-  //             primaryTypographyProps={{ fontSize: '12px !important' }}
-  //             secondaryTypographyProps={{ fontWeight: '600 !important' }}
-  //             sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-  //             primary={`${translate('repasseconsorcioApp.consortium.installmentValue')} `}
-  //             secondary={formatCurrency(installmentValue)}
-  //           />
-  //           <ListItemText
-  //             primaryTypographyProps={{ fontSize: '12px !important' }}
-  //             sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
-  //             primary={`${translate('repasseconsorcioApp.consortium.minimumBidValue')} `}
-  //             secondary={formatCurrency(minimumBidValue)}
-  //           />
-
-  //           <hr className='hr-text' data-content='' style={{ height: 0 }} />
-
-  //           <ListItem sx={{ m: 0, p: 0, py: 0.5 }}>
-  //             <ListItemText
-  //               primaryTypographyProps={{ fontSize: '12px !important' }}
-  //               primary={`${translate('repasseconsorcioApp.consortium.consortiumValue')} `}
-  //               secondary={formatCurrency(consortiumValue)}
-  //               secondaryTypographyProps={{
-  //                 fontSize: '25px !important',
-  //                 fontWeight: '600 !important',
-  //               }}
-  //             />
-  //           </ListItem>
-  //           <ListItem>
-  //             <Button
-  //               sx={{
-  //                 borderRadius: '1em',
-  //                 marginX: '0.6em',
-  //                 background: defaultTheme.palette.secondary['A400'],
-
-  //                 ':hover': {
-  //                   background: defaultTheme.palette.secondary.light,
-  //                   color: defaultTheme.palette.secondary.contrastText,
-  //                 },
-  //               }}
-  //               variant='outlined'
-  //               color='secondary'
-  //               fullWidth
-  //               onClick={() => setApproved(consortium)}
-  //             >
-  //               <Typography variant='button'>{translate('repasseconsorcioApp.consortium.approve')}</Typography>
-  //             </Button>
-  //           </ListItem>
-  //         </List>
-  //       </CardContent>
-  //     </Card>
-  //   )
-  // }
+  const handleOpenConsortiumInstallmentsModal = (_event, _onConsortiumInstallments: IConsortiumInstallments[]) => {
+    _event.stopPropagation()
+    setOpenConsortiumInstallmentsModal(true)
+    setOnConsortiumInstallments(_onConsortiumInstallments)
+  }
 
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
     const {
       consortiumAdministrator: { name, image },
       segmentType,
       consortiumValue,
-      numberOfInstallments,
-      installmentValue,
-      created,
+      consortiumInstallments,
       contemplationStatus,
       minimumBidValue,
       status,
-      bids,
       user: { firstName },
     } = consortium
 
@@ -326,24 +180,15 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
               <span className='divider' />
               <Typography variant='caption'>{name}</Typography>
             </Typography>
-            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
-                {translate('repasseconsorcioApp.consortium.numberOfInstallments')}
+            <Box
+              onClick={(event) => handleOpenConsortiumInstallmentsModal(event, consortiumInstallments)}
+              sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', cursor: 'pointer' }}
+            >
+              <Typography variant='caption' color={defaultTheme.palette.text.secondary} fontWeight={600}>
+                Visualizar Parcelas
               </Typography>
-              <span className='divider' />
-              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
-                {numberOfInstallments}
-              </Typography>
-            </Typography>
-            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
-                {translate('repasseconsorcioApp.consortium.installmentValue')}
-              </Typography>
-              <span className='divider' />
-              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
-                {formatCurrency(installmentValue)}
-              </Typography>
-            </Typography>
+              <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
+            </Box>
           </Box>
           <Box
             sx={{
@@ -368,7 +213,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: defaultTheme.palette.primary.main,
+                backgroundColor: defaultTheme.palette.background.paper,
               }}
             >
               <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
@@ -437,6 +282,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
         </InfiniteScroll>
       </Box>
       {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} editUser={editUser} />}
+      {openConsortiumInstallmentsModal && <ConsortiumInstallmentsModal setOpenConsortiumInstallmentsModal={setOpenConsortiumInstallmentsModal} consortiumInstallments={onConsortiumInstallments} />}
     </ThemeProvider>
   )
 }

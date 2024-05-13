@@ -62,10 +62,10 @@ const SelectPaginate: React.FC<Props> = ({ value, apiUrl, placeholder = '', onCh
     control: (provided, state) => ({
       ...provided,
       border: `${state.isFocused ? '2px' : '1px'} solid ${state.isFocused ? defaultTheme.palette.secondary.main : 'rgba(184, 186, 185, 1)'}`,
-      backgroundColor: defaultTheme.palette.primary.main,
+      backgroundColor: defaultTheme.palette.background.paper,
       padding: '8px 5px',
       borderRadius: '10px',
-      marginTop: '24px',
+      marginTop: '16px',
       color: defaultTheme.palette.text.primary,
       boxShadow: 'none',
       '&:hover': {
@@ -78,19 +78,19 @@ const SelectPaginate: React.FC<Props> = ({ value, apiUrl, placeholder = '', onCh
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isFocused ? defaultTheme.palette.action.selected : defaultTheme.palette.primary.main,
+      backgroundColor: state.isFocused ? defaultTheme.palette.action.selected : defaultTheme.palette.background.paper,
       color: state.isSelected || state.isFocused ? defaultTheme.palette.text.primary : defaultTheme.palette.text.primary,
       cursor: 'pointer',
 
       '&:hover': {
-        backgroundColor: state.isSelected ? defaultTheme.palette.primary.main : defaultTheme.palette.action.hover,
+        backgroundColor: state.isSelected ? defaultTheme.palette.background.paper : defaultTheme.palette.action.hover,
       },
     }),
 
     menu: (provided) => ({
       ...provided,
       zIndex: 9999,
-      backgroundColor: defaultTheme.palette.primary.main,
+      backgroundColor: defaultTheme.palette.background.paper,
     }),
     placeholder: (provided) => ({
       ...provided,
@@ -109,12 +109,12 @@ const SelectPaginate: React.FC<Props> = ({ value, apiUrl, placeholder = '', onCh
   return (
     <ThemeProvider theme={defaultTheme}>
       <FormControl fullWidth>
-        {hasValue && (
+        {(value || hasValue) && (
           <InputLabel
             id='consortium-segmentType-label'
             sx={{
-              transform: 'translate(10px, 16px) scale(0.75)',
-              background: defaultTheme.palette.primary.main,
+              transform: 'translate(10px, 8px) scale(0.75)',
+              background: defaultTheme.palette.background.paper,
               px: '5px',
               color: defaultTheme.palette.secondary.main,
             }}
