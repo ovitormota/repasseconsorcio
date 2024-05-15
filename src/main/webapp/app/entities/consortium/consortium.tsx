@@ -41,7 +41,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
   const [filterStatusType, SetFilterStatusType] = useState(ConsortiumStatusType.ALL)
   const [openConsortiumInstallmentsModal, setOpenConsortiumInstallmentsModal] = useState(false)
-  const [onConsortiumInstallments, setOnConsortiumInstallments] = useState([])
+  const [onConsortium, setOnConsortium] = useState<IConsortium>(null)
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [order, setOrder] = useState(ASC)
   const sortTypes = ['consortiumAdministrator', 'contemplationStatus', 'numberOfInstallments', 'installmentValue', 'minimumBidValue', 'consortiumValue']
@@ -94,10 +94,10 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
     setEntityConsortium(consortium)
   }
 
-  const handleOpenConsortiumInstallmentsModal = (_event, _onConsortiumInstallments: IConsortiumInstallments[]) => {
+  const handleOpenConsortiumInstallmentsModal = (_event, _onConsortium: IConsortium) => {
     _event.stopPropagation()
     setOpenConsortiumInstallmentsModal(true)
-    setOnConsortiumInstallments(_onConsortiumInstallments)
+    setOnConsortium(_onConsortium)
   }
 
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
@@ -198,7 +198,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
               <Typography variant='caption'>{name}</Typography>
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
-              <Box onClick={(event) => handleOpenConsortiumInstallmentsModal(event, consortiumInstallments)}>
+              <Box onClick={(event) => handleOpenConsortiumInstallmentsModal(event, consortium)}>
                 <Typography variant='caption' color={defaultTheme.palette.text.secondary} fontWeight={600}>
                   Visualizar Parcelas
                 </Typography>
@@ -321,7 +321,7 @@ export const Consortium = (props: RouteComponentProps<{ url: string }>) => {
       {openBidHistoryModal && <BidHistoryModal setOpenBidHistoryModal={setOpenBidHistoryModal} entityConsortium={entityConsortium} />}
       {openLoginModal && <HomeLogin setOpenLoginModal={setOpenLoginModal} />}
       {openBidUpdateModal && <BidUpdateModal setOpenBidUpdateModal={setOpenBidUpdateModal} entityConsortium={entityConsortium} />}
-      {openConsortiumInstallmentsModal && <ConsortiumInstallmentsModal setOpenConsortiumInstallmentsModal={setOpenConsortiumInstallmentsModal} consortiumInstallments={onConsortiumInstallments} />}
+      {openConsortiumInstallmentsModal && <ConsortiumInstallmentsModal setOpenConsortiumInstallmentsModal={setOpenConsortiumInstallmentsModal} consortium={onConsortium} />}
     </ThemeProvider>
   )
 }

@@ -62,8 +62,6 @@ public class ConsortiumService {
 
         Consortium result = consortiumRepository.save(consortium);
 
-        System.out.println("consortium.getConsortiumInstallments().size() = " + consortium.getConsortiumInstallments());
-
         consortium
             .getConsortiumInstallments()
             .forEach(consortiumInstallment -> {

@@ -1,11 +1,11 @@
 import { CloseOutlined } from '@mui/icons-material'
-import { Box, Chip, Dialog, DialogContent, DialogTitle, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider } from '@mui/material'
+import { Box, Chip, Dialog, DialogContent, DialogTitle, Divider, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Translate, getSortState, translate } from 'react-jhipster'
 import { TypographStyled } from '../layout/table/TableComponents'
 import { defaultTheme } from '../layout/themes'
-import { IConsortiumInstallments } from '../model/consortium-installments.model'
+import { IConsortium } from '../model/consortium.model'
 import { formatCreatedDate, formatCurrency } from '../util/data-utils'
 import { overridePaginationStateWithQueryParams } from '../util/entity-utils'
 import { ITEMS_PER_PAGE } from '../util/pagination.constants'
@@ -13,11 +13,11 @@ import { Loading } from './Loading'
 import { NoDataIndicatorRelative } from './NoDataIndicator'
 
 interface IConsortiumInstallmentsModalProps {
-  consortiumInstallments: IConsortiumInstallments[]
+  consortium?: IConsortium
   setOpenConsortiumInstallmentsModal: (open: boolean) => void
 }
 
-export const ConsortiumInstallmentsModal = ({ consortiumInstallments, setOpenConsortiumInstallmentsModal }: IConsortiumInstallmentsModalProps) => {
+export const ConsortiumInstallmentsModal = ({ consortium, setOpenConsortiumInstallmentsModal }: IConsortiumInstallmentsModalProps) => {
   const [paginationState, setPaginationState] = useState(overridePaginationStateWithQueryParams(getSortState(location, ITEMS_PER_PAGE, 'id'), location.search))
 
   const handleLoadMore = () => {
@@ -41,7 +41,7 @@ export const ConsortiumInstallmentsModal = ({ consortiumInstallments, setOpenCon
     )
   }
 
-  const sortedInstallments = [...consortiumInstallments].sort((a, b) => new Date(a.installmentDate).getTime() - new Date(b.installmentDate).getTime())
+  const sortedInstallments = [...consortium.consortiumInstallments].sort((a, b) => new Date(a.installmentDate).getTime() - new Date(b.installmentDate).getTime())
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -70,47 +70,70 @@ export const ConsortiumInstallmentsModal = ({ consortiumInstallments, setOpenCon
               loader={false && <Loading height='150px' />}
             >
               {sortedInstallments?.length ? (
-                <TableContainer sx={{ px: { xs: 0, sm: 2 } }}>
-                  <Table>
-                    <TableHead style={{ position: 'relative' }}>
-                      <TableRow>
-                        <TableCell>
-                          <TypographStyled>
-                            <Translate contentKey='repasseconsorcioApp.consortium.numberOfInstallments'>Número de Parcelas</Translate>
-                          </TypographStyled>
-                        </TableCell>
-                        <TableCell>
-                          <TypographStyled>
-                            <Translate contentKey='repasseconsorcioApp.consortium.installmentValue'>Valor da Parcela</Translate>
-                          </TypographStyled>
-                        </TableCell>
-                        <TableCell>
-                          <TypographStyled>
-                            <Translate contentKey='repasseconsorcioApp.consortium.installmentDate'>Vencimento da Parcela</Translate>
-                          </TypographStyled>
-                        </TableCell>
-                        <TableCell>
-                          <TypographStyled>
-                            <Translate contentKey='repasseconsorcioApp.consortium.statusConsortiumInstallments'>Status</Translate>
-                          </TypographStyled>
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 1, flexDirection: 'column' }}>
+                  <TableContainer sx={{ px: { xs: 0, sm: 2 } }}>
+                    <Table>
+                      <TableHead style={{ position: 'relative' }}>
+                        <TableRow>
+                          <TableCell>
+                            <TypographStyled>
+                              <Translate contentKey='repasseconsorcioApp.consortium.numberOfInstallments'>Número de Parcelas</Translate>
+                            </TypographStyled>
+                          </TableCell>
+                          <TableCell>
+                            <TypographStyled>
+                              <Translate contentKey='repasseconsorcioApp.consortium.installmentValue'>Valor da Parcela</Translate>
+                            </TypographStyled>
+                          </TableCell>
+                          <TableCell>
+                            <TypographStyled>
+                              <Translate contentKey='repasseconsorcioApp.consortium.installmentDate'>Vencimento da Parcela</Translate>
+                            </TypographStyled>
+                          </TableCell>
+                          <TableCell>
+                            <TypographStyled>
+                              <Translate contentKey='repasseconsorcioApp.consortium.statusConsortiumInstallments'>Status</Translate>
+                            </TypographStyled>
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
 
-                    <TableBody>
-                      {sortedInstallments.map((installment, index) => (
-                        <React.Fragment key={index}>
-                          <TableRow>
-                            <TableCell>{installment.numberOfInstallments}</TableCell>
-                            <TableCell>{formatCurrency(installment.installmentValue)}</TableCell>
-                            <TableCell>{formatCreatedDate(installment.installmentDate)}</TableCell>
-                            <TableCell>{handleStatus(installment.status)}</TableCell>
-                          </TableRow>
-                        </React.Fragment>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                      <TableBody>
+                        {sortedInstallments.map((installment, index) => (
+                          <React.Fragment key={index}>
+                            <TableRow>
+                              <TableCell>{installment.numberOfInstallments}</TableCell>
+                              <TableCell>{formatCurrency(installment.installmentValue)}</TableCell>
+                              <TableCell>{formatCreatedDate(installment.installmentDate)}</TableCell>
+                              <TableCell>{handleStatus(installment.status)}</TableCell>
+                            </TableRow>
+                          </React.Fragment>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  {consortium.note && (
+                    <Box
+                      sx={{
+                        m: 2,
+                        mb: 0,
+                        p: 2,
+                        width: '95%',
+                        borderRadius: '1em',
+                        backgroundColor: defaultTheme.palette.secondary['A200'],
+                        border: '1px solid',
+                        borderColor: defaultTheme.palette.grey[100],
+                      }}
+                    >
+                      <Typography color='secondary' fontSize='16px' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        Informações Adicionais
+                      </Typography>
+                      <Typography sx={{ whiteSpace: 'pre-line', pt: 2 }} fontSize='14px'>
+                        {consortium.note}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
               ) : (
                 <NoDataIndicatorRelative message='Nenhuma parcela encontrada' />
               )}

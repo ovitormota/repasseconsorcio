@@ -12,14 +12,24 @@ export const formatCurrency = (value) => {
   }).format(value)
 }
 
-export function addPercentage(value: number, percentage: number | undefined = 1): number {
+export function addPercentage(value: number, percentage: number | undefined = 0): number {
   if (typeof value !== 'number' || typeof percentage !== 'number') {
     throw new Error('Both value and percentage must be numbers')
   }
 
+  if (!percentage || percentage < 0) {
+    if (value < 10000) {
+      percentage = 3
+    } else if (value < 20000) {
+      percentage = 2
+    } else {
+      percentage = 1
+    }
+  }
+
   const newValue: number = value + value * (percentage / 100)
 
-  return Math.round(newValue * 100) / 100
+  return Math.round(newValue)
 }
 
 export const formatCreated = (value) => {

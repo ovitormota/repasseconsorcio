@@ -15,7 +15,7 @@ import { IConsortium } from 'app/shared/model/consortium.model'
 import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 import { IUser } from 'app/shared/model/user.model'
-import { getStatusColor } from 'app/shared/util/data-utils'
+import { getStatusColor, showElement } from 'app/shared/util/data-utils'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import { useBreakpoints } from 'app/shared/util/useBreakpoints'
@@ -37,7 +37,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [openConsortiumInstallmentsModal, setOpenConsortiumInstallmentsModal] = useState(false)
-  const [onConsortiumInstallments, setOnConsortiumInstallments] = useState([])
+  const [onConsortium, setOnConsortium] = useState<IConsortium>(null)
   const [order, setOrder] = useState(ASC)
   const sortTypes = ['consortiumAdministrator', 'contemplationStatus', 'numberOfInstallments', 'installmentValue', 'consortiumValue']
 
@@ -90,10 +90,10 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
     </div>
   )
 
-  const handleOpenConsortiumInstallmentsModal = (_event, _onConsortiumInstallments: IConsortiumInstallments[]) => {
+  const handleOpenConsortiumInstallmentsModal = (_event, _onConsortium: IConsortium) => {
     _event.stopPropagation()
     setOpenConsortiumInstallmentsModal(true)
-    setOnConsortiumInstallments(_onConsortiumInstallments)
+    setOnConsortium(_onConsortium)
   }
 
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
@@ -181,8 +181,9 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
               <Typography variant='caption'>{name}</Typography>
             </Typography>
             <Box
-              onClick={(event) => handleOpenConsortiumInstallmentsModal(event, consortiumInstallments)}
+              onClick={(event) => handleOpenConsortiumInstallmentsModal(event, consortium)}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', cursor: 'pointer' }}
+              style={showElement(!!consortiumInstallments?.length)}
             >
               <Typography variant='caption' color={defaultTheme.palette.text.secondary} fontWeight={600}>
                 Visualizar Parcelas
@@ -282,7 +283,7 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
         </InfiniteScroll>
       </Box>
       {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} editUser={editUser} />}
-      {openConsortiumInstallmentsModal && <ConsortiumInstallmentsModal setOpenConsortiumInstallmentsModal={setOpenConsortiumInstallmentsModal} consortiumInstallments={onConsortiumInstallments} />}
+      {openConsortiumInstallmentsModal && <ConsortiumInstallmentsModal setOpenConsortiumInstallmentsModal={setOpenConsortiumInstallmentsModal} consortium={onConsortium} />}
     </ThemeProvider>
   )
 }

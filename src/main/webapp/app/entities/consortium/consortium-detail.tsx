@@ -14,7 +14,6 @@ import { SortingBox } from 'app/shared/components/SortingBox'
 import { StatusFilter } from 'app/shared/components/StatusFilter'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { defaultTheme } from 'app/shared/layout/themes'
-import { IConsortiumInstallments } from 'app/shared/model/consortium-installments.model'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
@@ -41,7 +40,7 @@ export const ConsortiumDetail = (props: RouteComponentProps<{ id: string }>) => 
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
   const [filterStatusType, SetFilterStatusType] = useState(ConsortiumStatusType.ALL)
   const [openConsortiumInstallmentsModal, setOpenConsortiumInstallmentsModal] = useState(false)
-  const [onConsortiumInstallments, setOnConsortiumInstallments] = useState([])
+  const [onConsortium, setOnConsortium] = useState<IConsortium>(null)
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [order, setOrder] = useState(ASC)
   const sortTypes = ['consortiumAdministrator', 'contemplationStatus', 'numberOfInstallments', 'installmentValue', 'minimumBidValue', 'consortiumValue']
@@ -95,10 +94,10 @@ export const ConsortiumDetail = (props: RouteComponentProps<{ id: string }>) => 
     setEntityConsortium(consortium)
   }
 
-  const handleOpenConsortiumInstallmentsModal = (_event, _onConsortiumInstallments: IConsortiumInstallments[]) => {
+  const handleOpenConsortiumInstallmentsModal = (_event, _onConsortium: IConsortium) => {
     _event.stopPropagation()
     setOpenConsortiumInstallmentsModal(true)
-    setOnConsortiumInstallments(_onConsortiumInstallments)
+    setOnConsortium(_onConsortium)
   }
 
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
@@ -199,7 +198,7 @@ export const ConsortiumDetail = (props: RouteComponentProps<{ id: string }>) => 
               <Typography variant='caption'>{name}</Typography>
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
-              <Box onClick={(event) => handleOpenConsortiumInstallmentsModal(event, consortiumInstallments)}>
+              <Box onClick={(event) => handleOpenConsortiumInstallmentsModal(event, consortium)}>
                 <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
                   Visualizar Parcelas
                 </Typography>
@@ -322,7 +321,7 @@ export const ConsortiumDetail = (props: RouteComponentProps<{ id: string }>) => 
       {openBidHistoryModal && <BidHistoryModal setOpenBidHistoryModal={setOpenBidHistoryModal} entityConsortium={entityConsortium} />}
       {openLoginModal && <HomeLogin setOpenLoginModal={setOpenLoginModal} />}
       {openBidUpdateModal && <BidUpdateModal setOpenBidUpdateModal={setOpenBidUpdateModal} entityConsortium={entityConsortium} />}
-      {openConsortiumInstallmentsModal && <ConsortiumInstallmentsModal setOpenConsortiumInstallmentsModal={setOpenConsortiumInstallmentsModal} consortiumInstallments={onConsortiumInstallments} />}
+      {openConsortiumInstallmentsModal && <ConsortiumInstallmentsModal setOpenConsortiumInstallmentsModal={setOpenConsortiumInstallmentsModal} consortium={onConsortium} />}
     </ThemeProvider>
   )
 }

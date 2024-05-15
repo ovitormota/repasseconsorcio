@@ -25,6 +25,7 @@ public class ProposalApprovalsDTO {
     private User user;
     private ConsortiumAdministrator consortiumAdministrator;
     private Set<ConsortiumInstallments> consortiumInstallments = new HashSet<>();
+    private String note;
 
     public ProposalApprovalsDTO() {}
 
@@ -40,6 +41,7 @@ public class ProposalApprovalsDTO {
         this.user = consortium.getUser();
         this.consortiumAdministrator = consortium.getConsortiumAdministrator();
         this.consortiumInstallments = consortium.getConsortiumInstallments();
+        this.note = consortium.getNote();
     }
 
     // Getters and setters
@@ -129,5 +131,13 @@ public class ProposalApprovalsDTO {
 
     public void setConsortiumInstallments(Set<ConsortiumInstallments> consortiumInstallments) {
         this.consortiumInstallments = consortiumInstallments;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

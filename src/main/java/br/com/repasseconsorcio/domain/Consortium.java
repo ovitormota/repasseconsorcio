@@ -2,16 +2,28 @@ package br.com.repasseconsorcio.domain;
 
 import br.com.repasseconsorcio.domain.enumeration.ConsortiumStatusType;
 import br.com.repasseconsorcio.domain.enumeration.SegmentType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
 
 /**
  * A Consortium.
@@ -48,6 +60,11 @@ public class Consortium implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ConsortiumStatusType status;
+
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "note")
+    private String note;
 
     @OneToMany(mappedBy = "consortium", fetch = FetchType.EAGER)
     @JsonIgnoreProperties(value = { "consortium" }, allowSetters = true)
@@ -209,6 +226,14 @@ public class Consortium implements Serializable {
     public Consortium consortiumAdministrator(ConsortiumAdministrator consortiumAdministrator) {
         this.setConsortiumAdministrator(consortiumAdministrator);
         return this;
+    }
+
+    public String getNote() {
+        return this.note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public Set<ConsortiumInstallments> getConsortiumInstallments() {

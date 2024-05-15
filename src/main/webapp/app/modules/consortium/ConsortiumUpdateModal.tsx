@@ -43,7 +43,9 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
   const [modalUseTerms, setModalUseTerms] = React.useState<boolean>(false)
   const [segmentType, setSegmentType] = React.useState<SegmentType>(null)
   const [acceptTerms, setAcceptTerms] = React.useState<boolean>(false)
+  const [errorData, setErrorData] = React.useState<boolean>(false)
   const [activeStep, setActiveStep] = React.useState(0)
+  const [note, setNote] = React.useState<string>('')
 
   const [parcels, setParcels] = useState([{ numberOfInstallments: null, installmentValue: null, installmentDate: null, status: null }])
 
@@ -63,10 +65,10 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
     setParcels(updatedParcels)
   }
 
-  const steps = [0, 1, 2]
+  const steps = [0, 1, 2, 3]
 
   const handleNext = () => {
-    if (activeStep === 2) {
+    if (activeStep === 3) {
       return setModalUseTerms(true)
     }
 
@@ -111,7 +113,13 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
 
   useEffect(() => {
     if (consortiumValue) {
-      setAdminstrationFee(addPercentage(consortiumValue, 2) - consortiumValue)
+      if (consortiumValue <= 20000) {
+        setAdminstrationFee(10)
+      } else if (consortiumValue > 20000 && consortiumValue < 50000) {
+        setAdminstrationFee(7)
+      } else {
+        setAdminstrationFee(5)
+      }
     }
   }, [consortiumValue])
 
@@ -122,6 +130,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
       segmentType,
       consortiumAdministrator,
       contemplationStatus,
+      note,
       consortiumInstallments: parcels,
     }
 
@@ -140,13 +149,9 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
     if (step === 2) {
       return parcels.some((parcel) => {
         // Verifica se algum dos campos necessários está vazio
-        if (!parcel.numberOfInstallments || !parcel.installmentValue || !parcel.installmentDate || !parcel.status) {
+        if (!parcel.numberOfInstallments || !parcel.installmentValue || !parcel.installmentDate || !parcel.status || errorData) {
           return true // Retorna true se algum campo estiver vazio
         }
-
-        // Verifica se a data é válida
-        const parsedDate = Date.parse(parcel.installmentDate)
-        return isNaN(parsedDate) // Retorna true se a data não for válida
       })
     }
   }
@@ -165,6 +170,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
           {activeStep === 0 && 'Informações do consórcio'}
           {activeStep === 1 && 'Valores do consórcio'}
           {activeStep === 2 && 'Parcelas do consórcio'}
+          {activeStep === 3 && 'Informações adicionais'}
           <IconButton onClick={() => setOpenConsortiumUpdateModal(false)}>
             <CloseOutlined sx={{ color: defaultTheme.palette.secondary.main }} fontSize='small' />
           </IconButton>
@@ -384,6 +390,7 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                                       label={translate('repasseconsorcioApp.consortium.installmentDate')}
                                       value={parcel.installmentDate}
                                       onChange={(newValue) => handleChange(index, 'installmentDate', newValue)}
+                                      onError={(e) => setErrorData(e ? true : false)}
                                     />
                                   </LocalizationProvider>
 
@@ -434,6 +441,23 @@ export const ConsortiumUpdateModal = ({ setOpenConsortiumUpdateModal }) => {
                           </Box>
                         ))}
                       </form>
+                    )}
+
+                    {activeStep === 3 && (
+                      <FormControl fullWidth sx={{ mb: { xs: 2, sm: 0 } }}>
+                        <TextField
+                          placeholder='Insira as informações adicionais, se houver. Caso contrário, deixe em branco.'
+                          multiline
+                          rows={4}
+                          fullWidth
+                          color='secondary'
+                          InputProps={{
+                            style: { borderRadius: '10px' },
+                          }}
+                          value={note}
+                          onChange={(e) => setNote(e.target.value)}
+                        />
+                      </FormControl>
                     )}
 
                     <DialogActions sx={{ m: 0, p: 0, mt: 3 }}>

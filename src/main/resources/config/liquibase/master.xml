@@ -31,6 +31,7 @@
     <include file="config/liquibase/changelog/20240510191353_added_entity_constraints_Consortium.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20241105161616_added_column_installment_date_ConsortiumInstallments.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20241105171717_added_column_status_ConsortiumInstallments.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/202405151111111_added_column_note_Consortium.xml" relativeToChangelogFile="false"/>
 
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->

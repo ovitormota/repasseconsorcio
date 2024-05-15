@@ -18,6 +18,7 @@ export interface IConsortium {
   user?: IUser | null
   consortiumAdministrator?: IConsortiumAdministrator | null
   contemplationStatus?: boolean | null
+  note?: string | null
 }
 
 export const defaultValue: Readonly<IConsortium> = {}
