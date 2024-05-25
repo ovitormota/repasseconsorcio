@@ -72,7 +72,7 @@ export const BidHistoryModal = ({ setOpenBidHistoryModal, entityConsortium }: IB
     if (account.id === user.id) {
       return 'Você'
     }
-    return `${user.firstName} ${user.lastName}`
+    return `${user.firstName}`
   }
 
   const renderWinner = () => {

@@ -1,0 +1,28 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="vitor.goncalves" id="20240518120000-1">
+        <addColumn tableName="consortium">
+            <column name="group_number" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="quota" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="total_plan_months" type="integer">
+                <constraints nullable="true" />
+            </column>
+            <column name="admin_fee" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="amounts_paid" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="outstanding_balance" type="decimal(21,2)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

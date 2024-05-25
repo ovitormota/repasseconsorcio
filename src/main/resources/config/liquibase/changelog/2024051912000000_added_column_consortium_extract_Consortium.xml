@@ -3,9 +3,9 @@
     xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="vitor.goncalves" id="20241105161616-0">
-        <addColumn tableName="consortium_installments">
-            <column name="installment_date" type="date">
+    <changeSet author="vitor.goncalves" id="20240519120000-1">
+        <addColumn tableName="consortium">
+            <column name="consortium_extract" type="longblob">
                 <constraints nullable="true" />
             </column>
         </addColumn>

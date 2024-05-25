@@ -1,8 +1,9 @@
 {
   "repasseconsorcioApp": {
     "StatusConsortiumInstallments": {
-      "OPEN": "Em Aberto",
-      "LATE": "Atrasada"
+      "PAID": "Pagas",
+      "LATE": "Atrasadas",
+      "PENDING": "Pendentes"
     }
   }
 }

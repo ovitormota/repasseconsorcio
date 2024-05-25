@@ -6,7 +6,6 @@ import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Te
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { deleteUserImage, updateUser, uploadUserImage } from 'app/modules/administration/user-management/user-management.reducer'
 import { ImageUploader } from 'app/shared/components/ImageUploader'
-import PhoneInput from 'app/shared/components/PhoneInput'
 import { defaultTheme } from 'app/shared/layout/themes'
 import { IUser } from 'app/shared/model/user.model'
 import { AccountDeleteModal } from './AccountDeleteModal'
@@ -24,9 +23,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
   const [image, setImage] = useState(null)
   const [fields, setFields] = useState({
     firstName: '',
-    lastName: '',
     email: '',
-    phoneNumber: '',
   })
 
   const loading = useAppSelector((state) => state.userManagement.loading)
@@ -37,9 +34,7 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
       setImage(editUser.imageUrl)
       setFields({
         firstName: editUser.firstName,
-        lastName: editUser.lastName,
         email: editUser.email,
-        phoneNumber: editUser.phoneNumber,
       })
     }
   }, [editUser])
@@ -56,15 +51,9 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
       if (editUser.firstName !== fields.firstName) {
         fieldsToUpdate.firstName = fields.firstName
       }
-      if (editUser.lastName !== fields.lastName) {
-        fieldsToUpdate.lastName = fields.lastName
-      }
       if (editUser.email !== fields.email) {
         fieldsToUpdate.email = fields.email
         fieldsToUpdate.login = fields.email
-      }
-      if (editUser.phoneNumber !== fields.phoneNumber) {
-        fieldsToUpdate.phoneNumber = fields.phoneNumber
       }
     }
 
@@ -118,11 +107,6 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
     return emailRegex.test(fields.email)
   }
 
-  const isPhoneValid = () => {
-    const phoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/ // Padrão para telefone: (99) 99999-9999
-    return phoneRegex.test(fields.phoneNumber)
-  }
-
   const handleUpload = (imageField) => {
     setImage(imageField)
   }
@@ -153,28 +137,9 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
             InputProps={{
               style: { borderRadius: '10px' },
             }}
-            sx={{ mt: 2, mb: 1 }}
+            sx={{ mt: 2 }}
             onChange={(e) => updateField('firstName', e.target.value)}
           />
-
-          <TextField
-            type='text'
-            name='lastName'
-            label={translate('userManagement.lastName')}
-            variant='outlined'
-            required
-            fullWidth
-            color='secondary'
-            value={fields.lastName}
-            data-cy='lastName'
-            InputProps={{
-              style: { borderRadius: '10px' },
-            }}
-            sx={{ mt: 2, mb: 1 }}
-            onChange={(e) => updateField('lastName', e.target.value)}
-          />
-          {<PhoneInput value={fields?.phoneNumber} onChange={(e) => updateField('phoneNumber', e.target.value)} />}
-
           <TextField
             name='email'
             label={translate('global.form.email.label')}
@@ -191,28 +156,17 @@ export const AccountRegisterUpdate = ({ setOpenAccountRegisterUpdateModal, editU
             InputProps={{
               style: { borderRadius: '10px' },
             }}
-            sx={{ mt: 3, mb: 1 }}
+            sx={{ mt: 2 }}
             onChange={(e) => updateField('email', e.target.value)}
           />
         </DialogContent>
         <form onSubmit={handleValidSubmit}>
           <DialogActions>
-            {/* <Button variant='text' onClick={() => setDeleteAccountModalOpen(true)}>
-                <Typography variant='overline' fontSize={10} sx={{ color: defaultTheme.palette.text.secondary }}>
-                  <Translate contentKey='userManagement.delete.button'>Delete Account</Translate>
-                </Typography>
-              </Button> */}
             <Box>
               <Button variant='text' sx={{ color: defaultTheme.palette.text.secondary, fontSize: '12px', mr: 2 }} onClick={() => handleClose()}>
                 <Translate contentKey='entity.action.back'>Back</Translate>
               </Button>
-              <Button
-                type='submit'
-                color='secondary'
-                variant='contained'
-                sx={{ fontWeight: '600', gap: 1 }}
-                disabled={fields.firstName === '' || fields.lastName === '' || fields.email === '' || fields.phoneNumber === '' || !isEmailValid() || !isPhoneValid()}
-              >
+              <Button type='submit' color='secondary' variant='contained' sx={{ fontWeight: '600', gap: 1 }} disabled={fields.firstName === '' || fields.email === '' || !isEmailValid()}>
                 <Translate contentKey='entity.action.save'>Save</Translate>
                 {loading && <CircularProgress size={20} sx={{ color: defaultTheme.palette.background.paper }} />}
               </Button>

@@ -66,6 +66,32 @@ public class Consortium implements Serializable {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "group_number")
+    private String group;
+
+    @Column(name = "quota")
+    private String quota;
+
+    @Column(name = "total_plan_months")
+    private Integer totalPlanMonths;
+
+    @Column(name = "admin_fee")
+    private BigDecimal adminFee;
+
+    @Column(name = "amounts_paid")
+    private BigDecimal amountsPaid;
+
+    @Column(name = "outstanding_balance")
+    private BigDecimal outstandingBalance;
+
+    @Lob
+    @Column(name = "consortium_extract")
+    private byte[] consortiumExtract;
+
+    @Lob
+    @Column(name = "edited_consortium_extract")
+    private byte[] editedConsortiumExtract;
+
     @OneToMany(mappedBy = "consortium", fetch = FetchType.EAGER)
     @JsonIgnoreProperties(value = { "consortium" }, allowSetters = true)
     private Set<Bid> bids = new HashSet<>();
@@ -234,6 +260,115 @@ public class Consortium implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public Consortium note(String note) {
+        this.setNote(note);
+        return this;
+    }
+
+    public String getGroup() {
+        return this.group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public Consortium group(String group) {
+        this.setGroup(group);
+        return this;
+    }
+
+    public String getQuota() {
+        return this.quota;
+    }
+
+    public void setQuota(String quota) {
+        this.quota = quota;
+    }
+
+    public Consortium quota(String quota) {
+        this.setQuota(quota);
+        return this;
+    }
+
+    public Integer getTotalPlanMonths() {
+        return this.totalPlanMonths;
+    }
+
+    public void setTotalPlanMonths(Integer totalPlanMonths) {
+        this.totalPlanMonths = totalPlanMonths;
+    }
+
+    public Consortium totalPlanMonths(Integer totalPlanMonths) {
+        this.setTotalPlanMonths(totalPlanMonths);
+        return this;
+    }
+
+    public BigDecimal getAdminFee() {
+        return this.adminFee;
+    }
+
+    public void setAdminFee(BigDecimal adminFee) {
+        this.adminFee = adminFee;
+    }
+
+    public Consortium adminFee(BigDecimal adminFee) {
+        this.setAdminFee(adminFee);
+        return this;
+    }
+
+    public BigDecimal getAmountsPaid() {
+        return this.amountsPaid;
+    }
+
+    public void setAmountsPaid(BigDecimal amountsPaid) {
+        this.amountsPaid = amountsPaid;
+    }
+
+    public Consortium amountsPaid(BigDecimal amountsPaid) {
+        this.setAmountsPaid(amountsPaid);
+        return this;
+    }
+
+    public BigDecimal getOutstandingBalance() {
+        return this.outstandingBalance;
+    }
+
+    public void setOutstandingBalance(BigDecimal outstandingBalance) {
+        this.outstandingBalance = outstandingBalance;
+    }
+
+    public Consortium outstandingBalance(BigDecimal outstandingBalance) {
+        this.setOutstandingBalance(outstandingBalance);
+        return this;
+    }
+
+    public byte[] getConsortiumExtract() {
+        return this.consortiumExtract;
+    }
+
+    public void setConsortiumExtract(byte[] consortiumExtract) {
+        this.consortiumExtract = consortiumExtract;
+    }
+
+    public Consortium consortiumExtract(byte[] consortiumExtract) {
+        this.setConsortiumExtract(consortiumExtract);
+        return this;
+    }
+
+    public byte[] getEditedConsortiumExtract() {
+        return this.editedConsortiumExtract;
+    }
+
+    public void setEditedConsortiumExtract(byte[] editedConsortiumExtract) {
+        this.editedConsortiumExtract = editedConsortiumExtract;
+    }
+
+    public Consortium editedConsortiumExtract(byte[] editedConsortiumExtract) {
+        this.setEditedConsortiumExtract(editedConsortiumExtract);
+        return this;
     }
 
     public Set<ConsortiumInstallments> getConsortiumInstallments() {

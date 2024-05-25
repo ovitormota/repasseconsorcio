@@ -37,14 +37,6 @@ export const partialUpdateEntity = createAsyncThunk(
   async (entity: IConsortium, thunkAPI) => {
     const result = await axios.patch<IConsortium>(`${apiUrl}/${entity.id}`, cleanEntity(entity))
     thunkAPI.dispatch(reset())
-    thunkAPI.dispatch(
-      getEntities({
-        page: 0,
-        size: 10,
-        sort: 'consortiumValue,asc',
-        filterSegmentType: SegmentType.ALL,
-      })
-    )
     thunkAPI.dispatch(getCountConsortiumsByProposalApprovals())
     thunkAPI.dispatch(getEntities({ page: 0, size: 10, sort: 'consortiumValue,asc', filterSegmentType: SegmentType.ALL }))
     return result

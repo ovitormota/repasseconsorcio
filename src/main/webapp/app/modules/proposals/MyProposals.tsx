@@ -1,4 +1,4 @@
-import { ArrowOutward } from '@mui/icons-material'
+import { OpenInNewRounded } from '@mui/icons-material'
 import { Box, Card, CardContent, Chip, List, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { BidHistoryModal } from 'app/entities/bid/BidHistoryModal'
@@ -13,11 +13,10 @@ import { SortingBox } from 'app/shared/components/SortingBox'
 import { StatusFilter } from 'app/shared/components/StatusFilter'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { defaultTheme } from 'app/shared/layout/themes'
-import { IConsortiumInstallments } from 'app/shared/model/consortium-installments.model'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
-import { addPercentage, formatCurrency, getStatusColor, showElement } from 'app/shared/util/data-utils'
+import { addPercentage, formatCurrency, getStatusColor, openPdfViewer, showElement } from 'app/shared/util/data-utils'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
@@ -89,17 +88,7 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
   }
 
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
-    const {
-      consortiumAdministrator: { name, image },
-      segmentType,
-      consortiumValue,
-      created,
-      contemplationStatus,
-      minimumBidValue,
-      status,
-      bids,
-      consortiumInstallments,
-    } = consortium
+    const { segmentType, consortiumValue, created, contemplationStatus, minimumBidValue, status, bids, amountsPaid } = consortium
 
     return (
       <Card
@@ -108,13 +97,6 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
           width: { xs: '90vw', sm: '330px' },
           borderRadius: '1rem',
           position: 'relative',
-
-          ':hover': {
-            md: {
-              scale: '1.03',
-              transition: '0.2s',
-            },
-          },
         }}
         elevation={2}
       >
@@ -155,7 +137,9 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
             }}
           />
         </Box>
-        {contemplationStatus && renderStatusRibbon()}
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, position: 'absolute', top: 15, left: 15 }}>
+          <strong style={{ color: defaultTheme.palette.secondary.main, fontSize: '12px' }}>#{consortium?.id}</strong>
+        </Box>
         <CardContent
           sx={{
             marginTop: '-30px',
@@ -164,44 +148,43 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
             paddingBottom: '0 !important',
           }}
         >
-          <Box sx={{ my: 1, p: 1, borderRadius: '1em', position: 'relative' }}>
-            <Box sx={{ position: 'absolute', top: -15, right: 7 }}>
-              <strong style={{ color: defaultTheme.palette.secondary.main, fontSize: '12px' }}>#{consortium?.id}</strong>
+          <Box sx={{ mt: 1, p: 1, borderRadius: '1em', position: 'relative' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', mt: 1 }}>
+              <Box onClick={() => !!consortium?.editedConsortiumExtract && openPdfViewer(consortium.editedConsortiumExtract)}>
+                <Typography variant='caption' fontStyle='italic' fontSize={13} color={defaultTheme.palette.text.secondary}>
+                  Mais informações{' '}
+                </Typography>
+                <OpenInNewRounded style={{ fontSize: '16px', marginBottom: '1px' }} color={consortium?.editedConsortiumExtract ? 'secondary' : 'disabled'} />
+              </Box>
+              <Box onClick={() => handleBidHistory(consortium)} style={showElement(!!bids?.length && isAuthenticated)}>
+                <Typography variant='caption' fontStyle='italic' fontSize={13} color={defaultTheme.palette.text.secondary}>
+                  Visualizar Lances{''}
+                </Typography>
+                <OpenInNewRounded style={{ fontSize: '16px', marginBottom: '1px' }} color='secondary' />
+              </Box>
             </Box>
             <Typography sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
                 {translate('repasseconsorcioApp.consortium.segmentType')}
               </Typography>
               <span className='divider' />
-              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
+              <Typography variant='caption' color={defaultTheme.palette.text.primary} fontSize={13}>
                 {translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}
               </Typography>
             </Typography>
             <Typography sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
-                {translate('repasseconsorcioApp.consortium.consortiumAdministrator')}
+                {translate('repasseconsorcioApp.consortium.consortiumValue')}
               </Typography>
               <span className='divider' />
-              <Typography variant='caption'>{name}</Typography>
+              <Typography variant='caption' color={defaultTheme.palette.text.primary} fontSize={13}>
+                {formatCurrency(consortiumValue)}
+              </Typography>
             </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
-              <Box onClick={(event) => handleOpenConsortiumInstallmentsModal(event, consortium)}>
-                <Typography variant='caption' color={defaultTheme.palette.text.secondary} fontWeight={600}>
-                  Visualizar Parcelas
-                </Typography>
-                <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
-              </Box>
-              <Box onClick={() => handleBidHistory(consortium)} style={showElement(!!bids?.length && isAuthenticated)}>
-                <Typography variant='caption' color={defaultTheme.palette.text.secondary} fontWeight={600}>
-                  Visualizar Lances
-                </Typography>
-                <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
-              </Box>
-            </Box>
           </Box>
           <Box
             sx={{
-              my: 1,
+              mb: 1,
               p: 1,
               background: defaultTheme.palette.secondary['A100'],
               borderRadius: '1em',
@@ -211,33 +194,72 @@ export const MyProposals = (props: RouteComponentProps<{ url: string }>) => {
               position: 'relative',
             }}
           >
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', width: '100%' }}>
+              <Box
+                sx={{
+                  p: '5px 10px',
+                  borderRadius: '1em',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: defaultTheme.palette.background.paper,
+                }}
+              >
+                <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                  {translate('repasseconsorcioApp.consortium.minimumBidValue')}
+                </Typography>
+                <Typography fontSize={14} color={defaultTheme.palette.text.primary}>
+                  {formatCurrency(bids?.length ? addPercentage(minimumBidValue) : minimumBidValue)}
+                </Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  p: '5px 10px',
+                  borderRadius: '1em',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: defaultTheme.palette.background.paper,
+                }}
+              >
+                <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                  {translate('repasseconsorcioApp.consortium.amountsPaid')}
+                </Typography>
+                <Typography fontSize={14} color={defaultTheme.palette.text.primary}>
+                  {formatCurrency(amountsPaid)}
+                </Typography>
+              </Box>
+            </Box>
+
             <Box
               sx={{
-                position: 'absolute',
-                top: 5,
-                left: 5,
                 p: '5px 10px',
                 borderRadius: '1em',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
+                mt: 1,
                 backgroundColor: defaultTheme.palette.background.paper,
               }}
             >
               <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
-                {translate('repasseconsorcioApp.consortium.minimumBidValue')}
+                Ganho de
               </Typography>
-              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
-                {formatCurrency(bids?.length ? addPercentage(minimumBidValue) : minimumBidValue)}
+              <Typography
+                sx={{
+                  color: defaultTheme.palette.success.main,
+                  display: 'inline',
+                  fontWeight: 600,
+                }}
+                variant='h6'
+              >
+                {formatCurrency(amountsPaid - minimumBidValue)}
               </Typography>
             </Box>
-            <Typography variant='caption' color={defaultTheme.palette.text.secondary} sx={{ marginLeft: 12 }}>
-              {translate('repasseconsorcioApp.consortium.consortiumValue')}
-            </Typography>
-            <Typography variant='h5' color={defaultTheme.palette.text.primary} sx={{ marginLeft: 12 }}>
-              {formatCurrency(consortiumValue)}
-            </Typography>
           </Box>
 
           <AuctionTimer created={created} consortium={consortium} />

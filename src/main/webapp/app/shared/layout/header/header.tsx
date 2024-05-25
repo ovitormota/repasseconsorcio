@@ -172,7 +172,7 @@ export const Header = () => {
                     </Tooltip>
                     <Box sx={{ color: defaultTheme.palette.grey[300], display: 'flex', flexDirection: 'column' }}>
                       <small>Olá,</small>
-                      <span>{!isMDScreen ? account.firstName : account.firstName + ' ' + account.lastName}</span>
+                      <span>{account.firstName}</span>
                     </Box>
                   </Box>
                   <Menu

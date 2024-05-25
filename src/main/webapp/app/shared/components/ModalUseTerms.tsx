@@ -9,12 +9,11 @@ interface IModalUseTerms {
   isOpen: boolean
   title?: string
   setOpen: (isOpen: boolean) => void
-  acceptTerms: boolean
+  saveEntity: () => void
   adminstrationFee: number
-  setAcceptTerms: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const ModalUseTerms = ({ setOpen, setAcceptTerms, adminstrationFee }: IModalUseTerms) => {
+export const ModalUseTerms = ({ setOpen, saveEntity, adminstrationFee }: IModalUseTerms) => {
   const [checked, setChecked] = React.useState<boolean>(false)
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -45,7 +44,7 @@ export const ModalUseTerms = ({ setOpen, setAcceptTerms, adminstrationFee }: IMo
                 </ul>
               </Typography>
               <Typography sx={{ my: 2, color: defaultTheme.palette.secondary.main }} fontSize='13px' fontWeight={600}>
-                {`Observação: A taxa de administração para realizar a transferência desta cota é de ${adminstrationFee}% sobre o lance vencedor.`}
+                {`Observação: O valor cobrado para realizar a transferência desta cota é de ${adminstrationFee}% sobre o lance vencedor.`}
               </Typography>
             </Box>
             <Box sx={{ textAlign: { sm: 'center' } }}>
@@ -60,7 +59,7 @@ export const ModalUseTerms = ({ setOpen, setAcceptTerms, adminstrationFee }: IMo
           <Button onClick={() => setOpen(false)} sx={{ color: defaultTheme.palette.text.primary, fontSize: '12px' }}>
             <Translate contentKey='entity.action.back'>Voltar</Translate>
           </Button>
-          <Button variant='contained' color='secondary' disabled={!checked} onClick={() => setAcceptTerms(true)}>
+          <Button variant='contained' color='secondary' disabled={!checked} onClick={() => saveEntity()}>
             <Translate contentKey='entity.action.save'>Salvar</Translate>
           </Button>
         </DialogActions>

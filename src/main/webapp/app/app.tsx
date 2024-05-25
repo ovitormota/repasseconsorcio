@@ -94,7 +94,7 @@ export const App = () => {
   return (
     <Router basename={baseHref}>
       <AppThemeProvider>
-        <Toaster gutter={2} position='top-center' toastOptions={{ duration: 10000, style: { flexWrap: 'nowrap', maxWidth: '400px' } }}>
+        <Toaster gutter={2} position='top-center' toastOptions={{ duration: 5000, style: { flexWrap: 'nowrap', maxWidth: '400px' } }}>
           {(t) => (
             <ToastBar toast={t}>
               {({ icon, message }) => (

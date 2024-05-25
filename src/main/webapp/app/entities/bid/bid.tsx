@@ -97,11 +97,11 @@ const Bid = (props: RouteComponentProps<{ url: string }>) => {
 
                     {isMDScreen && (
                       <>
-                        <TableCell>
+                        {/* <TableCell>
                           <TableSortLabel onClick={createHandleSort('consortium.consortiumAdministrator.name')} active={currentSort === 'consortium.consortiumAdministrator.name'} direction={order}>
                             <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.consortiumAdministrator.name')}</TypographStyled>
                           </TableSortLabel>
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <TableSortLabel onClick={createHandleSort('consortium.segmentType')} active={currentSort === 'consortium.segmentType'} direction={order}>
                             <TypographStyled>{translate('repasseconsorcioApp.bid.table.columns.consortium.segmentType')}</TypographStyled>
@@ -131,7 +131,7 @@ const Bid = (props: RouteComponentProps<{ url: string }>) => {
                       </TableCell>
                       {isMDScreen && (
                         <>
-                          <TableCell>{bid.consortium?.consortiumAdministrator.name}</TableCell>
+                          {/* <TableCell>{bid.consortium?.consortiumAdministrator.name}</TableCell> */}
                           <TableCell>{translate(`repasseconsorcioApp.SegmentType.${bid.consortium?.segmentType}`)}</TableCell>
                         </>
                       )}

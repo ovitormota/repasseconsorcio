@@ -20,7 +20,6 @@ export type RegisterState = Readonly<typeof initialState>
 interface IHandleRegister {
   data: {
     firstName: string
-    lastName: string
     login: string
     email: string
     password: string

@@ -38,17 +38,7 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
   const [openBidHistoryModal, setOpenBidHistoryModal] = React.useState(false)
 
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
-    const {
-      consortiumAdministrator: { name, image },
-      segmentType,
-      consortiumValue,
-      // numberOfInstallments,
-      // installmentValue,
-      created,
-      contemplationStatus,
-      minimumBidValue,
-      status,
-    } = consortium
+    const { segmentType, consortiumValue, created, contemplationStatus } = consortium
     return (
       <Card
         sx={{
@@ -109,12 +99,12 @@ export const ConsortiumHistoryModal = ({ setOpenConsortiumHistoryModal, entityCo
         {contemplationStatus && StatusRibbon()}
         <CardContent sx={{ p: 1.5 }}>
           <List>
-            <ListItemText
+            {/* <ListItemText
               primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}
               primary={`${translate('repasseconsorcioApp.consortium.consortiumAdministrator')} `}
               secondary={name}
-            />
+            /> */}
             {/* <ListItemText
               primaryTypographyProps={{ fontSize: '12px !important' }}
               sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'nowrap' }}

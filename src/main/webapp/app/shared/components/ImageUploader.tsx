@@ -1,12 +1,11 @@
 import { AddAPhoto, Delete, Edit } from '@mui/icons-material'
 import { Box, Button, Dialog, DialogActions, DialogContent, IconButton } from '@mui/material'
 import Avatar from '@mui/material/Avatar'
-import { useAppSelector } from 'app/config/store'
+import { defaultTheme } from 'app/shared/layout/themes'
 import 'cropperjs/dist/cropper.css'
 import React, { useRef, useState } from 'react'
 import Cropper from 'react-cropper'
 import { Translate } from 'react-jhipster'
-import { defaultTheme } from 'app/shared/layout/themes'
 
 interface IImageUploaderProps {
   onUpload: (image: any) => void

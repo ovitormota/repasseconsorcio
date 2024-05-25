@@ -62,18 +62,6 @@ public class ConsortiumService {
 
         Consortium result = consortiumRepository.save(consortium);
 
-        consortium
-            .getConsortiumInstallments()
-            .forEach(consortiumInstallment -> {
-                ConsortiumInstallments installment = new ConsortiumInstallments();
-                installment.setConsortium(result);
-                installment.setInstallmentValue(consortiumInstallment.getInstallmentValue());
-                installment.setNumberOfInstallments(consortiumInstallment.getNumberOfInstallments());
-                installment.setInstallmentDate(consortiumInstallment.getInstallmentDate());
-                installment.setStatus(consortiumInstallment.getStatus());
-                consortiumInstallmentsService.save(installment);
-            });
-
         return result;
     }
 
@@ -103,6 +91,9 @@ public class ConsortiumService {
                 }
                 if (consortium.getStatus() != null) {
                     existingConsortium.setStatus(consortium.getStatus());
+                }
+                if (consortium.getEditedConsortiumExtract() != null) {
+                    existingConsortium.setEditedConsortiumExtract(consortium.getEditedConsortiumExtract());
                 }
 
                 return existingConsortium;
@@ -135,6 +126,7 @@ public class ConsortiumService {
             consortiums
                 .getContent()
                 .forEach(consortium -> {
+                    consortium.setConsortiumExtract(null);
                     consortium.setUser(null);
                     Optional<BigDecimal> minBidValue = consortium.getBids().stream().map(Bid::getValue).max(Comparator.naturalOrder());
                     minBidValue.ifPresent(consortium::setMinimumBidValue);
@@ -152,6 +144,8 @@ public class ConsortiumService {
         consortiums
             .getContent()
             .forEach(consortium -> {
+                consortium.setConsortiumExtract(isAdmin ? consortium.getConsortiumExtract() : null);
+                consortium.setEditedConsortiumExtract(isAuthenticated ? consortium.getEditedConsortiumExtract() : null);
                 consortium.setUser(null);
                 Optional<BigDecimal> minBidValue = consortium.getBids().stream().map(Bid::getValue).max(Comparator.naturalOrder());
                 minBidValue.ifPresent(consortium::setMinimumBidValue);
@@ -183,6 +177,7 @@ public class ConsortiumService {
         consortiumRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Page<ProposalApprovalsDTO> findAllByProposalApprovals(Pageable pageable, SegmentType filterSegmentType) {
         log.debug("Request to get all Consortiums by Proposal Approvals");
 
@@ -210,13 +205,22 @@ public class ConsortiumService {
         return consortiums;
     }
 
+    @Transactional(readOnly = true)
     public Page<Consortium> findAllMyProposals(Pageable pageable, SegmentType filterSegmentType, ConsortiumStatusType filterStatusType) {
         log.debug("Request to get all My Proposals");
 
         filterSegmentType = filterSegmentType.equals(SegmentType.ALL) ? null : filterSegmentType;
         filterStatusType = filterStatusType.equals(ConsortiumStatusType.ALL) ? null : filterStatusType;
 
-        return consortiumRepository.findAllMyProposalByUserIsCurrentUserAndSegmentTypeAndStatus(filterStatusType, filterSegmentType, pageable);
+        Page<Consortium> consortiums = consortiumRepository.findAllMyProposalByUserIsCurrentUserAndSegmentTypeAndStatus(filterStatusType, filterSegmentType, pageable);
+
+        consortiums
+            .getContent()
+            .forEach(consortium -> {
+                consortium.setConsortiumExtract(null);
+            });
+
+        return consortiums;
     }
 
     public Long countByProposalApprovals() {

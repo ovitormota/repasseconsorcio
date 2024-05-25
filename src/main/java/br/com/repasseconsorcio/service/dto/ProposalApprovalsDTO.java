@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Column;
 
 public class ProposalApprovalsDTO {
 
@@ -26,6 +27,13 @@ public class ProposalApprovalsDTO {
     private ConsortiumAdministrator consortiumAdministrator;
     private Set<ConsortiumInstallments> consortiumInstallments = new HashSet<>();
     private String note;
+    private String group;
+    private String quota;
+    private Integer totalPlanMonths;
+    private BigDecimal adminFee;
+    private BigDecimal amountsPaid;
+    private BigDecimal outstandingBalance;
+    private byte[] consortiumExtract;
 
     public ProposalApprovalsDTO() {}
 
@@ -42,6 +50,13 @@ public class ProposalApprovalsDTO {
         this.consortiumAdministrator = consortium.getConsortiumAdministrator();
         this.consortiumInstallments = consortium.getConsortiumInstallments();
         this.note = consortium.getNote();
+        this.group = consortium.getGroup();
+        this.quota = consortium.getQuota();
+        this.totalPlanMonths = consortium.getTotalPlanMonths();
+        this.adminFee = consortium.getAdminFee();
+        this.amountsPaid = consortium.getAmountsPaid();
+        this.outstandingBalance = consortium.getOutstandingBalance();
+        this.consortiumExtract = consortium.getConsortiumExtract();
     }
 
     // Getters and setters
@@ -139,5 +154,61 @@ public class ProposalApprovalsDTO {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getQuota() {
+        return quota;
+    }
+
+    public void setQuota(String quota) {
+        this.quota = quota;
+    }
+
+    public Integer getTotalPlanMonths() {
+        return totalPlanMonths;
+    }
+
+    public void setTotalPlanMonths(Integer totalPlanMonths) {
+        this.totalPlanMonths = totalPlanMonths;
+    }
+
+    public BigDecimal getAdminFee() {
+        return adminFee;
+    }
+
+    public void setAdminFee(BigDecimal adminFee) {
+        this.adminFee = adminFee;
+    }
+
+    public BigDecimal getAmountsPaid() {
+        return amountsPaid;
+    }
+
+    public void setAmountsPaid(BigDecimal amountsPaid) {
+        this.amountsPaid = amountsPaid;
+    }
+
+    public BigDecimal getOutstandingBalance() {
+        return outstandingBalance;
+    }
+
+    public void setOutstandingBalance(BigDecimal outstandingBalance) {
+        this.outstandingBalance = outstandingBalance;
+    }
+
+    public byte[] getConsortiumExtract() {
+        return consortiumExtract;
+    }
+
+    public void setConsortiumExtract(byte[] consortiumExtract) {
+        this.consortiumExtract = consortiumExtract;
     }
 }

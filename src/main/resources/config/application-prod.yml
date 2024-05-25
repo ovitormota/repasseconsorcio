@@ -117,7 +117,7 @@ jhipster:
         base64-secret: MDljNmNjN2U0ZTlhYzUzY2VhYThkNzgwZDJjZjQ3OWRjOTU0YWI0MmNjOTVkN2U1Zjg4MjMwZmFkZTlmOGE3ZTY0YjA1MmU3MzU2YmUzMjg3NWM2ODYwZWVhMTBhZTMwZGJkNjg0NmI0OGY1M2ViZjRlMDBhYjYxNTM1ODNkM2I=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
-        token-validity-in-seconds-for-remember-me: 2592000
+        token-validity-in-seconds-for-remember-me: 946728000
   mail: # specific JHipster mail property, for standard properties see MailProperties
     base-url: https://app.repasseconsorcio.com.br # Modify according to your server's URL
   logging:

@@ -74,3 +74,28 @@ export const getStatusColor = (status: ConsortiumStatusType) => {
       return 'default'
   }
 }
+
+export const openPdfViewer = (pdfBase64Content) => {
+  if (pdfBase64Content) {
+    // Decodificar o conteúdo base64 do PDF
+    const byteCharacters = atob(pdfBase64Content)
+
+    // Converter os caracteres para uma array de bytes
+    const byteNumbers = new Array(byteCharacters.length)
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i)
+    }
+    const byteArray = new Uint8Array(byteNumbers)
+
+    // Criar um blob a partir da array de bytes
+    const blob = new Blob([byteArray], { type: 'application/pdf' })
+
+    // Criar uma URL temporária para o blob
+    const blobUrl = URL.createObjectURL(blob)
+
+    // Abrir o PDF em uma nova aba
+    window.open(blobUrl)
+  } else {
+    console.error('Nenhum PDF disponível para visualização.')
+  }
+}

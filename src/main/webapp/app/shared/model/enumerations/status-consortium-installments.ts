@@ -1,5 +1,7 @@
 export enum StatusConsortiumInstallments {
-  OPEN = 'OPEN',
+  PAID = 'PAID',
 
   LATE = 'LATE',
+
+  PENDING = 'PENDING',
 }

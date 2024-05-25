@@ -1,21 +1,19 @@
-import { ArrowOutward } from '@mui/icons-material'
+import { OpenInNewRounded } from '@mui/icons-material'
 import { Box, Button, Card, CardContent, Chip, List, ListItem, ThemeProvider, Typography } from '@mui/material'
 import { useAppDispatch, useAppSelector } from 'app/config/store'
 import { AccountRegisterUpdate } from 'app/modules/account/register/AccountRegisterUpdate'
 import { ConsortiumCardSkeleton } from 'app/shared/components/ConsortiumCardSkeleton'
-import { ConsortiumInstallmentsModal } from 'app/shared/components/ConsortiumInstallmentsModal'
 import { Loading } from 'app/shared/components/Loading'
 import { NoDataIndicator } from 'app/shared/components/NoDataIndicator'
 import { SegmentFilterChip } from 'app/shared/components/SegmentFilterChip'
 import { SortingBox } from 'app/shared/components/SortingBox'
 import { AppBarComponent } from 'app/shared/layout/app-bar/AppBarComponent'
 import { defaultTheme } from 'app/shared/layout/themes'
-import { IConsortiumInstallments } from 'app/shared/model/consortium-installments.model'
 import { IConsortium } from 'app/shared/model/consortium.model'
 import { ConsortiumStatusType } from 'app/shared/model/enumerations/consortium-status-type.model'
 import { SegmentType } from 'app/shared/model/enumerations/segment-type.model'
 import { IUser } from 'app/shared/model/user.model'
-import { getStatusColor, showElement } from 'app/shared/util/data-utils'
+import { getStatusColor, openPdfViewer, showElement } from 'app/shared/util/data-utils'
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils'
 import { ASC, ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants'
 import { useBreakpoints } from 'app/shared/util/useBreakpoints'
@@ -23,6 +21,7 @@ import React, { Fragment, useEffect, useRef, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSortState, translate } from 'react-jhipster'
 import { RouteComponentProps } from 'react-router-dom'
+import { EditExtractConsortium } from './EditExtractConsortium'
 import { getEntities, partialUpdateEntity } from './proposals-for-approval.reducer'
 
 export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>) => {
@@ -37,6 +36,9 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
   const [filterSegmentType, setFilterSegmentType] = useState(SegmentType.ALL)
   const [currentSort, setCurrentSort] = useState('consortiumValue')
   const [openConsortiumInstallmentsModal, setOpenConsortiumInstallmentsModal] = useState(false)
+  const [openConsortiumExtractModal, setOpenConsortiumExtractModal] = useState(false)
+  const [consortiumExtract, setConsortiumExtract] = React.useState<string>(null)
+
   const [onConsortium, setOnConsortium] = useState<IConsortium>(null)
   const [order, setOrder] = useState(ASC)
   const sortTypes = ['consortiumAdministrator', 'contemplationStatus', 'numberOfInstallments', 'installmentValue', 'consortiumValue']
@@ -67,14 +69,30 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
       activePage: paginationState.activePage + 1,
     })
   }
-
   const setApproved = (consortium: IConsortium) => {
-    const updatedConsortium = {
-      ...consortium,
-      status: ConsortiumStatusType.OPEN,
-    }
+    setOnConsortium(consortium)
+    setOpenConsortiumExtractModal(true)
+  }
 
-    dispatch(partialUpdateEntity(updatedConsortium))
+  const handleSave = (event) => {
+    event.preventDefault()
+
+    if (consortiumExtract) {
+      const updatedConsortium = {
+        ...onConsortium,
+        editedConsortiumExtract: consortiumExtract,
+        status: ConsortiumStatusType.OPEN,
+      }
+      dispatch(partialUpdateEntity(updatedConsortium)).then(() => {
+        setOpenConsortiumExtractModal(false)
+        setConsortiumExtract(null)
+        setOnConsortium(null)
+      })
+    }
+  }
+
+  const handleFileUpload = (uploadedFile) => {
+    setConsortiumExtract(uploadedFile)
   }
 
   const formatCurrency = (value) => {
@@ -84,29 +102,8 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
     }).format(value)
   }
 
-  const renderStatusRibbon = () => (
-    <div className='ribbon'>
-      <a href=''>{translate('repasseconsorcioApp.consortium.contemplationTypeStatus.approved')}</a>
-    </div>
-  )
-
-  const handleOpenConsortiumInstallmentsModal = (_event, _onConsortium: IConsortium) => {
-    _event.stopPropagation()
-    setOpenConsortiumInstallmentsModal(true)
-    setOnConsortium(_onConsortium)
-  }
-
   const ConsortiumCard = ({ consortium }: { consortium: IConsortium }) => {
-    const {
-      consortiumAdministrator: { name, image },
-      segmentType,
-      consortiumValue,
-      consortiumInstallments,
-      contemplationStatus,
-      minimumBidValue,
-      status,
-      user: { firstName },
-    } = consortium
+    const { segmentType, consortiumValue, created, contemplationStatus, minimumBidValue, status, bids, amountsPaid } = consortium
 
     return (
       <Card
@@ -133,6 +130,19 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, position: 'absolute', top: 10, right: 10 }}>
           <Chip
+            label={consortium.bids?.length ? `${consortium.bids.length} ${consortium.bids.length > 1 ? 'lances' : 'lance'}` : 'Sem lances'}
+            variant='filled'
+            size='small'
+            style={showElement(!!consortium?.bids?.length)}
+            sx={{
+              cursor: 'pointer',
+              background: defaultTheme.palette.background.paper,
+              color: defaultTheme.palette.secondary.main,
+              backdropFilter: 'blur(5px)',
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
+            }}
+          />
+          <Chip
             label={translate(`repasseconsorcioApp.ConsortiumStatusType.${status}`)}
             color={getStatusColor(status)}
             size='small'
@@ -142,7 +152,9 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
             }}
           />
         </Box>
-        {contemplationStatus && renderStatusRibbon()}
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, position: 'absolute', top: 15, left: 15 }}>
+          <strong style={{ color: defaultTheme.palette.secondary.main, fontSize: '12px' }}>#{consortium?.id}</strong>
+        </Box>
         <CardContent
           sx={{
             marginTop: '-30px',
@@ -151,49 +163,37 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
             paddingBottom: '0 !important',
           }}
         >
-          <Box sx={{ my: 1, p: 1, borderRadius: '1em', position: 'relative' }}>
-            <Box sx={{ position: 'absolute', top: -15, left: 7 }}>
-              <strong style={{ color: defaultTheme.palette.secondary.main, fontSize: '12px' }}>#{consortium?.id}</strong>
+          <Box sx={{ mt: 1, p: 1, borderRadius: '1em', position: 'relative' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', mt: 1 }}>
+              <Box onClick={() => openPdfViewer(consortium.consortiumExtract)}>
+                <Typography variant='caption' fontStyle='italic' fontSize={13} color={defaultTheme.palette.text.secondary}>
+                  Mais informações{' '}
+                </Typography>
+                <OpenInNewRounded style={{ fontSize: '16px', marginBottom: '1px' }} color='secondary' />
+              </Box>
             </Box>
-            <Box
-              onClick={() => [setOpenAccountRegisterUpdateModal(true), setEditUser(consortium.user)]}
-              sx={{ position: 'absolute', top: -10, right: 7, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', cursor: 'pointer' }}
-            >
-              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
-                {firstName}
-              </Typography>
-              <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
-            </Box>
-            <Typography sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+            <Typography sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
                 {translate('repasseconsorcioApp.consortium.segmentType')}
               </Typography>
               <span className='divider' />
-              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
+              <Typography variant='caption' color={defaultTheme.palette.text.primary} fontSize={13}>
                 {translate(`repasseconsorcioApp.SegmentType.${segmentType}`)}
               </Typography>
             </Typography>
             <Typography sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
-                {translate('repasseconsorcioApp.consortium.consortiumAdministrator')}
+                {translate('repasseconsorcioApp.consortium.consortiumValue')}
               </Typography>
               <span className='divider' />
-              <Typography variant='caption'>{name}</Typography>
-            </Typography>
-            <Box
-              onClick={(event) => handleOpenConsortiumInstallmentsModal(event, consortium)}
-              sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', cursor: 'pointer' }}
-              style={showElement(!!consortiumInstallments?.length)}
-            >
-              <Typography variant='caption' color={defaultTheme.palette.text.secondary} fontWeight={600}>
-                Visualizar Parcelas
+              <Typography variant='caption' color={defaultTheme.palette.text.primary} fontSize={13}>
+                {formatCurrency(consortiumValue)}
               </Typography>
-              <ArrowOutward style={{ fontSize: '16px', marginBottom: '3px' }} color='secondary' />
-            </Box>
+            </Typography>
           </Box>
           <Box
             sx={{
-              my: 1,
+              mb: 1,
               p: 1,
               background: defaultTheme.palette.secondary['A100'],
               borderRadius: '1em',
@@ -203,35 +203,73 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
               position: 'relative',
             }}
           >
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', width: '100%' }}>
+              <Box
+                sx={{
+                  p: '5px 10px',
+                  borderRadius: '1em',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: defaultTheme.palette.background.paper,
+                }}
+              >
+                <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                  {translate('repasseconsorcioApp.consortium.minimumBidValue')}
+                </Typography>
+                <Typography fontSize={14} color={defaultTheme.palette.text.primary}>
+                  {formatCurrency(minimumBidValue)}
+                </Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  p: '5px 10px',
+                  borderRadius: '1em',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: defaultTheme.palette.background.paper,
+                }}
+              >
+                <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
+                  {translate('repasseconsorcioApp.consortium.amountsPaid')}
+                </Typography>
+                <Typography fontSize={14} color={defaultTheme.palette.text.primary}>
+                  {formatCurrency(amountsPaid)}
+                </Typography>
+              </Box>
+            </Box>
+
             <Box
               sx={{
-                position: 'absolute',
-                top: 5,
-                left: 5,
                 p: '5px 10px',
                 borderRadius: '1em',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
+                mt: 1,
                 backgroundColor: defaultTheme.palette.background.paper,
               }}
             >
               <Typography variant='caption' color={defaultTheme.palette.text.secondary}>
-                {translate('repasseconsorcioApp.consortium.minimumBidValue')}
+                Ganho de
               </Typography>
-              <Typography variant='caption' color={defaultTheme.palette.text.primary}>
-                {formatCurrency(minimumBidValue)}
+              <Typography
+                sx={{
+                  color: defaultTheme.palette.success.main,
+                  display: 'inline',
+                  fontWeight: 600,
+                }}
+                variant='h6'
+              >
+                {formatCurrency(amountsPaid - minimumBidValue)}
               </Typography>
             </Box>
-            <Typography variant='caption' color={defaultTheme.palette.text.secondary} sx={{ marginLeft: 12 }}>
-              {translate('repasseconsorcioApp.consortium.consortiumValue')}
-            </Typography>
-            <Typography variant='h5' color={defaultTheme.palette.text.primary} sx={{ marginLeft: 12 }}>
-              {formatCurrency(consortiumValue)}
-            </Typography>
           </Box>
-
           <ListItem>
             <Button
               sx={{
@@ -283,7 +321,16 @@ export const ProposalsForApproval = (props: RouteComponentProps<{ url: string }>
         </InfiniteScroll>
       </Box>
       {openAccountRegisterUpdateModal && <AccountRegisterUpdate setOpenAccountRegisterUpdateModal={setOpenAccountRegisterUpdateModal} editUser={editUser} />}
-      {openConsortiumInstallmentsModal && <ConsortiumInstallmentsModal setOpenConsortiumInstallmentsModal={setOpenConsortiumInstallmentsModal} consortium={onConsortium} />}
+      {/* {openConsortiumInstallmentsModal && <ConsortiumInstallmentsModal setOpenConsortiumInstallmentsModal={setOpenConsortiumInstallmentsModal} consortium={onConsortium} />} */}
+      {openConsortiumExtractModal && (
+        <EditExtractConsortium
+          setOpenEditExtractConsortiumModal={setOpenConsortiumExtractModal}
+          consortiumExtract={consortiumExtract}
+          setConsortiumExtract={setConsortiumExtract}
+          onConsortium={onConsortium}
+          handleSave={handleSave}
+        />
+      )}
     </ThemeProvider>
   )
 }
